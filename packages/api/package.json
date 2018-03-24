@@ -1,0 +1,23 @@
+{
+  "name": "@subspace/api",
+  "version": "0.0.0",
+  "description": "Subspace API and auth server",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ../../lib/build",
+    "start":
+      "cross-env NODE_ENV=development nodemon src/index.js --exec babel-node",
+    "serve": "cross-env NODE_ENV=production node lib/index.js",
+    "prepare": "npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^5.1.4",
+    "mongoose": "^5.0.10"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.0.0-beta.41",
+    "nodemon": "^1.17.2"
+  }
+}

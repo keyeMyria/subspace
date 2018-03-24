@@ -1,0 +1,18 @@
+{
+  "name": "@subspace/core",
+  "version": "0.0.0",
+  "description": "Subspace core game lib",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "node ../../lib/build",
+    "types": "flow gen-flow-files index.js > index.js.flow"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^5.1.4"
+  },
+  "dependencies": {
+    "redux": "^3.7.2"
+  }
+}

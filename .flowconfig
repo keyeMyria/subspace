@@ -1,0 +1,13 @@
+[ignore]
+.*/__tests__/.*
+.*\.spec\.js
+.*/node_modules\/config-chain/.*
+.*/node_modules\/webpack-cli/.*
+
+[include]
+
+[libs]
+.*/flow-typed/.*
+
+[options]
+module.name_mapper='^@subspace/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
