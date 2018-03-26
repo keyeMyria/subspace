@@ -1,11 +1,16 @@
 // @flow
 
 import * as Udp from "@web-udp/client"
-
-import { createGame } from "@subspace/core"
+import * as Core from "@subspace/core"
 
 const client = new Udp.Client({
-  url: "localhost:3000",
+  url: `${window.location.host}/server`,
 })
 
-client.connect().then(master => {})
+client.connect().then((master) => {
+  console.log(master)
+})
+
+Core.createGame({
+  scheduler: () => {},
+})

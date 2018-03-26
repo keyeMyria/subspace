@@ -1,0 +1,24 @@
+FROM node:9.8.0
+
+EXPOSE 8080
+
+WORKDIR /home/app/code
+
+COPY package*.json ./
+COPY lerna.json .
+COPY .eslintrc.json .
+COPY .eslintignore .
+COPY .babelrc .
+
+COPY packages/core ./packages/core
+COPY packages/server ./packages/server
+
+RUN npm i lerna -g --loglevel notice
+RUN npm install --loglevel notice
+
+RUN lerna bootstrap
+
+RUN npm --prefix packages/server rebuild wrtc --update-binary
+RUN npm run --prefix packages/server build
+
+CMD ["npm", "run", "--prefix", "packages/server", "start"]

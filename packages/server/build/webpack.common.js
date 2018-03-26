@@ -1,4 +1,5 @@
 const webpack = require("webpack")
+const path = require("path")
 
 module.exports = {
   context: process.cwd(),
@@ -7,13 +8,18 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: "babel-loader",
-          },
-        ],
+        enforce: "pre",
+        loader: "eslint-loader",
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
       },
     ],
   },
   plugins: [new webpack.NamedModulesPlugin()],
+  resolve: {
+    symlinks: false,
+  },
 }

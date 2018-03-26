@@ -14,4 +14,4 @@ export const sub = (t1: Hrtime, t2: Hrtime) => [
   t1[1] - t2[1],
 ]
 
-export const sum = (t: Hrtime) => t[0] * NS_PER_SEC + t[1]
+export const sum = (t: Hrtime) => (t[0] * NS_PER_SEC) + t[1]

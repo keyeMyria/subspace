@@ -1,7 +1,7 @@
 const path = require("path")
 const externals = require("webpack-node-externals")
 const merge = require("webpack-merge")
-const common = require("../../../lib/build/webpack.config")
+const common = require("./webpack.common")
 
 module.exports = merge(common, {
   target: "node",

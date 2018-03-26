@@ -4,7 +4,7 @@
   "description": "Subspace core game lib",
   "main": "lib/index.js",
   "scripts": {
-    "build": "node ../../lib/build",
+    "build": "node ../../build",
     "types": "flow gen-flow-files index.js > index.js.flow"
   },
   "author": "",

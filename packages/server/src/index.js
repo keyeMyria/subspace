@@ -1,13 +1,13 @@
 // @flow
 
-import { Server } from "http"
+import * as Http from "http"
 import shortid from "shortid"
 import * as Udp from "@web-udp/server"
 import * as Core from "@subspace/core"
 
 import * as Scheduler from "./scheduler"
 
-const server = new Server()
+const server = new Http.Server()
 const udp = new Udp.Server({ server })
 
 const game = Core.createGame({
@@ -19,7 +19,7 @@ const state = {
 }
 const connections = {}
 
-udp.connections.subscribe(connection => {
+udp.connections.subscribe((connection) => {
   const id = shortid()
 
   connections[id] = connection
@@ -28,4 +28,7 @@ udp.connections.subscribe(connection => {
   console.log(id)
 })
 
-server.listen(process.env.PORT || 3000)
+server.listen(Number(process.env.PORT), () => {
+  console.log(game)
+  console.log(`Server listening at //localhost:${process.env.PORT}`)
+})

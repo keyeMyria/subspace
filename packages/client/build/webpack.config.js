@@ -1,9 +1,15 @@
+require("dotenv").config();
+
 const path = require("path")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const merge = require("webpack-merge")
 
-const common = require("../../../lib/build/webpack.config")
+const common = require("../../../build/webpack.config")
+
+const { SERVER_URL, CLIENT_PORT } = process.env
+
+console.log(SERVER_URL)
 
 module.exports = merge(common, {
   devtool: "sourcemap",
@@ -63,6 +69,13 @@ module.exports = merge(common, {
     hot: true,
     stats: "minimal",
     publicPath: "/",
-    port: 3001,
+    contentBase: "dist",
+    port: Number(CLIENT_PORT),
+    proxy: {
+      "/server/*": {
+        target: SERVER_URL,
+        ws: true,
+      },
+    },
   },
 })

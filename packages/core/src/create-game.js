@@ -9,5 +9,6 @@ type GameOptions = {
 }
 
 export const createGame = (options: GameOptions) => {
+  console.log(options)
   return createStore()
 }
