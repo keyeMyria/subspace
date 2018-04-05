@@ -111,6 +111,19 @@ declare module "redis" {
     duplicate: () => RedisClient;
     end: (flush: boolean) => void;
     quit: () => void;
+    multi: () => Multi;
+    batch: () => Batch;
+    zrangebylex: (
+      topic: string,
+      cursor: string,
+      cursor2: string,
+    ) => Promise<Array<string>>;
+    zadd: (
+      key: string,
+      score: number,
+      member: string,
+    ) => Promise<void>;
+    zrem: (key: string, member: string) => Promise<void>;
   }
 
   declare class RedisClientPromisified extends RedisClient {
@@ -165,6 +178,9 @@ declare module "redis" {
     duplicateAsync: () => Promise<RedisClientPromisified>;
     endAsync: (flush: boolean) => Promise<void>;
     quitAsync: () => Promise<void>;
+    multi: () => Multi;
+    batch: () => Batch;
+    zremAsync: (key: string, member: string) => Promise<void>;
   }
 
   declare type CreateOptions = {
@@ -198,6 +214,14 @@ declare module "redis" {
     }) => any,
   }
 
+  declare class Multi extends RedisClientPromisified {
+    execAsync: () => Promise<string> | Promise<string[][]>;
+  }
+
+  declare class Batch extends RedisClientPromisified {
+    execAsync: () => Promise<string> | Promise<string[][]>;
+  }
+
   declare type CreateClient = ((
     port: number,
     host?: string,
@@ -210,6 +234,7 @@ declare module "redis" {
   declare module.exports: {
     RedisClient: typeof RedisClient,
     RedisClientPromisified: typeof RedisClientPromisified,
+    Multi: typeof Multi,
     createClient: CreateClient,
   }
 }

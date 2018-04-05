@@ -1,6 +1,6 @@
 FROM node:9.8.0
 
-WORKDIR /opt/client
+WORKDIR /opt/subspace-client
 
 # npm manifests
 COPY package*.json ./
@@ -21,11 +21,14 @@ COPY packages/client ./packages/client
 
 # install dependencies and build
 RUN npm i --loglevel notice
-RUN ls .
 RUN lerna bootstrap
 
-# serve
+# copy build to public directory
 FROM nginx
 
 WORKDIR /usr/share/nginx/html
+
 COPY --from=0 /opt/client/packages/client/dist .
+
+# set non-root user
+USER node

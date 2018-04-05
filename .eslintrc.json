@@ -8,6 +8,8 @@
     "node": true
   },
   "rules": {
+    "arrow-parens": 0,
+    "arrow-body-style": 0,
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
     "function-paren-newline": 0,
@@ -18,7 +20,10 @@
     "quotes": ["error", "double"],
     "semi": ["error", "never"],
     "import/prefer-default-export": 0,
-    "no-console": 1
+    "no-console": 1,
+    "no-plusplus": 0,
+    "no-bitwise": 0,
+    "no-restricted-syntax": 0
   },
   "overrides": [
     {

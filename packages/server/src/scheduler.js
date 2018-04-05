@@ -1,7 +1,5 @@
 // @flow
 
-import type { Step } from "@subspace/core"
-
 import * as Hrtime from "./util/hrtime"
 
 export const create = (rate: number) => {
@@ -10,24 +8,25 @@ export const create = (rate: number) => {
 
   let previous = process.hrtime()
 
-  const timeoutHandler = (step: Step) => () => {
+  const timeoutHandler = done => () => {
     const diff = process.hrtime(previous)
     const delta = Hrtime.sub(diff, hrTimeStep)
     const d = Hrtime.sum(delta)
 
     if (d < 0) {
-      setImmediate(timeoutHandler(step))
+      setImmediate(timeoutHandler(done))
       return
     }
 
-    step((d + nsPerTick) / Hrtime.NS_PER_SEC)
+    done((d + nsPerTick) / Hrtime.NS_PER_SEC)
 
     previous = Hrtime.add(process.hrtime(), delta)
   }
 
-  const schedule = (step: Step) => {
-    setTimeout(timeoutHandler(step))
-  }
+  const schedule = (): Promise<number> =>
+    new Promise(resolve => {
+      setTimeout(timeoutHandler(resolve))
+    })
 
   return schedule
 }

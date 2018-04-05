@@ -1,9 +1,8 @@
 const path = require("path")
+const webpack = require("webpack")
 const externals = require("webpack-node-externals")
-const merge = require("webpack-merge")
-const common = require("./webpack.common")
 
-module.exports = merge(common, {
+module.exports = {
   target: "node",
   externals: [externals()],
   entry: "./src/index",
@@ -11,4 +10,23 @@ module.exports = merge(common, {
     path: path.resolve("lib"),
     filename: "index.js",
   },
-})
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        enforce: "pre",
+        loader: "eslint-loader",
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+      },
+    ],
+  },
+  plugins: [new webpack.NamedModulesPlugin()],
+  resolve: {
+    symlinks: false,
+  },
+}

@@ -1,8 +1,7 @@
 const path = require("path")
-const merge = require("webpack-merge")
-const common = require("../../../build/webpack.config")
+const webpack = require("webpack")
 
-module.exports = merge(common, {
+module.exports = {
   target: "node",
   entry: "./src/index",
   output: {
@@ -11,4 +10,23 @@ module.exports = merge(common, {
     library: "SubspaceCore",
     libraryTarget: "umd",
   },
-})
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        enforce: "pre",
+        loader: "eslint-loader",
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+      },
+    ],
+  },
+  plugins: [new webpack.NamedModulesPlugin()],
+  resolve: {
+    symlinks: false,
+  },
+}

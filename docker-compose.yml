@@ -1,15 +1,18 @@
 version: "3.3"
 services:
+  redis:
+    image: redis
   server:
     build:
       context: .
       dockerfile: ./docker/Dockerfile-server
     image: subspace/server
-    user: "node"
     environment:
       PORT: 8080
     ports:
       - 8080:8080
+    depends_on:
+      - redis
     networks:
       - backend
       - frontend

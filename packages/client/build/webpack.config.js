@@ -1,17 +1,12 @@
-require("dotenv").config();
+require("dotenv").config()
 
 const path = require("path")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const merge = require("webpack-merge")
-
-const common = require("../../../build/webpack.config")
 
 const { SERVER_URL, CLIENT_PORT } = process.env
 
-console.log(SERVER_URL)
-
-module.exports = merge(common, {
+module.exports = {
   devtool: "sourcemap",
   entry: "./src/index",
   output: {
@@ -20,6 +15,17 @@ module.exports = merge(common, {
   },
   module: {
     rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        enforce: "pre",
+        loader: "eslint-loader",
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+      },
       {
         test: /\.worker.js$/,
         use: [
@@ -54,6 +60,7 @@ module.exports = merge(common, {
     ],
   },
   plugins: [
+    new webpack.NamedModulesPlugin(),
     new webpack.DllReferencePlugin({
       manifest: require(path.resolve("./dist/vendor/react.json")),
     }),
@@ -78,4 +85,7 @@ module.exports = merge(common, {
       },
     },
   },
-})
+  resolve: {
+    symlinks: false,
+  },
+}

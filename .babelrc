@@ -8,11 +8,15 @@
     "@babel/preset-env"
   ],
   "plugins": [
+    ["@babel/plugin-transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }],
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-pipeline-operator",
-    "@babel/plugin-transform-flow-strip-types",
     "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-transform-modules-commonjs"
+    "@babel/plugin-transform-modules-commonjs",
+    "@babel/plugin-transform-flow-strip-types"
   ]
 }

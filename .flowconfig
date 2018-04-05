@@ -1,8 +1,7 @@
 [ignore]
 .*/__tests__/.*
 .*\.spec\.js
-.*/node_modules\/config-chain/.*
-.*/node_modules\/webpack-cli/.*
+.*/node_modules
 
 [include]
 

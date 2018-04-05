@@ -1,24 +1,35 @@
 FROM node:9.8.0
 
+WORKDIR /opt/subspace-server
+
 EXPOSE 8080
 
-WORKDIR /home/app/code
-
+# npm manifests
 COPY package*.json ./
+
+# monorepo configs/utils
+RUN npm i lerna -g --loglevel notice
 COPY lerna.json .
+
+# dev configs/utils
+COPY build ./build
 COPY .eslintrc.json .
 COPY .eslintignore .
 COPY .babelrc .
 
+# package and monorepo dependencies
 COPY packages/core ./packages/core
 COPY packages/server ./packages/server
 
-RUN npm i lerna -g --loglevel notice
-RUN npm install --loglevel notice
-
+# install dependencies and build
+RUN npm i --loglevel notice
 RUN lerna bootstrap
 
+# rebuild wrtc on container architecture
 RUN npm --prefix packages/server rebuild wrtc --update-binary
-RUN npm run --prefix packages/server build
 
-CMD ["npm", "run", "--prefix", "packages/server", "start"]
+# set non-root user
+USER node
+
+# serve
+CMD ["npm", "run", "--prefix", "packages/server", "serve"]
