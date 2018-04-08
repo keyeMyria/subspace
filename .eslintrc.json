@@ -1,8 +1,13 @@
 {
   "root": true,
   "parser": "babel-eslint",
-  "extends": "airbnb",
-  "plugins": ["flowtype"],
+  "extends": [
+    "prettier",
+    "prettier/flowtype",
+    "prettier/react",
+    "prettier/standard"
+  ],
+  "plugins": ["flowtype", "react", "standard"],
   "env": {
     "browser": true,
     "node": true
@@ -13,7 +18,7 @@
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
     "function-paren-newline": 0,
-    "indent": ["error", 2],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "react/jsx-indent": 2,
     "react/jsx-indent-props": 2,
     "react/no-unused-prop-types": 0,

@@ -1,13 +1,13 @@
 // @flow
 
-import loop from "./modules/loop"
-import physics from "./modules/physics"
+import adjacentBodies from "./modules/adjacent-bodies"
+import clients from "./modules/clients"
 import players from "./modules/players"
 import ships from "./modules/ships"
 
 const reducers = {
-  loop,
-  physics,
+  adjacentBodies,
+  clients,
   players,
   ships,
 }

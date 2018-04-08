@@ -26,26 +26,3 @@ export const create = (config: CreateIndexOptions) => {
 
   return createIndex(client, key, `${key}-map`, dimensions, precision)
 }
-
-export const createMiddleware = (index: SpatialIndex) => {
-  const middleware: Middleware = () => next => action => {
-    switch (action.type) {
-      case Physics.PHYSICS_ADD_BODY:
-        index.insert(
-          action.payload.body.position,
-          action.payload.body.id,
-        )
-        break
-      case Physics.PHYSICS_UPDATE_BODY:
-        index.update(
-          action.payload.body.position,
-          action.payload.body.id,
-        )
-        break
-      default:
-        break
-    }
-    return next(action)
-  }
-  return middleware
-}

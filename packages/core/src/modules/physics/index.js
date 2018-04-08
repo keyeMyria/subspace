@@ -1,5 +1,7 @@
 // @flow
 
+import type { Dispatch } from "redux"
+
 import type { Action } from "../../types"
 import type { BodyId, Body } from "../../model"
 
@@ -34,6 +36,20 @@ export type PhysicsUpdateBody = {
   },
 }
 
+export const PHYSICS_ROTATE_BODY = "physics/rotate_body!"
+export type PhysicsRotateBody = {
+  type: "physics/rotate_body!",
+  payload: {
+    bodyId: BodyId,
+    angle: number,
+  },
+}
+
+export type PhysicsAction =
+  | PhysicsAddBody
+  | PhysicsUpdateBody
+  | PhysicsRotateBody
+
 // Action creators
 
 export const addBody = (body: Body) => ({
@@ -43,10 +59,17 @@ export const addBody = (body: Body) => ({
   },
 })
 
-export const updateBody = (id: BodyId, body: Body) => ({
+export const rotateBody = (bodyId: BodyId, angle: number) => ({
+  type: PHYSICS_ROTATE_BODY,
+  payload: {
+    bodyId,
+    angle,
+  },
+})
+
+export const updateBody = (body: Body) => ({
   type: PHYSICS_UPDATE_BODY,
   payload: {
-    id,
     body,
   },
 })
@@ -87,5 +110,31 @@ export default function reducer(
       }
     default:
       return state
+  }
+}
+
+// Middleware
+
+export const createMiddleware = (driver: PhysicsDriver) => {
+  return <A: any>(store: *) => (next: Dispatch<any>) => (
+    action: A,
+  ) => {
+    const result = next(action)
+
+    switch (action.type) {
+      case PHYSICS_ROTATE_BODY: {
+        const { bodyId, angle } = action.payload
+
+        driver.rotateBody(bodyId, angle).then(body => {
+          next(updateBody(body))
+        })
+
+        break
+      }
+      default:
+        break
+    }
+
+    return result
   }
 }

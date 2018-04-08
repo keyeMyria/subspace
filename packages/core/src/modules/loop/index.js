@@ -26,6 +26,8 @@ export type LoopPause = {
   type: "loop/pause",
 }
 
+export type LoopAction = LoopStart | LoopTick | LoopPause
+
 // Action creators
 
 export const startLoop = () => ({
@@ -44,12 +46,12 @@ export const pauseLoop = () => ({
 // Reducer
 
 export type LoopState = {
-  tick: number,
+  frame: number,
   running: boolean,
 }
 
 const initialState = {
-  tick: -1,
+  frame: -1,
   running: false,
 }
 
@@ -61,7 +63,7 @@ export default function reducer(
     case LOOP_START:
       return { ...state, running: true }
     case LOOP_TICK:
-      return { ...state, tick: state.tick + 1 }
+      return { ...state, frame: state.frame + 1 }
     case LOOP_PAUSE:
       return { ...state, running: false }
     default:

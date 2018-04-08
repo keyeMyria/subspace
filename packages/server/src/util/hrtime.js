@@ -21,6 +21,7 @@ export const throttle = (fn: Function, rate: number) => {
   const hrTimeStep = [0, nsPerTick]
 
   let t0 = process.hrtime()
+  let prevResult
 
   return (...args: any[]) => {
     // Get a high resolution diff
@@ -32,7 +33,9 @@ export const throttle = (fn: Function, rate: number) => {
 
     if (d >= 0) {
       t0 = add(process.hrtime(), delta)
-      fn(...args)
+      prevResult = fn(...args)
     }
+
+    return prevResult
   }
 }

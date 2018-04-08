@@ -8,6 +8,11 @@ import * as Players from "./modules/players"
 import * as Physics from "./modules/physics"
 import * as Ships from "./modules/ships"
 
+export type * from "./modules/loop"
+export type * from "./modules/players"
+export type * from "./modules/physics"
+export type * from "./modules/ships"
+
 export { Loop, Players, Physics, Ships }
 
 // Models

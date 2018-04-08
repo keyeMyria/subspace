@@ -6,29 +6,34 @@
 import type { PlayerId, ShipId } from "../model"
 import type { State } from "../types"
 
-import { getPlayer } from "../modules/players"
+import { getPlayer, getPlayers } from "../modules/players"
 import { getShip } from "../modules/ships"
 import { getBody } from "../modules/physics"
 
 export const getShipBody = (state: State, id: ShipId) => {
-  const ship = getShip(state.ship, id)
+  const ship = getShip(state.ships, id)
+
+  if (!ship.bodyId) {
+    return null
+  }
+
   const body = getBody(state.physics, ship.bodyId)
 
   return body
 }
 
 export const getPlayerShip = (state: State, id: PlayerId) => {
-  const { activeShipId } = getPlayer(state.player, id)
+  const { activeShipId } = getPlayer(state.players, id)
 
   if (!activeShipId) {
     return null
   }
 
-  return getShip(state.ship, activeShipId)
+  return getShip(state.ships, activeShipId)
 }
 
 export const getPlayerBody = (state: State, id: PlayerId) => {
-  const { activeShipId } = getPlayer(state.player, id)
+  const { activeShipId } = getPlayer(state.players, id)
 
   if (!activeShipId) {
     return null

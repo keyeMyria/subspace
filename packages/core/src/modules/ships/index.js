@@ -4,7 +4,6 @@ import type { Dispatch } from "redux"
 
 import type { Action, GetState } from "../../types"
 import type { Ship, ShipId, TurnDirection } from "../../model"
-import type { PhysicsDriver } from "../physics/driver"
 
 import { TURN_DIRECTION } from "../../model"
 import { getShipBody } from "../../selectors"
@@ -20,14 +19,24 @@ export type ShipAdd = {
   },
 }
 
-export const SHIP_TURN = "ship/turn"
+export const SHIP_UPDATE = "ship/update"
+export type ShipUpdate = {
+  type: "ship/update",
+  payload: {
+    ship: Ship,
+  },
+}
+
+export const SHIP_TURN = "ship/turn!"
 export type ShipTurn = {
-  type: "ship/turn",
+  type: "ship/turn!",
   payload: {
     shipId: ShipId,
     direction: TurnDirection,
   },
 }
+
+export type ShipAction = ShipAdd | ShipUpdate | ShipTurn
 
 // Action creators
 
@@ -66,14 +75,26 @@ export default function reducer(
   action: Action,
 ): ShipState {
   switch (action.type) {
-    case SHIP_ADD:
+    case SHIP_ADD: {
+      const { ship } = action.payload
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.ship.id]: action.payload.ship,
+          [ship.id]: ship,
         },
       }
+    }
+    case SHIP_UPDATE: {
+      const { ship } = action.payload
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [ship.id]: { ...getShip(state, ship.id), ...ship },
+        },
+      }
+    }
     default:
       return state
   }
@@ -81,33 +102,30 @@ export default function reducer(
 
 // Selectors
 
-export const getShip = (state: ShipState, id: ShipId) => state[id]
+export const getShip = (state: ShipState, id: ShipId) =>
+  state.byId[id]
 
 // Middleware
 
-export const createMiddleware = (driver: PhysicsDriver) => <
-  A: { type: $Subtype<string> },
->(
+export const createMiddleware = () => <A: { type: $Subtype<string> }>(
   store: *,
 ) => (next: Dispatch<A>) => (action: A) => {
   const result = next(action)
 
   switch (action.type) {
-    case SHIP_ADD: {
-      break
-    }
     case SHIP_TURN: {
       const { shipId, direction } = action.payload
       const body = getShipBody(store.getState(), shipId)
-      const newAngle =
-        body.angle +
-        (direction === TURN_DIRECTION.left ? 0.05 : -0.05)
 
-      driver
-        .rotateBody(body.id, newAngle)
-        .then(model =>
-          store.dispatch(Physics.updateBody(body.id, model)),
+      if (body) {
+        store.dispatch(
+          Physics.rotateBody(
+            body.id,
+            direction === TURN_DIRECTION.left ? 0.05 : -0.05,
+          ),
         )
+      }
+      break
     }
     default:
       break

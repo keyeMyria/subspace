@@ -1,7 +1,9 @@
 // @flow
 
-import type { InputMessage } from "./input"
+import type { ClientMessage } from "./client"
+import type { ServerMessage } from "./server"
 
-export * from "./input"
+export type { ClientMessage, ServerMessage }
 
-export type PlayerMessage = InputMessage
+export * from "./client"
+export * from "./server"
