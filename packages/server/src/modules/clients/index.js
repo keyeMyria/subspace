@@ -6,6 +6,7 @@ import { Players as CorePlayers, Protocol } from "@subspace/core"
 import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type {
   AuthCredentials,
+  Player,
   PlayerId,
   ServerMessage,
 } from "@subspace/core"
@@ -30,6 +31,23 @@ export type ClientLogin = {
   payload: {
     clientId: ClientId,
     credentials: AuthCredentials,
+  },
+}
+
+export const CLIENT_LOGIN_FAILURE = "client/login_failure"
+export type ClientLoginFailure = {
+  type: "client/login_failure",
+  payload: {
+    clientId: ClientId,
+  },
+}
+
+export const CLIENT_LOGIN_SUCCESS = "client/login_success"
+export type ClientLoginSuccess = {
+  type: "client/login_success",
+  payload: {
+    clientId: ClientId,
+    player: Player,
   },
 }
 
@@ -62,6 +80,8 @@ export type ClientRemove = {
 export type ClientAction =
   | ClientAdd
   | ClientLogin
+  | ClientLoginFailure
+  | ClientLoginSuccess
   | ClientSetPlayer
   | ClientSend
   | ClientRemove
@@ -86,6 +106,28 @@ export function loginClient(
     payload: {
       clientId,
       credentials,
+    },
+  }
+}
+
+export function loginClientFailure(clientId: ClientId) {
+  return {
+    type: CLIENT_LOGIN_FAILURE,
+    payload: {
+      clientId,
+    },
+  }
+}
+
+export function loginClientSuccess(
+  clientId: ClientId,
+  player: Player,
+) {
+  return {
+    type: CLIENT_LOGIN_SUCCESS,
+    payload: {
+      clientId,
+      player,
     },
   }
 }
@@ -259,18 +301,36 @@ export function createMiddleware(
         case CLIENT_LOGIN: {
           const { clientId, credentials } = action.payload
 
-          auth.login(credentials).then(player => {
-            const state = store.getState()
+          auth
+            .login(credentials)
+            .then(player => {
+              next(loginClientSuccess(clientId, player))
+            })
+            .catch(err => {
+              next(loginClientFailure(clientId))
+            })
 
-            if (CorePlayers.getPlayer(state.players, player.id)) {
-              store.dispatch(removeClient(clientId))
-              return
-            }
+          break
+        }
+        case CLIENT_LOGIN_SUCCESS: {
+          const { clientId, player } = action.payload
+          const state = store.getState()
 
-            store.dispatch(setClientPlayer(clientId, player.id))
-            store.dispatch(Players.loadPlayer(player.id))
-          })
+          if (CorePlayers.getPlayer(state.players, player.id)) {
+            next(removeClient(clientId))
+            return
+          }
 
+          next(setClientPlayer(clientId, player.id))
+          next(Players.loadPlayer(player.id))
+          break
+        }
+        case CLIENT_LOGIN_FAILURE: {
+          const { clientId } = action.payload
+
+          next(
+            sendClient(clientId, Protocol.authLoginFailureMessage()),
+          )
           break
         }
         case CLIENT_SEND: {
@@ -297,6 +357,7 @@ export function createMiddleware(
         default:
           break
       }
+
       return next(action)
     }
   }
