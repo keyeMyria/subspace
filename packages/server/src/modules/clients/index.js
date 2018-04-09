@@ -68,52 +68,62 @@ export type ClientAction =
 
 // Action creators
 
-export const addClient = (client: Client) => ({
-  type: CLIENT_ADD,
-  payload: {
-    client,
-  },
-})
+export function addClient(client: Client) {
+  return {
+    type: CLIENT_ADD,
+    payload: {
+      client,
+    },
+  }
+}
 
-export const loginClient = (
+export function loginClient(
   clientId: ClientId,
   credentials: AuthCredentials,
-) => ({
-  type: CLIENT_LOGIN,
-  payload: {
-    clientId,
-    credentials,
-  },
-})
+) {
+  return {
+    type: CLIENT_LOGIN,
+    payload: {
+      clientId,
+      credentials,
+    },
+  }
+}
 
-export const setClientPlayer = (
+export function setClientPlayer(
   clientId: ClientId,
   playerId: PlayerId,
-) => ({
-  type: CLIENT_SET_PLAYER,
-  payload: {
-    clientId,
-    playerId,
-  },
-})
+) {
+  return {
+    type: CLIENT_SET_PLAYER,
+    payload: {
+      clientId,
+      playerId,
+    },
+  }
+}
 
-export const sendClient = (
+export function sendClient(
   clientId: ClientId,
   message: ServerMessage,
-) => ({
-  type: CLIENT_SEND,
-  payload: {
-    clientId,
-    message,
-  },
-})
+) {
+  return {
+    type: CLIENT_SEND,
+    payload: {
+      clientId,
+      message,
+    },
+  }
+}
 
-export const removeClient = (clientId: ClientId) => ({
-  type: CLIENT_REMOVE,
-  payload: {
-    clientId,
-  },
-})
+export function removeClient(clientId: ClientId) {
+  return {
+    type: CLIENT_REMOVE,
+    payload: {
+      clientId,
+    },
+  }
+}
 
 // Reducers
 
@@ -200,10 +210,10 @@ export const getClientByPlayerId = (
 
 // Middleware
 
-export const createMiddleware = (
+export function createMiddleware(
   udp: UdpServer,
   auth: AuthClient,
-): Middleware => {
+): Middleware {
   const connections: { [string]: Connection } = {}
 
   const listen = (

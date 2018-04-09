@@ -2,7 +2,7 @@
 
 import type { Dispatch } from "redux"
 
-import type { Action } from "../../types"
+import type { Action, Middleware } from "../../types"
 import type { BodyId, Body } from "../../model"
 
 import type { PhysicsDriver } from "./driver"
@@ -11,12 +11,6 @@ import * as P2Driver from "./p2-driver"
 export { P2Driver }
 
 export type { PhysicsDriver }
-
-export type PhysicsState = {
-  byId: {
-    [BodyId]: Body,
-  },
-}
 
 // Actions
 
@@ -52,33 +46,48 @@ export type PhysicsAction =
 
 // Action creators
 
-export const addBody = (body: Body) => ({
-  type: PHYSICS_ADD_BODY,
-  payload: {
-    body,
-  },
-})
+export function addBody(body: Body): PhysicsAddBody {
+  return {
+    type: PHYSICS_ADD_BODY,
+    payload: {
+      body,
+    },
+  }
+}
 
-export const rotateBody = (bodyId: BodyId, angle: number) => ({
-  type: PHYSICS_ROTATE_BODY,
-  payload: {
-    bodyId,
-    angle,
-  },
-})
+export function rotateBody(
+  bodyId: BodyId,
+  angle: number,
+): PhysicsRotateBody {
+  return {
+    type: PHYSICS_ROTATE_BODY,
+    payload: {
+      bodyId,
+      angle,
+    },
+  }
+}
 
-export const updateBody = (body: Body) => ({
-  type: PHYSICS_UPDATE_BODY,
-  payload: {
-    body,
-  },
-})
+export function updateBody(body: Body): PhysicsUpdateBody {
+  return {
+    type: PHYSICS_UPDATE_BODY,
+    payload: {
+      body,
+    },
+  }
+}
 
 // Selectors
 
 export const getBody = (state: PhysicsState, id: BodyId) => state[id]
 
 // Reducer
+
+export type PhysicsState = {
+  byId: {
+    [BodyId]: Body,
+  },
+}
 
 const initialState: PhysicsState = {
   byId: {},
@@ -115,12 +124,8 @@ export default function reducer(
 
 // Middleware
 
-export const createMiddleware = (driver: PhysicsDriver) => {
-  return <A: any>(store: *) => (next: Dispatch<any>) => (
-    action: A,
-  ) => {
-    const result = next(action)
-
+export function createMiddleware(driver: PhysicsDriver): Middleware {
+  return store => next => action => {
     switch (action.type) {
       case PHYSICS_ROTATE_BODY: {
         const { bodyId, angle } = action.payload
@@ -135,6 +140,6 @@ export const createMiddleware = (driver: PhysicsDriver) => {
         break
     }
 
-    return result
+    return next(action)
   }
 }

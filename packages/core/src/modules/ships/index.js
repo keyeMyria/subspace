@@ -1,8 +1,6 @@
 // @flow
 
-import type { Dispatch } from "redux"
-
-import type { Action, GetState } from "../../types"
+import type { Action, GetState, Middleware } from "../../types"
 import type { Ship, ShipId, TurnDirection } from "../../model"
 
 import { TURN_DIRECTION } from "../../model"
@@ -40,23 +38,27 @@ export type ShipAction = ShipAdd | ShipUpdate | ShipTurn
 
 // Action creators
 
-export const addShip = (ship: Ship): ShipAdd => ({
-  type: SHIP_ADD,
-  payload: {
-    ship,
-  },
-})
+export function addShip(ship: Ship): ShipAdd {
+  return {
+    type: SHIP_ADD,
+    payload: {
+      ship,
+    },
+  }
+}
 
-export const turnShip = (
+export function turnShip(
   shipId: ShipId,
   direction: TurnDirection,
-): ShipTurn => ({
-  type: SHIP_TURN,
-  payload: {
-    shipId,
-    direction,
-  },
-})
+): ShipTurn {
+  return {
+    type: SHIP_TURN,
+    payload: {
+      shipId,
+      direction,
+    },
+  }
+}
 
 // Reducer
 
@@ -107,29 +109,29 @@ export const getShip = (state: ShipState, id: ShipId) =>
 
 // Middleware
 
-export const createMiddleware = () => <A: { type: $Subtype<string> }>(
-  store: *,
-) => (next: Dispatch<A>) => (action: A) => {
-  const result = next(action)
+export function createMiddleware(): Middleware {
+  return store => next => action => {
+    const result = next(action)
 
-  switch (action.type) {
-    case SHIP_TURN: {
-      const { shipId, direction } = action.payload
-      const body = getShipBody(store.getState(), shipId)
+    switch (action.type) {
+      case SHIP_TURN: {
+        const { shipId, direction } = action.payload
+        const body = getShipBody(store.getState(), shipId)
 
-      if (body) {
-        store.dispatch(
-          Physics.rotateBody(
-            body.id,
-            direction === TURN_DIRECTION.left ? 0.05 : -0.05,
-          ),
-        )
+        if (body) {
+          store.dispatch(
+            Physics.rotateBody(
+              body.id,
+              direction === TURN_DIRECTION.left ? 0.05 : -0.05,
+            ),
+          )
+        }
+        break
       }
-      break
+      default:
+        break
     }
-    default:
-      break
-  }
 
-  return result
+    return result
+  }
 }

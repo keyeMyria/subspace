@@ -4,7 +4,7 @@ const zipObject = (keys = [], values = []) =>
     return a
   }, {})
 
-export const object = obj => {
+export function object(obj: {}) {
   const keys = Object.keys(obj)
   return Promise.all(
     keys.map(key => {

@@ -53,43 +53,48 @@ export type PlayerAction =
 
 // Action creators
 
-export const loadPlayer = (playerId: PlayerId) => ({
-  type: PLAYER_LOAD,
-  payload: {
-    playerId,
-  },
-})
+export function loadPlayer(playerId: PlayerId) {
+  return {
+    type: PLAYER_LOAD,
+    payload: {
+      playerId,
+    },
+  }
+}
 
-export const loadPlayerFailure = (
-  playerId: PlayerId,
-  err: Error,
-) => ({
-  type: PLAYER_LOAD_FAILURE,
-  payload: {
-    playerId,
-    err,
-  },
-})
+export function loadPlayerFailure(playerId: PlayerId, err: Error) {
+  return {
+    type: PLAYER_LOAD_FAILURE,
+    payload: {
+      playerId,
+      err,
+    },
+  }
+}
 
-export const loadPlayerSuccess = (playerId: PlayerId) => ({
-  type: PLAYER_LOAD_SUCCESS,
-  payload: {
-    playerId,
-  },
-})
+export function loadPlayerSuccess(playerId: PlayerId) {
+  return {
+    type: PLAYER_LOAD_SUCCESS,
+    payload: {
+      playerId,
+    },
+  }
+}
 
 // Reducer
 
-export type PlayerState = CorePlayerState
+export type PlayerState = $Supertype<CorePlayerState>
 
-export default CorePlayers.default
+export default function reducer(state: PlayerState, action: Action) {
+  return CorePlayers.default(state, action)
+}
 
 // Middleware
 
-export const createMiddleware = (
+export function createMiddleware(
   db: any,
   sendRate: number,
-): Middleware => {
+): Middleware {
   return store => {
     const sendStateUpdates = Hrtime.throttle(() => {
       const {

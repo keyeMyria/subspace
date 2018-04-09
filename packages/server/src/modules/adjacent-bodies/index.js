@@ -26,14 +26,16 @@ export type AdjacentBodiesAction = AdjacentBodiesUpdate
 
 // Action creators
 
-export const updateAdjacentBodies = (adjacentBodies: {
+export function updateAdjacentBodies(adjacentBodies: {
   [PlayerId]: BodyId[],
-}) => ({
-  type: ADJACENT_BODIES_UPDATE,
-  payload: {
-    adjacentBodies,
-  },
-})
+}) {
+  return {
+    type: ADJACENT_BODIES_UPDATE,
+    payload: {
+      adjacentBodies,
+    },
+  }
+}
 
 // Reducer
 
@@ -70,10 +72,10 @@ export const getAdjacentBodies = (state: AdjacentBodiesState) =>
 
 // Middleware
 
-const queryAdjacentBodies = async (
+async function queryAdjacentBodies(
   state: State,
   index: SpatialIndex,
-) => {
+) {
   const players = Players.getPlayers(state.players)
   const playerIds = Object.keys(players)
   const query = playerIds.reduce((a, playerId) => {
@@ -99,7 +101,7 @@ const queryAdjacentBodies = async (
   return await Async.object(query)
 }
 
-export const createMiddleware = (index: SpatialIndex): Middleware => {
+export function createMiddleware(index: SpatialIndex): Middleware {
   return store => next => action => {
     switch (action.type) {
       // Recreate the map of adjacent bodies each tick

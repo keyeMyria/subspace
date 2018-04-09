@@ -13,7 +13,7 @@ import {
 
 import * as Clients from "../clients"
 import * as Players from "../players"
-import type { Dispatch, Middleware } from "../../types"
+import type { Action, Dispatch, Middleware } from "../../types"
 
 // Actions
 
@@ -46,37 +46,45 @@ export type ShipAction = ShipLoad | ShipLoadFailure | ShipLoadSuccess
 
 // Action creators
 
-export const loadShip = (shipId: ShipId) => ({
-  type: SHIP_LOAD,
-  payload: {
-    shipId,
-  },
-})
+export function loadShip(shipId: ShipId) {
+  return {
+    type: SHIP_LOAD,
+    payload: {
+      shipId,
+    },
+  }
+}
 
-export const loadShipFailure = (shipId: ShipId, err: Error) => ({
-  type: SHIP_LOAD_FAILURE,
-  payload: {
-    shipId,
-    err,
-  },
-})
+export function loadShipFailure(shipId: ShipId, err: Error) {
+  return {
+    type: SHIP_LOAD_FAILURE,
+    payload: {
+      shipId,
+      err,
+    },
+  }
+}
 
-export const loadShipSuccess = (ship: Ship) => ({
-  type: SHIP_LOAD_SUCCESS,
-  payload: {
-    ship,
-  },
-})
+export function loadShipSuccess(ship: Ship) {
+  return {
+    type: SHIP_LOAD_SUCCESS,
+    payload: {
+      ship,
+    },
+  }
+}
 
 // Reducer
 
-type ShipState = CoreShipState
+export type ShipState = $Supertype<CoreShipState>
 
-export default CoreShips.default
+export default function reducer(state: ShipState, action: Action) {
+  return CoreShips.default(state, action)
+}
 
 // Middleware
 
-export const createMiddleware = (db: any): Middleware => {
+export function createMiddleware(db: any): Middleware {
   return store => next => action => {
     switch (action.type) {
       case SHIP_LOAD: {

@@ -2,7 +2,7 @@
 
 import type { Dispatch } from "redux"
 
-import type { Action } from "../../types"
+import type { Action, Middleware } from "../../types"
 
 export type Scheduler = () => Promise<number>
 
@@ -30,18 +30,24 @@ export type LoopAction = LoopStart | LoopTick | LoopPause
 
 // Action creators
 
-export const startLoop = () => ({
-  type: LOOP_START,
-})
+export function startLoop(): LoopStart {
+  return {
+    type: LOOP_START,
+  }
+}
 
-export const tickLoop = (dt: number) => ({
-  type: LOOP_TICK,
-  payload: { dt },
-})
+export function tickLoop(dt: number): LoopTick {
+  return {
+    type: LOOP_TICK,
+    payload: { dt },
+  }
+}
 
-export const pauseLoop = () => ({
-  type: LOOP_PAUSE,
-})
+export function pauseLoop(): LoopPause {
+  return {
+    type: LOOP_PAUSE,
+  }
+}
 
 // Reducer
 
@@ -73,8 +79,8 @@ export default function reducer(
 
 // Middleware
 
-export const createMiddleware = (schedule: Scheduler) => {
-  return <A: { type: $Subtype<string> }>(store: *) => {
+export function createMiddleware(schedule: Scheduler): Middleware {
+  return store => {
     const loop = async (dt: number = 0) => {
       const { loop: { running } } = store.getState()
 
@@ -85,7 +91,7 @@ export const createMiddleware = (schedule: Scheduler) => {
       }
     }
 
-    return (next: Dispatch<A>) => (action: A) => {
+    return next => action => {
       const { loop: { running } } = store.getState()
       const result = next(action)
 

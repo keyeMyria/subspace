@@ -9,7 +9,7 @@ export type AuthClient = {
   login: AuthCredentials => Promise<Player>,
 }
 
-export const create = (): AuthClient => {
+export function create(): AuthClient {
   const check = () => Promise.resolve(false)
   const login = () => Promise.reject()
 

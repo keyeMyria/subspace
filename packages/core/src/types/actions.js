@@ -10,3 +10,4 @@ export type Action =
   | PlayerAction
   | PhysicsAction
   | ShipAction
+  | { type: $Subtype<string> }

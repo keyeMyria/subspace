@@ -1,11 +1,6 @@
 // @flow
 
-import {
-  reducers as coreReducers,
-  Loop,
-  Physics,
-  Ships as CoreShips,
-} from "@subspace/core"
+import { Loop, Physics, Ships as CoreShips } from "@subspace/core"
 
 import {
   createStore,
@@ -24,6 +19,7 @@ import * as Clients from "../modules/clients"
 import * as Ships from "../modules/ships"
 import * as Players from "../modules/players"
 import * as AdjacentBodies from "../modules/adjacent-bodies"
+import reducers from "../reducers"
 
 import type { Store } from "../types"
 
@@ -46,9 +42,9 @@ const spatialIndex = SpatialIndex.create({
 
 const db = {}
 
-export const configureStore = (
+export function configureStore(
   options: ConfigureStoreOptions,
-): Store => {
+): Store {
   const { auth, tickRate, sendRate, udp } = options
 
   const scheduler = Scheduler.create(tickRate)
@@ -79,13 +75,7 @@ export const configureStore = (
     )
   }
 
-  const rootReducer = combineReducers({
-    ...coreReducers,
-    adjacentBodies: AdjacentBodies.default,
-    players: Players.default,
-    clients: Clients.default,
-    ships: Ships.default,
-  })
+  const rootReducer = combineReducers(reducers)
   const store = createStore(rootReducer, compose(...enhancers))
 
   return store

@@ -25,10 +25,10 @@ function flatten(arr, res = []) {
   return res
 }
 
-const multi = (
+function multi(
   client: RedisClientPromisified,
   cb: RedisClientPromisified => *,
-) => {
+) {
   const m = client.multi()
 
   cb(m)
@@ -36,10 +36,10 @@ const multi = (
   return m.execAsync()
 }
 
-const batch = (
+function batch(
   client: RedisClientPromisified,
   cb: RedisClientPromisified => *,
-) => {
+) {
   const b = client.batch()
 
   cb(b)
@@ -47,14 +47,14 @@ const batch = (
   return b.execAsync()
 }
 
-export const create = (
+export function create(
   client: RedisClientPromisified,
   key: string,
   hashkey: string,
   dimensions: number,
   precision: number = 64,
-): SpatialIndex => {
-  const checkDimensions = (values: $ReadOnlyArray<any>) => {
+): SpatialIndex {
+  function checkDimensions(values: $ReadOnlyArray<any>) {
     if (values.length !== dimensions) {
       throw new Error(
         `Please always use ${dimensions} dimensions with this index.`,
@@ -62,7 +62,7 @@ export const create = (
     }
   }
 
-  const encode = (values: Values) => {
+  function encode(values: Values) {
     const comb = values.reduce((a, x, i) => {
       const bin = x
         .toString(2)
@@ -78,7 +78,7 @@ export const create = (
       .padStart(precision * dimensions / 4, "0")
   }
 
-  const buildElementString = (values: Values, id: string) => {
+  function buildElementString(values: Values, id: string) {
     checkDimensions(values)
     const encoded = encode(values)
     const appended = values.reduce((a, x) => `${a}:${x}`, encoded)
@@ -86,7 +86,7 @@ export const create = (
     return `${appended}:${id}`
   }
 
-  const insert = async (values: Values, id: string) => {
+  function insert(values: Values, id: string) {
     const ele = buildElementString(values, id)
 
     return multi(client, m => {
@@ -95,13 +95,13 @@ export const create = (
     })
   }
 
-  const remove = async (values: Values, id: string) => {
+  function remove(values: Values, id: string) {
     const ele = buildElementString(values, id)
 
     return client.zremAsync(key, ele)
   }
 
-  const removeById = async (id: string) => {
+  async function removeById(id: string) {
     const ele = await client.hgetAsync(hashkey, id)
 
     if (!ele) {
@@ -114,7 +114,7 @@ export const create = (
     })
   }
 
-  const update = async (values: Values, id: string) => {
+  async function update(values: Values, id: string) {
     const ele = buildElementString(values, id)
     const old = await client.hgetAsync(hashkey, id)
 
@@ -130,7 +130,7 @@ export const create = (
     })
   }
 
-  const queryRaw = async (range: Range[], exp: number) => {
+  async function queryRaw(range: Range[], exp: number) {
     const start = []
     const end = []
     const e = 2 ** exp
@@ -214,7 +214,7 @@ export const create = (
     return results
   }
 
-  const query = (range: Range[]) => {
+  function query(range: Range[]) {
     checkDimensions(range)
 
     const ordered = range.map(r => {

@@ -28,7 +28,7 @@ export type Action =
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V
 
 export type ServerState = $ObjMap<Reducers, $ExtractFunctionReturn>
-export type State = CoreState & ServerState
+export type State = ServerState
 
 export type Store = ReduxStore<State, Action, Dispatch>
 export type Dispatch = (action: Action) => any

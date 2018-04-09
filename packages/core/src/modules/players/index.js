@@ -25,19 +25,23 @@ export type PlayerAction = PlayerAdd | PlayerUpdate
 
 // Action creators
 
-export const addPlayer = (player: Player) => ({
-  type: PLAYER_ADD,
-  payload: {
-    player,
-  },
-})
+export function addPlayer(player: Player) {
+  return {
+    type: PLAYER_ADD,
+    payload: {
+      player,
+    },
+  }
+}
 
-export const updatePlayer = (player: Player) => ({
-  type: PLAYER_UPDATE,
-  payload: {
-    player,
-  },
-})
+export function updatePlayer(player: Player) {
+  return {
+    type: PLAYER_UPDATE,
+    payload: {
+      player,
+    },
+  }
+}
 
 // Reducer
 
@@ -57,7 +61,7 @@ const initialState: PlayerState = {
 
 export default function reducer(
   state: PlayerState = initialState,
-  action: { type: $Subtype<string> },
+  action: Action,
 ) {
   switch (action.type) {
     case PLAYER_ADD: {

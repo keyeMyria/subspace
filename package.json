@@ -52,8 +52,9 @@
     }
   },
   "scripts": {
-    "test": "eslint packages/ && jest --forceExit",
+    "test": "npm run flow && jest --forceExit",
     "build": "lerna run build",
-    "start": "lerna run start --parallel"
+    "start": "lerna run start --parallel",
+    "flow": "killall flow && flow"
   }
 }
