@@ -17,6 +17,7 @@ import * as Clients from "../clients"
 import * as AdjacentBodies from "../adjacent-bodies"
 import * as Hrtime from "../../util/hrtime"
 
+import type { Db } from "../../data"
 import type { Action, Dispatch, Middleware } from "../../types"
 
 // Actions
@@ -92,7 +93,7 @@ export default function reducer(state: PlayerState, action: Action) {
 // Middleware
 
 export function createMiddleware(
-  db: any,
+  db: Db,
   sendRate: number,
 ): Middleware {
   return store => {
@@ -130,13 +131,19 @@ export function createMiddleware(
           const { playerId } = action.payload
           // Hydrate a player from db and create entities if they don't exist
           // (e.g. player ship)
-          db
-            .getPlayer(playerId)
+          db.Player.findById(playerId)
             .then(player => {
+              if (!player) {
+                throw new Error(`Player ${playerId} not found`)
+              }
+
+              const model = player.toJSON()
+
               next(loadPlayerSuccess(playerId))
-              next(CorePlayers.addPlayer(player))
-              if (player.activeShipId) {
-                next(Ships.loadShip(player.activeShipId))
+              next(CorePlayers.addPlayer(model))
+
+              if (model.activeShipId) {
+                next(Ships.loadShip(model.activeShipId))
               }
             })
             .catch(e => next(loadPlayerFailure(playerId, e)))

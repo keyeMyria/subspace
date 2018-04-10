@@ -13,6 +13,7 @@ import {
 
 import * as Clients from "../clients"
 import * as Players from "../players"
+import type { Db } from "../../data"
 import type { Action, Dispatch, Middleware } from "../../types"
 
 // Actions
@@ -84,18 +85,27 @@ export default function reducer(state: ShipState, action: Action) {
 
 // Middleware
 
-export function createMiddleware(db: any): Middleware {
+export function createMiddleware(db: Db): Middleware {
   return store => next => action => {
     switch (action.type) {
       case SHIP_LOAD: {
         const { shipId } = action.payload
         // Hydrate a player from db and create entities if they don't exist
         // (e.g. player ship)
-        db
-          .getShip(shipId)
+        db.Ship.findById(shipId)
           .then(ship => {
-            next(loadShipSuccess(ship))
-            next(CoreShips.addShip(ship))
+            if (!ship) {
+              throw new Error(`Ship ${shipId} not found.`)
+            }
+
+            const model = ship.toJSON()
+
+            next(loadShipSuccess(model))
+            next(CoreShips.addShip(model))
+
+            if (model.bodyId) {
+              // next(Physics.loadBody(model.bodyId))
+            }
           })
           .catch(err => next(loadShipFailure(shipId, err)))
         break

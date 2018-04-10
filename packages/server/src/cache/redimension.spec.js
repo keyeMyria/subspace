@@ -2,7 +2,7 @@ import redis from "redis"
 import promisifyAll from "util-promisifyall"
 
 import * as Redimension from "./redimension"
-import config from "../../cfg/redis.config.json"
+import config from "../../cfg/redis.config"
 
 promisifyAll(redis.RedisClient.prototype)
 promisifyAll(redis.Multi.prototype)

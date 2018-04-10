@@ -13,6 +13,7 @@ import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type { AuthClient } from "../auth"
 
 import redisConfig from "../../cfg/redis.config"
+import db from "../data"
 import * as Scheduler from "../scheduler"
 import { SpatialIndex } from "../cache"
 import * as Clients from "../modules/clients"
@@ -39,8 +40,6 @@ const spatialIndex = SpatialIndex.create({
   key: "ss-body",
   dimensions: 2,
 })
-
-const db = {}
 
 export function configureStore(
   options: ConfigureStoreOptions,
