@@ -79,7 +79,7 @@ async function queryAdjacentBodies(
   const players = Players.getPlayers(state.players)
   const playerIds = Object.keys(players)
   const query = playerIds.reduce((a, playerId) => {
-    const body = getPlayerBody(state, playerId)
+    const body = getPlayerBody(state, Number(playerId))
 
     if (body === null) {
       return a

@@ -10,7 +10,6 @@ RUN npm i lerna -g --loglevel notice
 COPY lerna.json .
 
 # dev configs/utils
-COPY build ./build
 COPY .eslintrc.json .
 COPY .eslintignore .
 COPY .babelrc .
@@ -28,7 +27,4 @@ FROM nginx
 
 WORKDIR /usr/share/nginx/html
 
-COPY --from=0 /opt/client/packages/client/dist .
-
-# set non-root user
-USER node
+COPY --from=0 /opt/subspace-client/packages/client/dist .

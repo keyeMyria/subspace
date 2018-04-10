@@ -3,7 +3,12 @@ const webpack = require("webpack")
 const externals = require("webpack-node-externals")
 
 module.exports = {
+  devtool: "sourcemap",
   target: "node",
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   externals: [externals()],
   entry: "./src/index",
   output: {

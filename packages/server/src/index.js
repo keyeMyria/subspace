@@ -1,7 +1,8 @@
 // @flow
 
+import "source-map-support/register"
+
 import * as Http from "http"
-import shortid from "shortid"
 import * as Udp from "@web-udp/server"
 import {
   Loop,
@@ -14,6 +15,7 @@ import {
 import type { Connection } from "@web-udp/server"
 import type { PlayerId, PlayerMessage } from "@subspace/core"
 
+import { sequelize } from "./data"
 import serverConfig from "../cfg/server.config.json"
 import { configureStore } from "./store"
 import * as Auth from "./auth"
@@ -36,6 +38,8 @@ const store = configureStore({
 
 store.dispatch(Loop.startLoop())
 
-server.listen(Number(PORT), () => {
-  console.log(`Server listening at //localhost:${String(PORT)}`)
+sequelize.sync().then(() => {
+  server.listen(Number(PORT), () => {
+    console.log(`Server listening at //localhost:${String(PORT)}`)
+  })
 })

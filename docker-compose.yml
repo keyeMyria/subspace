@@ -1,8 +1,8 @@
 version: "3.3"
 services:
-  db-ui:
+  db-1:
     image: cockroachdb/cockroach
-    command: start --insecure
+    command: start --advertise-host=db-1 --insecure
     expose:
       - 8080
       - 26257
@@ -10,30 +10,80 @@ services:
       - 26257:26257
       - 8080:8080
     networks:
-      - db
-  db-1:
-    image: cockroachdb/cockroach
-    command: start --insecure --join=db-ui
-    networks:
-      - db
+      - net_roach
     volumes:
-      - ./data/db-1:/cockroach/cockroach-data
+      - data_db-1:/cockroach/cockroach-data
+  db-2:
+    image: cockroachdb/cockroach
+    command: start --advertise-host=db-2 --join=db-1:26257 --insecure
+    networks:
+      - net_roach
+    volumes:
+      - data_db-2:/cockroach/cockroach-data
+  db-3:
+    image: cockroachdb/cockroach
+    command: start --advertise-host=db-3 --join=db-1:26257 --insecure
+    networks:
+      - net_roach
+    volumes:
+      - data_db-3:/cockroach/cockroach-data
+  db-4:
+    image: cockroachdb/cockroach
+    command: start --advertise-host=db-4 --join=db-1:26257 --insecure
+    networks:
+      - net_roach
+    volumes:
+      - data_db-4:/cockroach/cockroach-data
+  db-init:
+    image: cockroachdb/cockroach
+    environment:
+      DB_HOST: db-1
+    networks:
+      - net_roach
+    volumes:
+      - ./packages/server/bin/init_db.sh:/init_db.sh
+    entrypoint: "/bin/bash"
+    command: /init_db.sh
+    restart: on-failure
+    depends_on:
+      - db-1
   redis:
     image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    sysctls:
+      - net.core.somaxconn=1024
+    volumes:
+      - data_redis:/data
+    networks:
+      - net_backend
   server:
     build:
       context: .
       dockerfile: ./docker/Dockerfile-server
     image: subspace/server
     environment:
+      NODE_ENV: test
       PORT: 8081
+      DB_USERNAME: cockroach
+      DB_PASSWORD:
+      DB_NAME: ss_test
+      DB_HOST: db-1
+      DB_PORT: 26257
     ports:
       - 8081:8081
     depends_on:
+      - db-init
       - redis
+    links:
+      - db-init:db-init
     networks:
-      - backend
-      - frontend
+      - net_roach
+      - net_backend
+      - net_frontend
   client:
     build:
       context: .
@@ -46,7 +96,7 @@ services:
     depends_on:
       - server
     networks:
-      - frontend
+      - net_frontend
   portainer:
     image: portainer/portainer
     container_name: portainer
@@ -57,11 +107,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - data_portainer:/data
     networks:
-      - tools
+      - net_tools
 volumes:
+  data_db-1:
+  data_db-2:
+  data_db-3:
+  data_db-4:
+  data_redis:
   data_portainer:
 networks:
-  frontend:
-  backend:
-  db:
-  tools:
+  net_frontend:
+  net_backend:
+  net_roach:
+  net_tools:

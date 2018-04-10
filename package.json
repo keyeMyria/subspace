@@ -55,6 +55,6 @@
     "test": "npm run flow && jest --forceExit",
     "build": "lerna run build",
     "start": "lerna run start --parallel",
-    "flow": "killall flow || flow"
+    "flow": "killall flow || true && flow"
   }
 }

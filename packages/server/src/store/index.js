@@ -12,7 +12,7 @@ import {
 import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type { AuthClient } from "../auth"
 
-import redisConfig from "../../cfg/redis.config.json"
+import redisConfig from "../../cfg/redis.config"
 import * as Scheduler from "../scheduler"
 import { SpatialIndex } from "../cache"
 import * as Clients from "../modules/clients"
@@ -62,7 +62,7 @@ export function configureStore(
       // Handles loading of players and sending model updates to client
       Players.createMiddleware(db, sendRate),
       // Handles authentication of new connections and sending of messages
-      Clients.createMiddleware(auth, udp),
+      Clients.createMiddleware(udp, auth),
     ),
   ]
 

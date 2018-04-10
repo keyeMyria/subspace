@@ -108,10 +108,10 @@ export function createMiddleware(
         adjacentBodies,
       )
 
-      for (const playerId in players) {
-        const client = Clients.getClientByPlayerId(clients, playerId)
-        const adjacentBodyIds = adjacentBodiesByPlayerId[playerId]
-        const bodies = adjacentBodyIds.map(bodyId =>
+      for (const playerId in CorePlayers.getPlayers(players)) {
+        const id = Number(playerId)
+        const client = Clients.getClientByPlayerId(clients, id)
+        const bodies = adjacentBodiesByPlayerId[id].map(bodyId =>
           Physics.getBody(physics, bodyId),
         )
         const message = Protocol.snapshotMessage(loop.frame, bodies)
