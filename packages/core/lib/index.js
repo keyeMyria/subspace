@@ -910,40 +910,40 @@
             }
           },
           E = t + " Iterator",
-          P = "values" == y,
-          w = !1,
+          w = "values" == y,
+          P = !1,
           S = e.prototype,
           B = S[p] || S["@@iterator"] || (y && S[y]),
           x = (!h && B) || A(y),
-          L = y ? (P ? A("entries") : x) : void 0,
+          L = y ? (w ? A("entries") : x) : void 0,
           q = ("Array" == t && S.entries) || B
         if (
           (q &&
             (g = d(q.call(new e()))) !== Object.prototype &&
             g.next &&
             (u(g, E, !0), r || a(g, p) || n(g, p, f)),
-          P &&
+          w &&
             B &&
             "values" !== B.name &&
-            ((w = !0),
+            ((P = !0),
             (x = function() {
               return B.call(this)
             })),
-          (r && !b) || (!h && !w && S[p]) || n(S, p, x),
+          (r && !b) || (!h && !P && S[p]) || n(S, p, x),
           (c[t] = x),
           (c[E] = f),
           y)
         )
           if (
             ((j = {
-              values: P ? x : A("values"),
+              values: w ? x : A("values"),
               keys: v ? x : A("keys"),
               entries: L,
             }),
             b)
           )
             for (_ in j) _ in S || i(S, _, j[_])
-          else s(s.P + s.F * (h || w), t, j)
+          else s(s.P + s.F * (h || P), t, j)
         return j
       }
     },
@@ -2054,13 +2054,13 @@
         ),
         A = c.TypeError,
         E = c.process,
-        P = c.Promise,
-        w = "process" == u(E),
+        w = c.Promise,
+        P = "process" == u(E),
         S = function() {},
         B = (s = j.f),
         x = !!(function() {
           try {
-            var e = P.resolve(1),
+            var e = w.resolve(1),
               t = ((e.constructor = {})[
                 o(
                   "../../node_modules/core-js/library/modules/_wks.js",
@@ -2069,7 +2069,7 @@
                 e(S, S)
               })
             return (
-              (w || "function" == typeof PromiseRejectionEvent) &&
+              (P || "function" == typeof PromiseRejectionEvent) &&
               e.then(S) instanceof t
             )
           } catch (e) {}
@@ -2128,7 +2128,7 @@
             if (
               (i &&
                 ((t = _(function() {
-                  w
+                  P
                     ? E.emit("unhandledRejection", s, e)
                     : (o = c.onunhandledrejection)
                       ? o({ promise: e, reason: s })
@@ -2136,7 +2136,7 @@
                         r.error &&
                         r.error("Unhandled promise rejection", s)
                 })),
-                (e._h = w || C(e) ? 2 : 1)),
+                (e._h = P || C(e) ? 2 : 1)),
               (e._a = void 0),
               i && t.e)
             )
@@ -2149,7 +2149,7 @@
         I = function(e) {
           v.call(c, function() {
             var t
-            w
+            P
               ? E.emit("rejectionHandled", e)
               : (t = c.onrejectionhandled) &&
                 t({ promise: e, reason: e._v })
@@ -2187,8 +2187,8 @@
           }
         }
       x ||
-        ((P = function(e) {
-          f(this, P, "Promise", "_h"), h(e), r.call(this)
+        ((w = function(e) {
+          f(this, w, "Promise", "_h"), h(e), r.call(this)
           try {
             e(l(F, this, 1), l(O, this, 1))
           } catch (e) {
@@ -2205,13 +2205,13 @@
             (this._n = !1)
         }).prototype = o(
           "../../node_modules/core-js/library/modules/_redefine-all.js",
-        )(P.prototype, {
+        )(w.prototype, {
           then: function(e, t) {
-            var o = B(y(this, P))
+            var o = B(y(this, w))
             return (
               (o.ok = "function" != typeof e || e),
               (o.fail = "function" == typeof t && t),
-              (o.domain = w ? E.domain : void 0),
+              (o.domain = P ? E.domain : void 0),
               this._c.push(o),
               this._a && this._a.push(o),
               this._s && q(this, !1),
@@ -2229,12 +2229,12 @@
             (this.reject = l(O, e, 1))
         }),
         (j.f = B = function(e) {
-          return e === P || e === n ? new i(e) : s(e)
+          return e === w || e === n ? new i(e) : s(e)
         })),
-        d(d.G + d.W + d.F * !x, { Promise: P }),
+        d(d.G + d.W + d.F * !x, { Promise: w }),
         o(
           "../../node_modules/core-js/library/modules/_set-to-string-tag.js",
-        )(P, "Promise"),
+        )(w, "Promise"),
         o(
           "../../node_modules/core-js/library/modules/_set-species.js",
         )("Promise"),
@@ -2248,7 +2248,7 @@
         }),
         d(d.S + d.F * (a || !x), "Promise", {
           resolve: function(e) {
-            return g(a && this === n ? P : this, e)
+            return g(a && this === n ? w : this, e)
           },
         }),
         d(
@@ -2259,7 +2259,7 @@
                 o(
                   "../../node_modules/core-js/library/modules/_iter-detect.js",
                 )(function(e) {
-                  P.all(e).catch(S)
+                  w.all(e).catch(S)
                 })
               ),
           "Promise",
@@ -2387,10 +2387,10 @@
         E = o(
           "../../node_modules/core-js/library/modules/_object-create.js",
         ),
-        P = o(
+        w = o(
           "../../node_modules/core-js/library/modules/_object-gopn-ext.js",
         ),
-        w = o(
+        P = o(
           "../../node_modules/core-js/library/modules/_object-gopd.js",
         ),
         S = o(
@@ -2399,9 +2399,9 @@
         B = o(
           "../../node_modules/core-js/library/modules/_object-keys.js",
         ),
-        x = w.f,
+        x = P.f,
         L = S.f,
-        q = P.f,
+        q = w.f,
         M = r.Symbol,
         C = r.JSON,
         I = C && C.stringify,
@@ -2440,7 +2440,7 @@
           var t = (k[e] = E(M.prototype))
           return (t._k = e), t
         },
-        H =
+        z =
           G && "symbol" == typeof M.iterator
             ? function(e) {
                 return "symbol" == typeof e
@@ -2448,9 +2448,9 @@
             : function(e) {
                 return e instanceof M
               },
-        z = function(e, t, o) {
+        H = function(e, t, o) {
           return (
-            e === V && z(N, t, o),
+            e === V && H(N, t, o),
             b(e),
             (t = g(t, !0)),
             b(o),
@@ -2466,7 +2466,7 @@
         X = function(e, t) {
           b(e)
           for (var o, r = y((t = _(t))), s = 0, i = r.length; i > s; )
-            z(e, (o = r[s++]), t[o])
+            H(e, (o = r[s++]), t[o])
           return e
         },
         K = function(e) {
@@ -2482,7 +2482,7 @@
               t)
           )
         },
-        Z = function(e, t) {
+        J = function(e, t) {
           if (
             ((e = _(e)),
             (t = g(t, !0)),
@@ -2498,7 +2498,7 @@
             )
           }
         },
-        J = function(e) {
+        Z = function(e) {
           for (var t, o = q(_(e)), r = [], i = 0; o.length > i; )
             s(k, (t = o[i++])) || t == O || t == c || r.push(t)
           return r
@@ -2532,11 +2532,11 @@
             return this._k
           },
         ),
-        (w.f = Z),
-        (S.f = z),
+        (P.f = J),
+        (S.f = H),
         (o(
           "../../node_modules/core-js/library/modules/_object-gopn.js",
-        ).f = P.f = J),
+        ).f = w.f = Z),
         (o(
           "../../node_modules/core-js/library/modules/_object-pie.js",
         ).f = K),
@@ -2567,7 +2567,7 @@
           return s(R, (e += "")) ? R[e] : (R[e] = M(e))
         },
         keyFor: function(e) {
-          if (!H(e)) throw TypeError(e + " is not a symbol!")
+          if (!z(e)) throw TypeError(e + " is not a symbol!")
           for (var t in R) if (R[t] === e) return t
         },
         useSetter: function() {
@@ -2581,10 +2581,10 @@
           create: function(e, t) {
             return void 0 === t ? E(e) : X(E(e), t)
           },
-          defineProperty: z,
+          defineProperty: H,
           defineProperties: X,
-          getOwnPropertyDescriptor: Z,
-          getOwnPropertyNames: J,
+          getOwnPropertyDescriptor: J,
+          getOwnPropertyNames: Z,
           getOwnPropertySymbols: Q,
         }),
         C &&
@@ -2605,14 +2605,14 @@
               stringify: function(e) {
                 for (var t, o, r = [e], s = 1; arguments.length > s; )
                   r.push(arguments[s++])
-                if (((o = t = r[1]), (j(t) || void 0 !== e) && !H(e)))
+                if (((o = t = r[1]), (j(t) || void 0 !== e) && !z(e)))
                   return (
                     v(t) ||
                       (t = function(e, t) {
                         if (
                           ("function" == typeof o &&
                             (t = o.call(this, e, t)),
-                          !H(t))
+                          !z(t))
                         )
                           return t
                       }),
@@ -2791,10 +2791,10 @@
           var v = Object.getPrototypeOf,
             b = v && v(v(M([])))
           b && b !== r && s.call(b, n) && (y = b)
-          var j = (P.prototype = A.prototype = Object.create(y))
-          ;(E.prototype = j.constructor = P),
-            (P.constructor = E),
-            (P[c] = E.displayName = "GeneratorFunction"),
+          var j = (w.prototype = A.prototype = Object.create(y))
+          ;(E.prototype = j.constructor = w),
+            (w.constructor = E),
+            (w[c] = E.displayName = "GeneratorFunction"),
             (u.isGeneratorFunction = function(e) {
               var t = "function" == typeof e && e.constructor
               return (
@@ -2806,8 +2806,8 @@
             (u.mark = function(e) {
               return (
                 Object.setPrototypeOf
-                  ? Object.setPrototypeOf(e, P)
-                  : ((e.__proto__ = P),
+                  ? Object.setPrototypeOf(e, w)
+                  : ((e.__proto__ = w),
                     c in e || (e[c] = "GeneratorFunction")),
                 (e.prototype = Object.create(j)),
                 e
@@ -2816,7 +2816,7 @@
             (u.awrap = function(e) {
               return { __await: e }
             }),
-            w(S.prototype),
+            P(S.prototype),
             (S.prototype[a] = function() {
               return this
             }),
@@ -2829,7 +2829,7 @@
                     return e.done ? e.value : s.next()
                   })
             }),
-            w(j),
+            P(j),
             (j[c] = "Generator"),
             (j[n] = function() {
               return this
@@ -3061,8 +3061,8 @@
         }
         function A() {}
         function E() {}
-        function P() {}
-        function w(e) {
+        function w() {}
+        function P(e) {
           ;["next", "throw", "return"].forEach(function(t) {
             e[t] = function(e) {
               return this._invoke(t, e)
@@ -3189,26 +3189,31 @@
     },
     "./node_modules/p2/package.json": function(e) {
       e.exports = {
-        _from: "p2@^0.7.1",
+        _args: [
+          [
+            "p2@0.7.1",
+            "/Users/ericmcdaniel/Projects/subspace/packages/core",
+          ],
+        ],
+        _from: "p2@0.7.1",
         _id: "p2@0.7.1",
         _inBundle: !1,
         _integrity: "sha1-JfJHTZvDptMUCh2iamfJ4RislUM=",
         _location: "/p2",
         _phantomChildren: {},
         _requested: {
-          type: "range",
+          type: "version",
           registry: !0,
-          raw: "p2@^0.7.1",
+          raw: "p2@0.7.1",
           name: "p2",
           escapedName: "p2",
-          rawSpec: "^0.7.1",
+          rawSpec: "0.7.1",
           saveSpec: null,
-          fetchSpec: "^0.7.1",
+          fetchSpec: "0.7.1",
         },
         _requiredBy: ["/"],
         _resolved: "https://registry.npmjs.org/p2/-/p2-0.7.1.tgz",
-        _shasum: "25f2474d9bc3a6d3140a1da26a67c9e118ac9543",
-        _spec: "p2@^0.7.1",
+        _spec: "0.7.1",
         _where: "/Users/ericmcdaniel/Projects/subspace/packages/core",
         author: {
           name: "Stefan Hedman",
@@ -3216,9 +3221,7 @@
           url: "http://steffe.se",
         },
         bugs: { url: "https://github.com/schteppe/p2.js/issues" },
-        bundleDependencies: !1,
         dependencies: { "poly-decomp": "0.1.1" },
-        deprecated: !1,
         description: "A JavaScript 2D physics engine.",
         devDependencies: {
           grunt: "^0.4.5",
@@ -3467,8 +3470,8 @@
         g = r.fromValues(0, 0),
         A = r.fromValues(0, 0),
         E = r.fromValues(0, 0),
-        P = r.fromValues(0, 0),
         w = r.fromValues(0, 0),
+        P = r.fromValues(0, 0),
         S = r.fromValues(0, 0),
         B = r.fromValues(0, 0),
         x = r.fromValues(0, 0),
@@ -3838,22 +3841,22 @@
         ) {
           var h = y,
             f = v,
-            w = b,
+            P = b,
             S = j,
             B = _,
             x = g,
             L = A,
             q = E,
-            M = P,
+            M = w,
             C = O,
             I = 0
           r.set(h, -l.length / 2, 0),
             r.set(f, l.length / 2, 0),
-            r.rotate(w, h, d),
+            r.rotate(P, h, d),
             r.rotate(S, f, d),
-            i(w, w, u),
+            i(P, P, u),
             i(S, S, u),
-            r.copy(h, w),
+            r.copy(h, P),
             r.copy(f, S),
             s(B, f, h),
             r.normalize(x, B),
@@ -3947,8 +3950,8 @@
             F = g,
             T = A,
             R = E,
-            k = P,
-            N = w,
+            k = w,
+            N = P,
             V = S,
             G = B,
             U = x,
@@ -3968,59 +3971,59 @@
             s(G, o, R)
           var W = n(G, I)
           s(C, R, u), s(U, o, u)
-          var H = f + h
-          if (Math.abs(W) < H) {
+          var z = f + h
+          if (Math.abs(W) < z) {
             r.scale(m, I, W),
               s(M, o, m),
               r.scale(q, I, n(I, U)),
               r.normalize(q, q),
               r.scale(q, q, h),
               i(M, M, q)
-            var z = n(T, M),
+            var H = n(T, M),
               X = n(T, R),
               K = n(T, k)
-            if (z > X && z < K) {
+            if (H > X && H < K) {
               if (p) return !0
-              var Z = this.createContactEquation(e, c, t, l)
+              var J = this.createContactEquation(e, c, t, l)
               return (
-                r.scale(Z.normalA, m, -1),
-                r.normalize(Z.normalA, Z.normalA),
-                r.scale(Z.contactPointA, Z.normalA, f),
-                i(Z.contactPointA, Z.contactPointA, o),
-                s(Z.contactPointA, Z.contactPointA, e.position),
-                s(Z.contactPointB, M, u),
-                i(Z.contactPointB, Z.contactPointB, u),
-                s(Z.contactPointB, Z.contactPointB, c.position),
-                this.contactEquations.push(Z),
+                r.scale(J.normalA, m, -1),
+                r.normalize(J.normalA, J.normalA),
+                r.scale(J.contactPointA, J.normalA, f),
+                i(J.contactPointA, J.contactPointA, o),
+                s(J.contactPointA, J.contactPointA, e.position),
+                s(J.contactPointB, M, u),
+                i(J.contactPointB, J.contactPointB, u),
+                s(J.contactPointB, J.contactPointB, c.position),
+                this.contactEquations.push(J),
                 this.enableFriction &&
                   this.frictionEquations.push(
-                    this.createFrictionFromContact(Z),
+                    this.createFrictionFromContact(J),
                   ),
                 1
               )
             }
           }
           ;(Y[0] = R), (Y[1] = k)
-          for (var J = 0; J < Y.length; J++) {
-            var Q = Y[J]
-            if ((s(G, Q, o), r.squaredLength(G) < Math.pow(H, 2))) {
+          for (var Z = 0; Z < Y.length; Z++) {
+            var Q = Y[Z]
+            if ((s(G, Q, o), r.squaredLength(G) < Math.pow(z, 2))) {
               if (p) return !0
-              Z = this.createContactEquation(e, c, t, l)
+              J = this.createContactEquation(e, c, t, l)
               return (
-                r.copy(Z.normalA, G),
-                r.normalize(Z.normalA, Z.normalA),
-                r.scale(Z.contactPointA, Z.normalA, f),
-                i(Z.contactPointA, Z.contactPointA, o),
-                s(Z.contactPointA, Z.contactPointA, e.position),
-                s(Z.contactPointB, Q, u),
-                r.scale(D, Z.normalA, -h),
-                i(Z.contactPointB, Z.contactPointB, D),
-                i(Z.contactPointB, Z.contactPointB, u),
-                s(Z.contactPointB, Z.contactPointB, c.position),
-                this.contactEquations.push(Z),
+                r.copy(J.normalA, G),
+                r.normalize(J.normalA, J.normalA),
+                r.scale(J.contactPointA, J.normalA, f),
+                i(J.contactPointA, J.contactPointA, o),
+                s(J.contactPointA, J.contactPointA, e.position),
+                s(J.contactPointB, Q, u),
+                r.scale(D, J.normalA, -h),
+                i(J.contactPointB, J.contactPointB, D),
+                i(J.contactPointB, J.contactPointB, u),
+                s(J.contactPointB, J.contactPointB, c.position),
+                this.contactEquations.push(J),
                 this.enableFriction &&
                   this.frictionEquations.push(
-                    this.createFrictionFromContact(Z),
+                    this.createFrictionFromContact(J),
                   ),
                 1
               )
@@ -4064,8 +4067,8 @@
               m = b,
               g = j,
               A = _,
-              E = w,
-              P = S,
+              E = P,
+              w = S,
               B = x,
               C = L,
               I = q,
@@ -4125,9 +4128,9 @@
             for (k = 0; k < R.length; k++) {
               var D = R[k]
               if (
-                (r.rotate(P, D, u),
-                i(P, P, l),
-                s(E, P, o),
+                (r.rotate(w, D, u),
+                i(w, w, l),
+                s(E, w, o),
                 r.squaredLength(E) < Math.pow(p, 2))
               ) {
                 if (d) return !0
@@ -4138,7 +4141,7 @@
                   r.scale(U.contactPointA, U.normalA, p),
                   i(U.contactPointA, U.contactPointA, o),
                   s(U.contactPointA, U.contactPointA, e.position),
-                  s(U.contactPointB, P, l),
+                  s(U.contactPointB, w, l),
                   i(U.contactPointB, U.contactPointB, l),
                   s(U.contactPointB, U.contactPointB, a.position),
                   this.contactEquations.push(U),
@@ -4154,14 +4157,14 @@
         })
       var Y = r.create(),
         W = r.create(),
-        H = r.create(),
-        z = r.create()
+        z = r.create(),
+        H = r.create()
       function X(e, t, o, n) {
         for (
           var a = Y,
             c = W,
-            l = H,
-            u = z,
+            l = z,
+            u = H,
             d = e,
             p = t.vertices,
             h = null,
@@ -4200,10 +4203,10 @@
           f = v,
           m = b,
           E = j,
-          P = _,
+          w = _,
           S = g,
           B = A,
-          L = w,
+          L = P,
           q = x,
           M = C,
           O = I,
@@ -4221,16 +4224,16 @@
             i(f, f, u),
             s(m, f, h),
             r.normalize(E, m),
-            r.rotate90cw(P, E),
+            r.rotate90cw(w, E),
             s(L, o, h)
-          n(L, P)
+          n(L, w)
           s(S, h, u), s(B, o, u), r.sub(M, h, o)
-          var G = Math.abs(r.dot(M, P))
+          var G = Math.abs(r.dot(M, w))
           G < F &&
             ((F = G),
-            r.scale(q, P, G),
+            r.scale(q, w, G),
             r.add(q, q, o),
-            r.copy(O, P),
+            r.copy(O, w),
             (T = !0))
         }
         if (T) {
@@ -4321,8 +4324,8 @@
               _++
               var E = this.createContactEquation(e, c, t, l)
               s(j, h, o), r.copy(E.normalA, f)
-              var P = n(j, E.normalA)
-              r.scale(j, E.normalA, P),
+              var w = n(j, E.normalA)
+              r.scale(j, E.normalA, w),
                 s(E.contactPointB, h, c.position),
                 s(E.contactPointA, h, j),
                 s(E.contactPointA, E.contactPointA, e.position),
@@ -4414,8 +4417,8 @@
           )
         })
       var K = new d({ radius: 1 }),
-        Z = r.create(),
-        J = r.create()
+        J = r.create(),
+        Z = r.create()
       r.create()
       ;(F.prototype[
         h.PLANE | h.CAPSULE
@@ -4431,8 +4434,8 @@
         u,
       ) {
         var d,
-          p = Z,
-          h = J,
+          p = J,
+          h = Z,
           f = K
         r.set(p, -a.length / 2, 0),
           r.rotate(p, p, l),
@@ -4481,20 +4484,20 @@
             A = d
           A = A || 0
           var E = y,
-            P = v,
-            w = b
-          s(E, j, g), r.rotate(P, m, A)
-          var S = n(P, E)
+            w = v,
+            P = b
+          s(E, j, g), r.rotate(w, m, A)
+          var S = n(w, E)
           if (S > f.radius) return 0
           if (p) return !0
           var B = this.createContactEquation(_, h, l, t)
           return (
-            r.copy(B.normalA, P),
+            r.copy(B.normalA, w),
             r.scale(B.contactPointB, B.normalA, -f.radius),
             i(B.contactPointB, B.contactPointB, j),
             s(B.contactPointB, B.contactPointB, h.position),
-            r.scale(w, B.normalA, S),
-            s(B.contactPointA, E, w),
+            r.scale(P, B.normalA, S),
+            s(B.contactPointA, E, P),
             i(B.contactPointA, B.contactPointA, g),
             s(B.contactPointA, B.contactPointA, _.position),
             this.contactEquations.push(B),
@@ -4522,11 +4525,11 @@
           var f = y,
             m = v,
             g = b,
-            w = j,
+            P = j,
             S = _,
             B = A,
             x = E,
-            L = P,
+            L = w,
             q = 0
           h = "number" == typeof h ? h : 0
           if (!F.findSeparatingAxis(t, o, a, l, u, d, f)) return 0
@@ -4562,26 +4565,26 @@
                 (O = Y),
                 (Y = W),
                 (W = O)
-            for (var H = R; H < R + 2; H++) {
-              var z =
+            for (var z = R; z < R + 2; z++) {
+              var H =
                 N.vertices[
-                  (H + N.vertices.length) % N.vertices.length
+                  (z + N.vertices.length) % N.vertices.length
                 ]
-              r.rotate(m, z, D), i(m, m, G)
+              r.rotate(m, H, D), i(m, m, G)
               for (var X = 0, K = T - 1; K < T + 2; K++) {
-                var Z =
+                var J =
                     k.vertices[
                       (K + k.vertices.length) % k.vertices.length
                     ],
-                  J =
+                  Z =
                     k.vertices[
                       (K + 1 + k.vertices.length) % k.vertices.length
                     ]
-                r.rotate(g, Z, U),
-                  r.rotate(w, J, U),
+                r.rotate(g, J, U),
+                  r.rotate(P, Z, U),
                   i(g, g, V),
-                  i(w, w, V),
-                  s(S, w, g),
+                  i(P, P, V),
+                  s(S, P, g),
                   r.rotate90cw(L, S),
                   r.normalize(L, L),
                   s(x, m, g)
@@ -4592,13 +4595,13 @@
                 if (p) return !0
                 var $ = this.createContactEquation(Y, W, k, N)
                 q++
-                ;(Z = k.vertices[T % k.vertices.length]),
-                  (J = k.vertices[(T + 1) % k.vertices.length])
-                r.rotate(g, Z, U),
-                  r.rotate(w, J, U),
+                ;(J = k.vertices[T % k.vertices.length]),
+                  (Z = k.vertices[(T + 1) % k.vertices.length])
+                r.rotate(g, J, U),
+                  r.rotate(P, Z, U),
                   i(g, g, V),
-                  i(w, w, V),
-                  s(S, w, g),
+                  i(P, P, V),
+                  s(S, P, g),
                   r.rotate90cw($.normalA, S),
                   r.normalize($.normalA, $.normalA),
                   s(x, m, g)
@@ -4677,11 +4680,11 @@
                 F.projectConvexOntoAxis(e, t, o, y, v),
                 F.projectConvexOntoAxis(i, n, a, y, b)
               var E = v,
-                P = b
-              v[0] > b[0] && ((P = v), (E = b), !0),
-                (u = (w = P[0] - E[1]) <= 0),
-                (null === l || w > l) &&
-                  (r.copy(c, y), (l = w), (d = u))
+                w = b
+              v[0] > b[0] && ((w = v), (E = b), !0),
+                (u = (P = w[0] - E[1]) <= 0),
+                (null === l || P > l) &&
+                  (r.copy(c, y), (l = P), (d = u))
             }
           }
         else
@@ -4700,12 +4703,12 @@
                 r.normalize(y, y),
                 F.projectConvexOntoAxis(e, t, o, y, v),
                 F.projectConvexOntoAxis(i, n, a, y, b)
-              var w
-              ;(E = v), (P = b)
-              v[0] > b[0] && ((P = v), (E = b), !0),
-                (u = (w = P[0] - E[1]) <= 0),
-                (null === l || w > l) &&
-                  (r.copy(c, y), (l = w), (d = u))
+              var P
+              ;(E = v), (w = b)
+              v[0] > b[0] && ((w = v), (E = b), !0),
+                (u = (P = w[0] - E[1]) <= 0),
+                (null === l || P > l) &&
+                  (r.copy(c, y), (l = P), (d = u))
             }
           }
         return d
@@ -4764,9 +4767,9 @@
           A = Math.floor((o[0] - p - l[0]) / f),
           E = Math.ceil((o[0] + p - l[0]) / f)
         A < 0 && (A = 0), E >= h.length && (E = h.length - 1)
-        for (var P = h[A], w = h[E], S = A; S < E; S++)
-          h[S] < w && (w = h[S]), h[S] > P && (P = h[S])
-        if (o[1] - p > P) return !d && 0
+        for (var w = h[A], P = h[E], S = A; S < E; S++)
+          h[S] < P && (P = h[S]), h[S] > w && (w = h[S])
+        if (o[1] - p > w) return !d && 0
         var B = !1
         for (S = A; S < E; S++) {
           r.set(_, S * f, h[S]),
@@ -6805,7 +6808,7 @@
           )
         })
       var E = r.create(),
-        P = r.create()
+        w = r.create()
       u.prototype.integrate = function(e) {
         var t = this.invMass,
           o = this.force,
@@ -6820,13 +6823,13 @@
           r.multiply(E, this.massMultiplier, E),
           r.add(i, E, i),
           this.integrateToTimeOfImpact(e) ||
-            (r.scale(P, i, e),
-            r.add(s, s, P),
+            (r.scale(w, i, e),
+            r.add(s, s, w),
             this.fixedRotation ||
               (this.angle += this.angularVelocity * e)),
           (this.aabbNeedsUpdate = !0)
       }
-      var w = new n(),
+      var P = new n(),
         S = new a({ mode: a.ALL }),
         B = r.create(),
         x = r.create(),
@@ -6849,7 +6852,7 @@
           i = 1,
           n = this
         if (
-          (w.reset(),
+          (P.reset(),
           (S.callback = function(e) {
             e.body !== n &&
               ((t = e.body),
@@ -6861,7 +6864,7 @@
           r.copy(S.from, this.position),
           r.copy(S.to, x),
           S.update(),
-          this.world.raycast(w, S),
+          this.world.raycast(P, S),
           !t)
         )
           return !1
@@ -6874,8 +6877,8 @@
         ) {
           c++,
             (u = (d - l) / 2),
-            r.scale(P, L, i),
-            r.add(this.position, q, P),
+            r.scale(w, L, i),
+            r.add(this.position, q, w),
             (this.angle = a + o * i),
             this.updateAABB(),
             this.aabb.overlaps(t.aabb) &&
@@ -6887,8 +6890,8 @@
           (i = u),
           r.copy(this.position, q),
           (this.angle = a),
-          r.scale(P, L, i),
-          r.add(this.position, this.position, P),
+          r.scale(w, L, i),
+          r.add(this.position, this.position, w),
           this.fixedRotation || (this.angle += o * i),
           !0
         )
@@ -6978,19 +6981,19 @@
           r.sub(A, _, s.position),
           r.sub(E, g, i.position),
           r.sub(m, g, _)
-        var P = r.len(m)
+        var w = r.len(m)
         r.normalize(y, m),
           r.sub(v, i.velocity, s.velocity),
           r.crossZV(j, i.angularVelocity, E),
           r.add(v, v, j),
           r.crossZV(j, s.angularVelocity, A),
           r.sub(v, v, j),
-          r.scale(b, y, -e * (P - o) - t * r.dot(v, y)),
+          r.scale(b, y, -e * (w - o) - t * r.dot(v, y)),
           r.sub(s.force, s.force, b),
           r.add(i.force, i.force, b)
-        var w = r.crossLength(A, b),
+        var P = r.crossLength(A, b),
           S = r.crossLength(E, b)
-        ;(s.angularForce -= w), (i.angularForce += S)
+        ;(s.angularForce -= P), (i.angularForce += S)
       }
     },
     "./node_modules/p2/src/objects/RotationalSpring.js": function(
@@ -7433,10 +7436,10 @@
               )
                 return
             } else {
-              var P = Math.sqrt(_),
-                w = 1 / (2 * g),
-                S = (-A - P) * w,
-                B = (-A + P) * w
+              var w = Math.sqrt(_),
+                P = 1 / (2 * g),
+                S = (-A - w) * P,
+                B = (-A + w) * P
               if (
                 S >= 0 &&
                 S <= 1 &&
@@ -8129,16 +8132,16 @@
                 var E = l[b]
                 if (E instanceof n) {
                   for (
-                    var P = 0, w = 0;
-                    w !== E.contactEquations.length;
-                    w++
+                    var w = 0, P = 0;
+                    P !== E.contactEquations.length;
+                    P++
                   )
-                    P += E.contactEquations[w].multiplier
-                  ;(P *=
+                    w += E.contactEquations[P].multiplier
+                  ;(w *=
                     E.frictionCoefficient /
                     E.contactEquations.length),
-                    (E.maxForce = P),
-                    (E.minForce = -P)
+                    (E.maxForce = w),
+                    (E.minForce = -w)
                 }
               }
             }
@@ -8875,7 +8878,7 @@
           }
         }
       }
-      var P = []
+      var w = []
       ;(_.prototype.internalStep = function(e) {
         this.stepping = !0
         var t = this.springs.length,
@@ -8918,18 +8921,18 @@
         var A = c.getCollisionPairs(this),
           E = this.disabledBodyCollisionPairs
         for (y = E.length - 2; y >= 0; y -= 2)
-          for (var w = A.length - 2; w >= 0; w -= 2)
-            ((E[y] === A[w] && E[y + 1] === A[w + 1]) ||
-              (E[y + 1] === A[w] && E[y] === A[w + 1])) &&
-              A.splice(w, 2)
+          for (var P = A.length - 2; P >= 0; P -= 2)
+            ((E[y] === A[P] && E[y + 1] === A[P + 1]) ||
+              (E[y + 1] === A[P] && E[y] === A[P + 1])) &&
+              A.splice(P, 2)
         var S = u.length
         for (y = 0; y !== S; y++) {
           var B = u[y]
           if (!B.collideConnected)
-            for (w = A.length - 2; w >= 0; w -= 2)
-              ((B.bodyA === A[w] && B.bodyB === A[w + 1]) ||
-                (B.bodyB === A[w] && B.bodyA === A[w + 1])) &&
-                A.splice(w, 2)
+            for (P = A.length - 2; P >= 0; P -= 2)
+              ((B.bodyA === A[P] && B.bodyB === A[P + 1]) ||
+                (B.bodyB === A[P] && B.bodyA === A[P + 1])) &&
+                A.splice(P, 2)
         }
         ;(this.postBroadphaseEvent.pairs = A),
           this.emit(this.postBroadphaseEvent),
@@ -8977,21 +8980,21 @@
               )
             }
         for (y = 0; y !== a; y++) {
-          ;(H = r[y])._wakeUpAfterNarrowphase &&
-            (H.wakeUp(), (H._wakeUpAfterNarrowphase = !1))
+          ;(z = r[y])._wakeUpAfterNarrowphase &&
+            (z.wakeUp(), (z._wakeUpAfterNarrowphase = !1))
         }
         if (this.has("endContact")) {
-          this.overlapKeeper.getEndOverlaps(P)
+          this.overlapKeeper.getEndOverlaps(w)
           var D = this.endContactEvent
-          for (T = P.length; T--; ) {
-            var Y = P[T]
+          for (T = w.length; T--; ) {
+            var Y = w[T]
             ;(D.shapeA = Y.shapeA),
               (D.shapeB = Y.shapeB),
               (D.bodyA = Y.bodyA),
               (D.bodyB = Y.bodyB),
               this.emit(D)
           }
-          P.length = 0
+          w.length = 0
         }
         var W = this.preSolveEvent
         ;(W.contactEquations = l.contactEquations),
@@ -9033,21 +9036,21 @@
               n.removeAllEquations()
           }
         for (y = 0; y !== a; y++) {
-          var H
-          ;(H = r[y]).integrate(e)
+          var z
+          ;(z = r[y]).integrate(e)
         }
         for (y = 0; y !== a; y++) r[y].setZeroForce()
         if (this.emitImpactEvent && this.has("impact")) {
-          var z = this.impactEvent
+          var H = this.impactEvent
           for (y = 0; y !== l.contactEquations.length; y++) {
             var X = l.contactEquations[y]
             X.firstImpact &&
-              ((z.bodyA = X.bodyA),
-              (z.bodyB = X.bodyB),
-              (z.shapeA = X.shapeA),
-              (z.shapeB = X.shapeB),
-              (z.contactEquation = X),
-              this.emit(z))
+              ((H.bodyA = X.bodyA),
+              (H.bodyB = X.bodyB),
+              (H.shapeA = X.shapeA),
+              (H.shapeB = X.shapeB),
+              (H.contactEquation = X),
+              this.emit(H))
           }
         }
         if (this.sleepMode === _.BODY_SLEEPING)
@@ -9064,9 +9067,9 @@
           }
         }
         this.stepping = !1
-        var Z = this.bodiesToBeRemoved
-        for (y = 0; y !== Z.length; y++) this.removeBody(Z[y])
-        ;(Z.length = 0), this.emit(this.postStepEvent)
+        var J = this.bodiesToBeRemoved
+        for (y = 0; y !== J.length; y++) this.removeBody(J[y])
+        ;(J.length = 0), this.emit(this.postStepEvent)
       }),
         (_.prototype.runNarrowphase = function(
           e,
@@ -9161,21 +9164,21 @@
                     "number" == typeof v)
                   )
                     for (
-                      var P = e.contactEquations.length - v;
-                      P < e.contactEquations.length;
-                      P++
+                      var w = e.contactEquations.length - v;
+                      w < e.contactEquations.length;
+                      w++
                     )
-                      g.contactEquations.push(e.contactEquations[P])
+                      g.contactEquations.push(e.contactEquations[w])
                   this.emit(g)
                 }
                 if ("number" == typeof v && _ > 1)
                   for (
-                    P = e.frictionEquations.length - _;
-                    P < e.frictionEquations.length;
-                    P++
+                    w = e.frictionEquations.length - _;
+                    w < e.frictionEquations.length;
+                    w++
                   ) {
-                    var w = e.frictionEquations[P]
-                    w.setSlipForce(w.getSlipForce() / _)
+                    var P = e.frictionEquations[w]
+                    P.setSlipForce(P.getSlipForce() / _)
                   }
               }
             }
@@ -9252,14 +9255,14 @@
             this.removeContactMaterial(s[t])
           _.apply(this)
         })
-      var w = s.create(),
+      var P = s.create(),
         S = (s.fromValues(0, 0), s.fromValues(0, 0))
       ;(_.prototype.hitTest = function(e, t, o) {
         o = o || 0
         var r = new d({ position: e }),
           u = new l(),
           p = e,
-          h = w,
+          h = P,
           f = S
         r.addShape(u)
         for (
@@ -9760,7 +9763,7 @@
       var i = {
         Protocol: !0,
         Loop: !0,
-        Players: !0,
+        Users: !0,
         Physics: !0,
         Ships: !0,
         reducers: !0,
@@ -9771,13 +9774,13 @@
           return p.default
         },
       }),
-        (t.Ships = t.Physics = t.Players = t.Loop = t.Protocol = void 0)
+        (t.Ships = t.Physics = t.Users = t.Loop = t.Protocol = void 0)
       var n = s(o("./src/protocol/index.js"))
       t.Protocol = n
       var a = s(o("./src/modules/loop/index.js"))
       t.Loop = a
-      var c = s(o("./src/modules/players/index.js"))
-      t.Players = c
+      var c = s(o("./src/modules/users/index.js"))
+      t.Users = c
       var l = s(o("./src/modules/physics/index.js"))
       t.Physics = l
       var u = s(o("./src/modules/ships/index.js"))
@@ -9824,7 +9827,7 @@
             },
           })
       })
-      var i = o("./src/model/player.js")
+      var i = o("./src/model/user.js")
       Object.keys(i).forEach(function(e) {
         "default" !== e &&
           "__esModule" !== e &&
@@ -9870,10 +9873,10 @@
     "./src/model/physics.js": function(e, t, o) {
       "use strict"
     },
-    "./src/model/player.js": function(e, t, o) {
+    "./src/model/ship.js": function(e, t, o) {
       "use strict"
     },
-    "./src/model/ship.js": function(e, t, o) {
+    "./src/model/user.js": function(e, t, o) {
       "use strict"
     },
     "./src/modules/loop/index.js": function(e, t, o) {
@@ -10217,91 +10220,6 @@
         var l
       }
     },
-    "./src/modules/players/index.js": function(e, t, o) {
-      "use strict"
-      var r = o(
-        "../../node_modules/@babel/runtime/helpers/interopRequireDefault.js",
-      )
-      Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.addPlayer = function(e) {
-          return { type: n, payload: { player: e } }
-        }),
-        (t.updatePlayer = function(e) {
-          return { type: a, payload: { player: e } }
-        }),
-        (t.default = function() {
-          var e =
-              arguments.length > 0 && void 0 !== arguments[0]
-                ? arguments[0]
-                : c,
-            t = arguments.length > 1 ? arguments[1] : void 0
-          switch (t.type) {
-            case n:
-              var o = t.payload.player,
-                r = (0, i.default)(
-                  {},
-                  e.byId,
-                  (0, s.default)({}, o.id, o),
-                ),
-                u = e.byActiveShipId
-              return (
-                o.activeShipId &&
-                  (u = (0, i.default)(
-                    {},
-                    e.byActiveShipId,
-                    (0, s.default)({}, o.activeShipId, o),
-                  )),
-                { byId: r, byActiveShipId: u }
-              )
-            case a:
-              var d = t.payload.player.id,
-                p = (0, i.default)({}, l(e, d), t.payload.player),
-                h = (0, i.default)(
-                  {},
-                  e.byId,
-                  (0, s.default)({}, p.id, p),
-                ),
-                f = e.byActiveShipId
-              return (
-                p.activeShipId &&
-                  (f = (0, i.default)(
-                    {},
-                    e.byActiveShipId,
-                    (0, s.default)({}, p.activeShipId, p),
-                  )),
-                { byId: h, byActiveShipId: f }
-              )
-            default:
-              return e
-          }
-        }),
-        (t.getPlayerByActiveShipId = t.getPlayer = t.getPlayers = t.PLAYER_UPDATE = t.PLAYER_ADD = void 0)
-      var s = r(
-          o(
-            "../../node_modules/@babel/runtime/helpers/defineProperty.js",
-          ),
-        ),
-        i = r(
-          o(
-            "../../node_modules/@babel/runtime/helpers/objectSpread.js",
-          ),
-        ),
-        n = "player/add"
-      t.PLAYER_ADD = n
-      var a = "player/update"
-      t.PLAYER_UPDATE = a
-      var c = { byId: {}, byActiveShipId: {} }
-      t.getPlayers = function(e) {
-        return e.byId
-      }
-      var l = function(e, t) {
-        return e.byId[t]
-      }
-      t.getPlayer = l
-      t.getPlayerByActiveShipId = function(e, t) {
-        return e.byActiveShipId[t]
-      }
-    },
     "./src/modules/ships/index.js": function(e, t, o) {
       "use strict"
       var r = o(
@@ -10400,13 +10318,89 @@
       }
       t.getShip = f
     },
-    "./src/protocol/client/auth.js": function(e, t, o) {
+    "./src/modules/users/index.js": function(e, t, o) {
       "use strict"
+      var r = o(
+        "../../node_modules/@babel/runtime/helpers/interopRequireDefault.js",
+      )
       Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.authLogin = void 0)
-      var r = o("./src/protocol/client/message-types.js")
-      t.authLogin = function(e) {
-        return [r.MESSAGE_TYPE_AUTH_LOGIN, e]
+        (t.addUser = function(e) {
+          return { type: n, payload: { user: e } }
+        }),
+        (t.updateUser = function(e) {
+          return { type: a, payload: { user: e } }
+        }),
+        (t.default = function() {
+          var e =
+              arguments.length > 0 && void 0 !== arguments[0]
+                ? arguments[0]
+                : c,
+            t = arguments.length > 1 ? arguments[1] : void 0
+          switch (t.type) {
+            case n:
+              var o = t.payload.user,
+                r = (0, i.default)(
+                  {},
+                  e.byId,
+                  (0, s.default)({}, o.id, o),
+                ),
+                u = e.byActiveShipId
+              return (
+                o.activeShipId &&
+                  (u = (0, i.default)(
+                    {},
+                    e.byActiveShipId,
+                    (0, s.default)({}, o.activeShipId, o),
+                  )),
+                { byId: r, byActiveShipId: u }
+              )
+            case a:
+              var d = t.payload.user.id,
+                p = (0, i.default)({}, l(e, d), t.payload.user),
+                h = (0, i.default)(
+                  {},
+                  e.byId,
+                  (0, s.default)({}, p.id, p),
+                ),
+                f = e.byActiveShipId
+              return (
+                p.activeShipId &&
+                  (f = (0, i.default)(
+                    {},
+                    e.byActiveShipId,
+                    (0, s.default)({}, p.activeShipId, p),
+                  )),
+                { byId: h, byActiveShipId: f }
+              )
+            default:
+              return e
+          }
+        }),
+        (t.getUserByActiveShipId = t.getUser = t.getUsers = t.USER_UPDATE = t.USER_ADD = void 0)
+      var s = r(
+          o(
+            "../../node_modules/@babel/runtime/helpers/defineProperty.js",
+          ),
+        ),
+        i = r(
+          o(
+            "../../node_modules/@babel/runtime/helpers/objectSpread.js",
+          ),
+        ),
+        n = "user/add"
+      t.USER_ADD = n
+      var a = "user/update"
+      t.USER_UPDATE = a
+      var c = { byId: {}, byActiveShipId: {} }
+      t.getUsers = function(e) {
+        return e.byId
+      }
+      var l = function(e, t) {
+        return e.byId[t]
+      }
+      t.getUser = l
+      t.getUserByActiveShipId = function(e, t) {
+        return e.byActiveShipId[t]
       }
     },
     "./src/protocol/client/index.js": function(e, t, o) {
@@ -10423,7 +10417,7 @@
             },
           })
       })
-      var s = o("./src/protocol/client/auth.js")
+      var s = o("./src/protocol/client/input.js")
       Object.keys(s).forEach(function(e) {
         "default" !== e &&
           "__esModule" !== e &&
@@ -10431,17 +10425,6 @@
             enumerable: !0,
             get: function() {
               return s[e]
-            },
-          })
-      })
-      var i = o("./src/protocol/client/input.js")
-      Object.keys(i).forEach(function(e) {
-        "default" !== e &&
-          "__esModule" !== e &&
-          Object.defineProperty(t, e, {
-            enumerable: !0,
-            get: function() {
-              return i[e]
             },
           })
       })
@@ -10458,43 +10441,51 @@
     "./src/protocol/client/message-types.js": function(e, t, o) {
       "use strict"
       Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.MESSAGE_TYPE_INPUT_TURN = t.MESSAGE_TYPE_AUTH_LOGIN = void 0)
-      t.MESSAGE_TYPE_AUTH_LOGIN = 0
-      t.MESSAGE_TYPE_INPUT_TURN = 1
+        (t.MESSAGE_TYPE_INPUT_TURN = void 0)
+      t.MESSAGE_TYPE_INPUT_TURN = 0
     },
     "./src/protocol/index.js": function(e, t, o) {
       "use strict"
       Object.defineProperty(t, "__esModule", { value: !0 })
-      var r = o("./src/protocol/client/index.js")
-      Object.keys(r).forEach(function(e) {
-        "default" !== e &&
-          "__esModule" !== e &&
-          Object.defineProperty(t, e, {
-            enumerable: !0,
-            get: function() {
-              return r[e]
-            },
-          })
-      })
-      var s = o("./src/protocol/server/index.js")
+      var r = { serialize: !0, deserialize: !0 }
+      ;(t.serialize = function(e) {
+        return JSON.stringify(e)
+      }),
+        (t.deserialize = function(e) {
+          return JSON.parse(e)
+        })
+      var s = o("./src/protocol/client/index.js")
       Object.keys(s).forEach(function(e) {
         "default" !== e &&
           "__esModule" !== e &&
-          Object.defineProperty(t, e, {
-            enumerable: !0,
-            get: function() {
-              return s[e]
-            },
-          })
+          (Object.prototype.hasOwnProperty.call(r, e) ||
+            Object.defineProperty(t, e, {
+              enumerable: !0,
+              get: function() {
+                return s[e]
+              },
+            }))
+      })
+      var i = o("./src/protocol/server/index.js")
+      Object.keys(i).forEach(function(e) {
+        "default" !== e &&
+          "__esModule" !== e &&
+          (Object.prototype.hasOwnProperty.call(r, e) ||
+            Object.defineProperty(t, e, {
+              enumerable: !0,
+              get: function() {
+                return i[e]
+              },
+            }))
       })
     },
     "./src/protocol/server/auth.js": function(e, t, o) {
       "use strict"
       Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.authLoginFailureMessage = void 0)
+        (t.authTokenInvalidMessage = void 0)
       var r = o("./src/protocol/server/message-types.js")
-      t.authLoginFailureMessage = function() {
-        return [r.MESSAGE_TYPE_AUTH_LOGIN_FAILURE]
+      t.authTokenInvalidMessage = function() {
+        return [r.MESSAGE_TYPE_AUTH_TOKEN_INVALID]
       }
     },
     "./src/protocol/server/index.js": function(e, t, o) {
@@ -10522,7 +10513,7 @@
             },
           })
       })
-      var i = o("./src/protocol/server/player.js")
+      var i = o("./src/protocol/server/ship.js")
       Object.keys(i).forEach(function(e) {
         "default" !== e &&
           "__esModule" !== e &&
@@ -10533,7 +10524,7 @@
             },
           })
       })
-      var n = o("./src/protocol/server/ship.js")
+      var n = o("./src/protocol/server/snapshot.js")
       Object.keys(n).forEach(function(e) {
         "default" !== e &&
           "__esModule" !== e &&
@@ -10544,35 +10535,15 @@
             },
           })
       })
-      var a = o("./src/protocol/server/snapshot.js")
-      Object.keys(a).forEach(function(e) {
-        "default" !== e &&
-          "__esModule" !== e &&
-          Object.defineProperty(t, e, {
-            enumerable: !0,
-            get: function() {
-              return a[e]
-            },
-          })
-      })
     },
     "./src/protocol/server/message-types.js": function(e, t, o) {
       "use strict"
       Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.MESSAGE_TYPE_SHIP_UPDATE = t.MESSAGE_TYPE_PLAYER_UPDATE = t.MESSAGE_TYPE_SNAPSHOT = t.MESSAGE_TYPE_AUTH_LOGIN_FAILURE = void 0)
-      t.MESSAGE_TYPE_AUTH_LOGIN_FAILURE = 0
-      t.MESSAGE_TYPE_SNAPSHOT = 1
-      t.MESSAGE_TYPE_PLAYER_UPDATE = 2
-      t.MESSAGE_TYPE_SHIP_UPDATE = 3
-    },
-    "./src/protocol/server/player.js": function(e, t, o) {
-      "use strict"
-      Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.playerUpdateMessage = void 0)
-      var r = o("./src/protocol/server/message-types.js")
-      t.playerUpdateMessage = function(e) {
-        return [r.MESSAGE_TYPE_PLAYER_UPDATE, e]
-      }
+        (t.MESSAGE_TYPE_SHIP_UPDATE = t.MESSAGE_TYPE_USER_UPDATE = t.MESSAGE_TYPE_SNAPSHOT = t.MESSAGE_TYPE_AUTH_TOKEN_INVALID = void 0)
+      t.MESSAGE_TYPE_AUTH_TOKEN_INVALID = 1
+      t.MESSAGE_TYPE_SNAPSHOT = 2
+      t.MESSAGE_TYPE_USER_UPDATE = 3
+      t.MESSAGE_TYPE_SHIP_UPDATE = 4
     },
     "./src/protocol/server/ship.js": function(e, t, o) {
       "use strict"
@@ -10601,12 +10572,12 @@
         (t.default = void 0)
       var s = r(o("./src/modules/loop/index.js")),
         i = r(o("./src/modules/physics/index.js")),
-        n = r(o("./src/modules/players/index.js")),
+        n = r(o("./src/modules/users/index.js")),
         a = r(o("./src/modules/ships/index.js")),
         c = {
           loop: s.default,
           physics: i.default,
-          players: n.default,
+          users: n.default,
           ships: a.default,
         }
       t.default = c
@@ -10614,8 +10585,8 @@
     "./src/selectors/index.js": function(e, t, o) {
       "use strict"
       Object.defineProperty(t, "__esModule", { value: !0 }),
-        (t.getPlayerBody = t.getPlayerShip = t.getShipBody = void 0)
-      var r = o("./src/modules/players/index.js"),
+        (t.getUserBody = t.getUserShip = t.getShipBody = void 0)
+      var r = o("./src/modules/users/index.js"),
         s = o("./src/modules/ships/index.js"),
         i = o("./src/modules/physics/index.js"),
         n = function(e, t) {
@@ -10623,12 +10594,12 @@
           return o.bodyId ? (0, i.getBody)(e.physics, o.bodyId) : null
         }
       t.getShipBody = n
-      t.getPlayerShip = function(e, t) {
-        var o = (0, r.getPlayer)(e.players, t).activeShipId
+      t.getUserShip = function(e, t) {
+        var o = (0, r.getUser)(e.users, t).activeShipId
         return o ? (0, s.getShip)(e.ships, o) : null
       }
-      t.getPlayerBody = function(e, t) {
-        var o = (0, r.getPlayer)(e.players, t).activeShipId
+      t.getUserBody = function(e, t) {
+        var o = (0, r.getUser)(e.users, t).activeShipId
         return o ? n(e, o) : null
       }
     },

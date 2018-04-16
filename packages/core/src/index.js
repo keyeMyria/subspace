@@ -4,16 +4,16 @@ import * as Protocol from "./protocol"
 
 // Modules
 import * as Loop from "./modules/loop"
-import * as Players from "./modules/players"
+import * as Users from "./modules/users"
 import * as Physics from "./modules/physics"
 import * as Ships from "./modules/ships"
 
 export type * from "./modules/loop"
-export type * from "./modules/players"
+export type * from "./modules/users"
 export type * from "./modules/physics"
 export type * from "./modules/ships"
 
-export { Loop, Players, Physics, Ships }
+export { Loop, Users, Physics, Ships }
 
 // Models
 export type * from "./model"

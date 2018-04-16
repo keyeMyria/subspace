@@ -7,12 +7,13 @@ import type {
 } from "@subspace/core"
 import {
   Ships as CoreShips,
-  Players as CorePlayers,
+  Users as CoreUsers,
+  Physics,
   Protocol,
 } from "@subspace/core"
 
 import * as Clients from "../clients"
-import * as Players from "../players"
+import * as Users from "../users"
 import type { Db } from "../../data"
 import type { Action, Dispatch, Middleware } from "../../types"
 
@@ -90,21 +91,21 @@ export function createMiddleware(db: Db): Middleware {
     switch (action.type) {
       case SHIP_LOAD: {
         const { shipId } = action.payload
-        // Hydrate a player from db and create entities if they don't exist
-        // (e.g. player ship)
+        // Hydrate a user from db and create entities if they don't exist
+        // (e.g. user ship)
         db.Ship.findById(shipId)
-          .then(ship => {
-            if (!ship) {
+          .then(model => {
+            if (!model) {
               throw new Error(`Ship ${shipId} not found.`)
             }
 
-            const model = ship.toJSON()
+            const ship = model.toJSON()
 
-            next(loadShipSuccess(model))
-            next(CoreShips.addShip(model))
+            next(loadShipSuccess(ship))
+            next(CoreShips.addShip(ship))
 
-            if (model.bodyId) {
-              // next(Physics.loadBody(model.bodyId))
+            if (ship.body) {
+              next(Physics.addBody(ship.body))
             }
           })
           .catch(err => next(loadShipFailure(shipId, err)))
@@ -112,21 +113,18 @@ export function createMiddleware(db: Db): Middleware {
       }
       case CoreShips.SHIP_ADD:
       case CoreShips.SHIP_UPDATE: {
-        const { clients, players } = store.getState()
+        const { clients, users } = store.getState()
         const { ship } = action.payload
-        const player = CorePlayers.getPlayerByActiveShipId(
-          players,
-          ship.id,
-        )
+        const user = CoreUsers.getUserByActiveShipId(users, ship.id)
 
-        if (!player) {
+        if (!user) {
           break
         }
 
-        const client = Clients.getClientByPlayerId(clients, player.id)
+        const client = Clients.getClientByUserId(clients, user.id)
         const message = Protocol.shipUpdateMessage(ship)
 
-        // Send updated player state to client
+        // Send updated user state to client
         store.dispatch(Clients.sendClient(client.id, message))
 
         break

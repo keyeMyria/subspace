@@ -42,12 +42,12 @@
     "use strict"
     var n = t("sequelize"),
       a = process.env,
-      i = a.DB_USERNAME,
-      s = a.DB_PASSWORD,
-      u = a.DB_NAME,
+      s = a.DB_USERNAME,
+      u = a.DB_PASSWORD,
+      i = a.DB_NAME,
       o = a.DB_HOST,
       c = a.DB_PORT,
-      l = {
+      d = {
         match: [
           n.ConnectionError,
           n.ConnectionRefusedError,
@@ -63,25 +63,25 @@
         host: "127.0.0.1",
         port: 26257,
         dialect: "postgres",
-        retry: l,
+        retry: d,
       },
       test: {
-        username: i,
-        password: s,
-        database: u,
+        username: s,
+        password: u,
+        database: i,
         host: o,
         port: c,
         dialect: "postgres",
-        retry: l,
+        retry: d,
       },
       production: {
-        username: i,
-        password: s,
-        database: u,
+        username: s,
+        password: u,
+        database: i,
         host: o,
         port: c,
         dialect: "postgres",
-        retry: l,
+        retry: d,
       },
     }
   },
@@ -110,17 +110,250 @@
   },
   "./src/auth/index.js": function(e, r, t) {
     "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireWildcard"),
+      a = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.create = function() {
-        return {
-          check: function() {
-            return Promise.resolve(!1)
-          },
-          login: function() {
-            return Promise.reject()
-          },
-        }
+      (r.authenticate = function(e, r) {
+        return c.apply(this, arguments)
+      }),
+      (r.verify = function(e) {
+        return d.apply(this, arguments)
       })
+    var s = a(t("@babel/runtime/regenerator")),
+      u = a(t("@babel/runtime/helpers/asyncToGenerator")),
+      i = (t("./src/data/index.js"), n(t("./src/auth/util.js"))),
+      o = t("./src/auth/jwt.js")
+    function c() {
+      return (c = (0, u.default)(
+        s.default.mark(function e(r, t) {
+          var n
+          return s.default.wrap(
+            function(e) {
+              for (;;)
+                switch ((e.prev = e.next)) {
+                  case 0:
+                    return (e.next = 2), i.authenticate(r, t)
+                  case 2:
+                    return (
+                      (n = e.sent),
+                      e.abrupt("return", (0, o.generateToken)(n))
+                    )
+                  case 4:
+                  case "end":
+                    return e.stop()
+                }
+            },
+            e,
+            this,
+          )
+        }),
+      )).apply(this, arguments)
+    }
+    function d() {
+      return (d = (0, u.default)(
+        s.default.mark(function e(r) {
+          return s.default.wrap(
+            function(e) {
+              for (;;)
+                switch ((e.prev = e.next)) {
+                  case 0:
+                    return e.abrupt("return", (0, o.verifyToken)(r))
+                  case 1:
+                  case "end":
+                    return e.stop()
+                }
+            },
+            e,
+            this,
+          )
+        }),
+      )).apply(this, arguments)
+    }
+  },
+  "./src/auth/jwt.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.verifyToken = function(e) {
+        return a.default.verify(e, u)
+      }),
+      (r.generateToken = function(e) {
+        return a.default.sign(e, u, { expiresIn: "24h" })
+      })
+    var a = n(t("jsonwebtoken")),
+      s = process.env,
+      u = s.JWT_SECRET
+    s.JWT_EXPIRE_SECONDS
+  },
+  "./src/auth/middleware.js": function(e, r, t) {
+    "use strict"
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.login = r.auth = void 0)
+    var n = t("passport"),
+      a = n.authenticate("jwt", { session: !1 })
+    r.auth = a
+    var s = n.authenticate("local", { session: !1 })
+    r.login = s
+  },
+  "./src/auth/strategy.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.jwt = r.local = void 0)
+    var a = n(t("@babel/runtime/regenerator")),
+      s = n(t("@babel/runtime/helpers/asyncToGenerator")),
+      u = t("passport-jwt"),
+      i = n(t("passport-local")),
+      o = t("./src/auth/util.js"),
+      c = t("./src/data/index.js"),
+      d = process.env.JWT_SECRET,
+      l = {
+        jwtFromRequest: u.ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: d,
+      },
+      p = new i.default(
+        (function() {
+          var e = (0, s.default)(
+            a.default.mark(function e(r, t, n) {
+              var s
+              return a.default.wrap(
+                function(e) {
+                  for (;;)
+                    switch ((e.prev = e.next)) {
+                      case 0:
+                        return (
+                          (e.prev = 0),
+                          (e.next = 3),
+                          (0, o.authenticate)(r, t)
+                        )
+                      case 3:
+                        ;(s = e.sent), (e.next = 9)
+                        break
+                      case 6:
+                        return (
+                          (e.prev = 6),
+                          (e.t0 = e.catch(0)),
+                          e.abrupt("return", n(e.t0))
+                        )
+                      case 9:
+                        return e.abrupt("return", n(null, s))
+                      case 10:
+                      case "end":
+                        return e.stop()
+                    }
+                },
+                e,
+                this,
+                [[0, 6]],
+              )
+            }),
+          )
+          return function(r, t, n) {
+            return e.apply(this, arguments)
+          }
+        })(),
+      )
+    r.local = p
+    var f = new u.Strategy(
+      l,
+      (function() {
+        var e = (0, s.default)(
+          a.default.mark(function e(r, t) {
+            var n
+            return a.default.wrap(
+              function(e) {
+                for (;;)
+                  switch ((e.prev = e.next)) {
+                    case 0:
+                      return (
+                        (e.prev = 0),
+                        (e.next = 3),
+                        c.User.findById(r.id)
+                      )
+                    case 3:
+                      ;(n = e.sent), (e.next = 9)
+                      break
+                    case 6:
+                      return (
+                        (e.prev = 6),
+                        (e.t0 = e.catch(0)),
+                        e.abrupt("return", t(e.t0))
+                      )
+                    case 9:
+                      t(null, !!n && n.toJSON())
+                    case 10:
+                    case "end":
+                      return e.stop()
+                  }
+              },
+              e,
+              this,
+              [[0, 6]],
+            )
+          }),
+        )
+        return function(r, t) {
+          return e.apply(this, arguments)
+        }
+      })(),
+    )
+    r.jwt = f
+  },
+  "./src/auth/util.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.comparePassword = o),
+      (r.authenticate = function(e, r) {
+        return c.apply(this, arguments)
+      })
+    var a = n(t("@babel/runtime/regenerator")),
+      s = n(t("@babel/runtime/helpers/asyncToGenerator")),
+      u = n(t("bcrypt")),
+      i = t("./src/data/index.js")
+    function o(e, r) {
+      return u.default.compare(e, r.password)
+    }
+    function c() {
+      return (c = (0, s.default)(
+        a.default.mark(function e(r, t) {
+          var n, s
+          return a.default.wrap(
+            function(e) {
+              for (;;)
+                switch ((e.prev = e.next)) {
+                  case 0:
+                    return (
+                      (e.next = 2),
+                      i.User.findOne({ where: { username: r } })
+                    )
+                  case 2:
+                    if ((n = e.sent)) {
+                      e.next = 5
+                      break
+                    }
+                    throw new Error("Invalid username or password")
+                  case 5:
+                    return (s = n.toJSON()), (e.next = 8), o(t, s)
+                  case 8:
+                    if (e.sent) {
+                      e.next = 10
+                      break
+                    }
+                    throw new Error("Invalid username or password")
+                  case 10:
+                    return e.abrupt("return", s)
+                  case 11:
+                  case "end":
+                    return e.stop()
+                }
+            },
+            e,
+            this,
+          )
+        }),
+      )).apply(this, arguments)
+    }
   },
   "./src/cache/index.js": function(e, r, t) {
     "use strict"
@@ -135,7 +368,7 @@
     var n = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
       (r.create = function(e, r, t, n) {
-        var d =
+        var l =
           arguments.length > 4 && void 0 !== arguments[4]
             ? arguments[4]
             : 64
@@ -152,9 +385,9 @@
           var r = e.reduce(function(e, r, t) {
               var n = r
                 .toString(2)
-                .padStart(d, "0")
+                .padStart(l, "0")
                 .split("")
-              return 0 === t ? n : u(e, n)
+              return 0 === t ? n : i(e, n)
             }, []),
             t = (function e(r) {
               var t =
@@ -163,16 +396,16 @@
                   : []
               var n = r.length
               var a = 0
-              var i
+              var s
               for (; a < n; a++)
-                (i = r[a]), Array.isArray(i) ? e(i, t) : t.push(i)
+                (s = r[a]), Array.isArray(s) ? e(s, t) : t.push(s)
               return t
             })(r).join("")
           return o(t)
             .toString(16)
-            .padStart(d * n / 4, "0")
+            .padStart(l * n / 4, "0")
         }
-        function y(e, r) {
+        function h(e, r) {
           p(e)
           var t = f(e),
             n = e.reduce(function(e, r) {
@@ -181,74 +414,31 @@
           return "".concat(n, ":").concat(r)
         }
         function b() {
-          return (b = (0, s.default)(
-            a.default.mark(function n(i) {
-              var s
+          return (b = (0, u.default)(
+            a.default.mark(function n(s) {
+              var u
               return a.default.wrap(
                 function(n) {
                   for (;;)
                     switch ((n.prev = n.next)) {
                       case 0:
-                        return (n.next = 2), e.hgetAsync(t, i)
+                        return (n.next = 2), e.hgetAsync(t, s)
                       case 2:
-                        if ((s = n.sent)) {
+                        if ((u = n.sent)) {
                           n.next = 5
-                          break
-                        }
-                        throw new Error(
-                          "Element ".concat(i, " not found."),
-                        )
-                      case 5:
-                        return n.abrupt(
-                          "return",
-                          c(e, function(e) {
-                            e.zrem(r, s), e.hdel(t, i)
-                          }),
-                        )
-                      case 6:
-                      case "end":
-                        return n.stop()
-                    }
-                },
-                n,
-                this,
-              )
-            }),
-          )).apply(this, arguments)
-        }
-        function h() {
-          return (h = (0, s.default)(
-            a.default.mark(function n(i, s) {
-              var u, o
-              return a.default.wrap(
-                function(n) {
-                  for (;;)
-                    switch ((n.prev = n.next)) {
-                      case 0:
-                        return (
-                          (u = y(i, s)),
-                          (n.next = 3),
-                          e.hgetAsync(t, s)
-                        )
-                      case 3:
-                        if ((o = n.sent)) {
-                          n.next = 6
                           break
                         }
                         throw new Error(
                           "Element ".concat(s, " not found."),
                         )
-                      case 6:
+                      case 5:
                         return n.abrupt(
                           "return",
                           c(e, function(e) {
-                            e.zrem(r, o),
-                              e.hdel(t, s),
-                              e.zadd(r, 0, u),
-                              e.hset(t, s, u)
+                            e.zrem(r, u), e.hdel(t, s)
                           }),
                         )
-                      case 7:
+                      case 6:
                       case "end":
                         return n.stop()
                     }
@@ -260,73 +450,116 @@
           )).apply(this, arguments)
         }
         function v() {
-          return (v = (0, s.default)(
-            a.default.mark(function t(i, s) {
-              var u,
+          return (v = (0, u.default)(
+            a.default.mark(function n(s, u) {
+              var i, o
+              return a.default.wrap(
+                function(n) {
+                  for (;;)
+                    switch ((n.prev = n.next)) {
+                      case 0:
+                        return (
+                          (i = h(s, u)),
+                          (n.next = 3),
+                          e.hgetAsync(t, u)
+                        )
+                      case 3:
+                        if ((o = n.sent)) {
+                          n.next = 6
+                          break
+                        }
+                        throw new Error(
+                          "Element ".concat(u, " not found."),
+                        )
+                      case 6:
+                        return n.abrupt(
+                          "return",
+                          c(e, function(e) {
+                            e.zrem(r, o),
+                              e.hdel(t, u),
+                              e.zadd(r, 0, i),
+                              e.hset(t, u, i)
+                          }),
+                        )
+                      case 7:
+                      case "end":
+                        return n.stop()
+                    }
+                },
+                n,
+                this,
+              )
+            }),
+          )).apply(this, arguments)
+        }
+        function y() {
+          return (y = (0, u.default)(
+            a.default.mark(function t(s, u) {
+              var i,
                 c,
-                d,
+                l,
                 p,
-                y,
-                b,
                 h,
+                b,
                 v,
+                y,
                 m,
-                _,
-                P,
-                I,
-                S,
-                g,
                 x,
-                E,
                 j,
-                A,
-                O,
-                C,
-                R,
-                L,
+                S,
+                _,
                 w,
-                D
+                g,
+                I,
+                E,
+                k,
+                O,
+                R,
+                U,
+                P,
+                T,
+                A
               return a.default.wrap(
                 function(t) {
                   for (;;)
                     switch ((t.prev = t.next)) {
                       case 0:
                         for (
-                          u = [], c = [], d = Math.pow(2, s), p = 0;
-                          p < i.length;
+                          i = [], c = [], l = Math.pow(2, u), p = 0;
+                          p < s.length;
                           p++
                         )
-                          (y = i[p]),
-                            u.push(o(y[0] / d)),
-                            c.push(o(y[1] / d))
-                        ;(b = []), (h = u.slice()), (v = !0)
+                          (h = s[p]),
+                            i.push(o(h[0] / l)),
+                            c.push(o(h[1] / l))
+                        ;(b = []), (v = i.slice()), (y = !0)
                       case 7:
-                        if (!v) {
+                        if (!y) {
                           t.next = 25
                           break
                         }
-                        for (m = [], _ = [], P = 0; P < n; P++)
-                          m.push(o(h[P] * d)),
-                            _.push(o(m[P] | (d - 1)))
+                        for (m = [], x = [], j = 0; j < n; j++)
+                          m.push(o(v[j] * l)),
+                            x.push(o(m[j] | (l - 1)))
                         b.push([
                           "[".concat(f(m), ":"),
-                          "[".concat(f(_), ":ÿ"),
+                          "[".concat(f(x), ":ÿ"),
                         ]),
-                          (I = 0)
+                          (S = 0)
                       case 13:
-                        if (!(I < n)) {
+                        if (!(S < n)) {
                           t.next = 23
                           break
                         }
-                        if (h[I] === c[I]) {
+                        if (v[S] === c[S]) {
                           t.next = 19
                           break
                         }
-                        return (h[I] += 1), t.abrupt("break", 23)
+                        return (v[S] += 1), t.abrupt("break", 23)
                       case 19:
-                        I === n - 1 ? (v = !1) : (h[I] = u[I])
+                        S === n - 1 ? (y = !1) : (v[S] = i[S])
                       case 20:
-                        I++, (t.next = 13)
+                        S++, (t.next = 13)
                         break
                       case 23:
                         t.next = 7
@@ -334,7 +567,7 @@
                       case 25:
                         return (
                           (t.next = 27),
-                          l(e, function(e) {
+                          d(e, function(e) {
                             for (var t = 0; t < b.length; t++) {
                               var n = b[t]
                               e.zrangebylex(r, n[0], n[1])
@@ -342,58 +575,58 @@
                           })
                         )
                       case 27:
-                        ;(S = t.sent), (g = []), (x = 0)
+                        ;(_ = t.sent), (w = []), (g = 0)
                       case 30:
-                        if (!(x < S.length)) {
+                        if (!(g < _.length)) {
                           t.next = 52
                           break
                         }
-                        ;(E = S[x]), (j = 0)
+                        ;(I = _[g]), (E = 0)
                       case 33:
-                        if (!(j < E.length)) {
+                        if (!(E < I.length)) {
                           t.next = 49
                           break
                         }
-                        ;(A = E[j]),
-                          (O = A.split(":")),
-                          (C = !1),
-                          (R = 0)
+                        ;(k = I[E]),
+                          (O = k.split(":")),
+                          (R = !1),
+                          (U = 0)
                       case 38:
-                        if (!(R < n)) {
+                        if (!(U < n)) {
                           t.next = 45
                           break
                         }
                         if (
                           !(
-                            o(O[R + 1]) < i[R][0] ||
-                            o(O[R + 1]) > i[R][1]
+                            o(O[U + 1]) < s[U][0] ||
+                            o(O[U + 1]) > s[U][1]
                           )
                         ) {
                           t.next = 42
                           break
                         }
-                        return (C = !0), t.abrupt("break", 45)
+                        return (R = !0), t.abrupt("break", 45)
                       case 42:
-                        R++, (t.next = 38)
+                        U++, (t.next = 38)
                         break
                       case 45:
-                        if (!C) {
+                        if (!R) {
                           for (
-                            L = [], w = O[O.length - 1], D = 1;
-                            D < O.length - 1;
-                            D++
+                            P = [], T = O[O.length - 1], A = 1;
+                            A < O.length - 1;
+                            A++
                           )
-                            L.push(o(O[D]))
-                          g.push([L, w])
+                            P.push(o(O[A]))
+                          w.push([P, T])
                         }
                       case 46:
-                        j++, (t.next = 33)
+                        E++, (t.next = 33)
                         break
                       case 49:
-                        x++, (t.next = 30)
+                        g++, (t.next = 30)
                         break
                       case 52:
-                        return t.abrupt("return", g)
+                        return t.abrupt("return", w)
                       case 53:
                       case "end":
                         return t.stop()
@@ -407,20 +640,20 @@
         }
         return {
           insert: function(n, a) {
-            var i = y(n, a)
+            var s = h(n, a)
             return c(e, function(e) {
-              e.zadd(r, 0, i), e.hset(t, a, i)
+              e.zadd(r, 0, s), e.hset(t, a, s)
             })
           },
           remove: function(t, n) {
-            var a = y(t, n)
+            var a = h(t, n)
             return e.zremAsync(r, a)
           },
           removeById: function(e) {
             return b.apply(this, arguments)
           },
           update: function(e, r) {
-            return h.apply(this, arguments)
+            return v.apply(this, arguments)
           },
           query: function(e) {
             p(e)
@@ -430,10 +663,10 @@
               t = r.map(function(e) {
                 return e[1] - e[0] + 1
               }),
-              n = Math.min.apply(Math, (0, i.default)(t)),
+              n = Math.min.apply(Math, (0, s.default)(t)),
               a = 1
             for (; n > 2; ) (n /= 2), (a += 1)
-            var s = function() {
+            var u = function() {
               var e = Math.pow(2, a),
                 t = r.map(function(r) {
                   return o(r[1] / e) - o(r[0] / e) + 1
@@ -445,19 +678,19 @@
               a += 1
             }
             for (;;) {
-              var u = s()
-              if ("break" === u) break
+              var i = u()
+              if ("break" === i) break
             }
             return (function(e, r) {
-              return v.apply(this, arguments)
+              return y.apply(this, arguments)
             })(r, a)
           },
         }
       })
     var a = n(t("@babel/runtime/regenerator")),
-      i = n(t("@babel/runtime/helpers/toConsumableArray")),
-      s = n(t("@babel/runtime/helpers/asyncToGenerator")),
-      u = function(e, r) {
+      s = n(t("@babel/runtime/helpers/toConsumableArray")),
+      u = n(t("@babel/runtime/helpers/asyncToGenerator")),
+      i = function(e, r) {
         return e.map(function(e, t) {
           return [e, r[t]]
         })
@@ -469,7 +702,7 @@
       var t = e.multi()
       return r(t), t.execAsync()
     }
-    function l(e, r) {
+    function d(e, r) {
       var t = e.batch()
       return r(t), t.execAsync()
     }
@@ -480,69 +713,120 @@
     Object.defineProperty(r, "__esModule", { value: !0 }),
       (r.create = void 0)
     var a = n(t("redis")),
-      i = n(t("util-promisifyall")),
-      s = (t("@subspace/core"), t("./src/cache/redimension.js"))
-    ;(0, i.default)(a.default.RedisClient.prototype),
-      (0, i.default)(a.default.Multi.prototype)
+      s = n(t("util-promisifyall")),
+      u = (t("@subspace/core"), t("./src/cache/redimension.js"))
+    ;(0, s.default)(a.default.RedisClient.prototype),
+      (0, s.default)(a.default.Multi.prototype)
     r.create = function(e) {
       var r = a.default.createClient(e.redis),
         t = e.key,
         n = e.dimensions,
-        i = e.precision,
-        u = void 0 === i ? 64 : i
-      return (0, s.create)(r, t, "".concat(t, "-map"), n, u)
+        s = e.precision,
+        i = void 0 === s ? 64 : s
+      return (0, u.create)(r, t, "".concat(t, "-map"), n, i)
     }
   },
   "./src/data/index.js": function(e, r, t) {
     "use strict"
     var n = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.Player = r.sequelize = void 0)
-    var a = n(t("sequelize-cockroachdb")),
-      i = n(t("./cfg/db.config.js")).default.production,
-      s = new a.default(i.database, i.username, i.password, i)
-    r.sequelize = s
-    var u = s.define("Player", {
-      username: a.default.STRING,
-      password: a.default.STRING,
-      activeShipId: a.default.NUMBER,
+      (r.default = r.Body = r.Ship = r.User = void 0)
+    var a = n(t("@babel/runtime/regenerator")),
+      s = n(t("@babel/runtime/helpers/asyncToGenerator")),
+      u = n(t("bcrypt")),
+      i = n(t("sequelize-cockroachdb")),
+      o = n(t("./cfg/db.config.js")).default.production,
+      c = new i.default(o.database, o.username, o.password, o),
+      d = c.define("User", {
+        username: i.default.STRING,
+        password: i.default.STRING,
+        activeShipId: i.default.INTEGER,
+      })
+    function l(e) {
+      return p.apply(this, arguments)
+    }
+    function p() {
+      return (p = (0, s.default)(
+        a.default.mark(function e(r) {
+          var t, n
+          return a.default.wrap(
+            function(e) {
+              for (;;)
+                switch ((e.prev = e.next)) {
+                  case 0:
+                    return (e.next = 2), u.default.genSalt(10)
+                  case 2:
+                    return (
+                      (t = e.sent),
+                      (e.next = 5),
+                      u.default.hash(r, t, null)
+                    )
+                  case 5:
+                    return (n = e.sent), e.abrupt("return", n)
+                  case 7:
+                  case "end":
+                    return e.stop()
+                }
+            },
+            e,
+            this,
+          )
+        }),
+      )).apply(this, arguments)
+    }
+    ;(r.User = d),
+      d.beforeCreate(
+        (function() {
+          var e = (0, s.default)(
+            a.default.mark(function e(r) {
+              return a.default.wrap(
+                function(e) {
+                  for (;;)
+                    switch ((e.prev = e.next)) {
+                      case 0:
+                        return (e.next = 2), l(r.password)
+                      case 2:
+                        r.password = e.sent
+                      case 3:
+                      case "end":
+                        return e.stop()
+                    }
+                },
+                e,
+                this,
+              )
+            }),
+          )
+          return function(r) {
+            return e.apply(this, arguments)
+          }
+        })(),
+      )
+    var f = c.define("Ship", { bodyId: i.default.INTEGER })
+    ;(r.Ship = f),
+      d.hasOne(f, { as: "activeShip", foreignKey: "activeShipId" })
+    var h = c.define("Body", {
+      angle: i.default.FLOAT,
+      angularVelocity: i.default.FLOAT,
+      positionX: i.default.FLOAT,
+      positionY: i.default.FLOAT,
+      velocityX: i.default.FLOAT,
+      velocityY: i.default.FLOAT,
+      width: i.default.FLOAT,
+      height: i.default.FLOAT,
     })
-    r.Player = u
+    ;(r.Body = h), f.hasOne(h, { as: "body", foreignKey: "bodyId" })
+    var b = { sequelize: c, User: d, Ship: f, Body: h }
+    r.default = b
   },
   "./src/index.js": function(e, r, t) {
     "use strict"
-    var n = t("@babel/runtime/helpers/interopRequireDefault"),
-      a = t("@babel/runtime/helpers/interopRequireWildcard")
-    t("source-map-support/register")
-    var i = a(t("http")),
-      s = a(t("@web-udp/server")),
-      u = t("@subspace/core"),
-      o = n(t("./src/data/index.js")),
-      c = n(t("./cfg/server.config.json")),
-      l = t("./src/store/index.js"),
-      d = a(t("./src/auth/index.js")),
-      p = process.env,
-      f = p.TICK_RATE,
-      y = p.SEND_RATE,
-      b = p.PORT,
-      h = 1 / (Number(f) || c.default.tick_rate),
-      v = 1 / (Number(y) || c.default.send_rate),
-      m = new i.Server(),
-      _ = new s.Server({ server: m }),
-      P = d.create()
-    ;(0, l.configureStore)({
-      auth: P,
-      tickRate: h,
-      sendRate: v,
-      udp: _,
-    }).dispatch(u.Loop.startLoop()),
-      o.default.sequelize.sync().then(function() {
-        m.listen(Number(b), function() {
-          console.log(
-            "Server listening at //localhost:".concat(String(b)),
-          )
-        })
-      })
+    t("path")
+    var n = t("remotedev-server")
+    t("dotenv").config(),
+      t("source-map-support/register"),
+      n({ hostname: "localhost", port: 9001 }),
+      t("./src/server.js")
   },
   "./src/modules/adjacent-bodies/index.js": function(e, r, t) {
     "use strict"
@@ -554,14 +838,14 @@
         var e =
             arguments.length > 0 && void 0 !== arguments[0]
               ? arguments[0]
-              : y,
+              : h,
           r = arguments.length > 1 ? arguments[1] : void 0
         switch (r.type) {
           case p:
             return (0, o.default)({}, e, {
-              byPlayerId: (0, o.default)(
+              byUserId: (0, o.default)(
                 {},
-                e.byPlayerId,
+                e.byUserId,
                 r.payload.adjacentBodies,
               ),
             })
@@ -593,49 +877,49 @@
         }
       }),
       (r.getAdjacentBodies = r.ADJACENT_BODIES_UPDATE = void 0)
-    var i = a(t("@babel/runtime/regenerator")),
-      s = a(t("@babel/runtime/helpers/slicedToArray")),
-      u = a(t("@babel/runtime/helpers/asyncToGenerator")),
+    var s = a(t("@babel/runtime/regenerator")),
+      u = a(t("@babel/runtime/helpers/slicedToArray")),
+      i = a(t("@babel/runtime/helpers/asyncToGenerator")),
       o = a(t("@babel/runtime/helpers/objectSpread")),
       c = t("@subspace/core"),
-      l = n(t("./src/util/async.js")),
-      d = 500,
+      d = n(t("./src/util/async.js")),
+      l = 500,
       p = "adjacent-bodies/update"
     function f(e) {
       return { type: p, payload: { adjacentBodies: e } }
     }
     r.ADJACENT_BODIES_UPDATE = p
-    var y = { byPlayerId: {} }
+    var h = { byUserId: {} }
     function b() {
-      return (b = (0, u.default)(
-        i.default.mark(function e(r, t) {
-          var n, a, u
-          return i.default.wrap(
+      return (b = (0, i.default)(
+        s.default.mark(function e(r, t) {
+          var n, a, i
+          return s.default.wrap(
             function(e) {
               for (;;)
                 switch ((e.prev = e.next)) {
                   case 0:
                     return (
-                      (n = c.Players.getPlayers(r.players)),
+                      (n = c.Users.getUsers(r.users)),
                       (a = Object.keys(n)),
-                      (u = a.reduce(function(e, n) {
-                        var a = (0, c.getPlayerBody)(r, Number(n))
+                      (i = a.reduce(function(e, n) {
+                        var a = (0, c.getUserBody)(r, Number(n))
                         if (null === a) return e
-                        var i = (0, s.default)(a.position, 2),
-                          u = i[0],
-                          o = i[1],
-                          l = [[u - d, u + d], [o - d, o + d]]
+                        var s = (0, u.default)(a.position, 2),
+                          i = s[0],
+                          o = s[1],
+                          d = [[i - l, i + l], [o - l, o + l]]
                         return (
-                          (e[n] = t.query(l).then(function(e) {
+                          (e[n] = t.query(d).then(function(e) {
                             return e.map(function(e) {
-                              return (0, s.default)(e, 2)[1]
+                              return (0, u.default)(e, 2)[1]
                             })
                           })),
                           e
                         )
                       }, {})),
                       (e.next = 5),
-                      l.object(u)
+                      d.object(i)
                     )
                   case 5:
                     return e.abrupt("return", e.sent)
@@ -651,7 +935,7 @@
       )).apply(this, arguments)
     }
     r.getAdjacentBodies = function(e) {
-      return e.byPlayerId
+      return e.byUserId
     }
   },
   "./src/modules/clients/index.js": function(e, r, t) {
@@ -659,282 +943,314 @@
     var n = t("@babel/runtime/helpers/interopRequireWildcard"),
       a = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.addClient = P),
-      (r.loginClient = I),
-      (r.loginClientFailure = S),
-      (r.loginClientSuccess = g),
-      (r.setClientPlayer = x),
-      (r.sendClient = E),
-      (r.removeClient = j),
+      (r.addClient = b),
+      (r.sendClient = function(e, r) {
+        return { type: f, payload: { clientId: e, message: r } }
+      }),
+      (r.removeClient = v),
       (r.default = function() {
         var e =
             arguments.length > 0 && void 0 !== arguments[0]
               ? arguments[0]
-              : A,
+              : y,
           r = arguments.length > 1 ? arguments[1] : void 0
         switch (r.type) {
-          case f:
+          case p:
             var t = r.payload.client,
               n = (0, c.default)(
                 {},
                 e.byId,
                 (0, o.default)({}, t.id, t),
               ),
-              a = e.byPlayerId
+              a = e.byUserId
             return (
-              t.playerId &&
+              t.userId &&
                 (a = (0, c.default)(
                   {},
                   a,
-                  (0, o.default)({}, t.playerId, t),
+                  (0, o.default)({}, t.userId, t),
                 )),
-              (0, c.default)({}, e, { byId: n, byPlayerId: a })
+              (0, c.default)({}, e, { byId: n, byUserId: a })
             )
-          case v:
-            var i = r.payload,
-              s = i.clientId,
-              u = i.playerId,
-              l = (0, c.default)({}, O(e, s), { playerId: u })
-            return (0, c.default)({}, e, {
-              byId: (0, c.default)(
-                {},
-                e.byId,
-                (0, o.default)({}, s, l),
-              ),
-              byPlayerId: (0, c.default)(
-                {},
-                e.byPlayerId,
-                (0, o.default)({}, u, l),
-              ),
-            })
-          case _:
-            var d = r.payload.clientId,
-              p = O(e, d),
-              y = (0, c.default)({}, e)
+          case h:
+            var s = r.payload.clientId,
+              u = m(e, s),
+              i = (0, c.default)({}, e)
             return (
-              delete y.byId[d],
-              p.playerId && delete y.byPlayerId[p.playerId],
-              y
+              delete i.byId[s],
+              u.userId && delete i.byUserId[u.userId],
+              i
             )
           default:
             return e
         }
       }),
       (r.createMiddleware = function(e, r) {
-        var t = {}
-        return function(n) {
-          return (
-            e.connections.subscribe(function(e) {
-              var a = n.dispatch,
-                o = (0, l.default)()
-              ;(t[e.id] = e),
-                (function(e, t, n) {
-                  e.messages.subscribe(
-                    ((a = (0, u.default)(
-                      i.default.mark(function e(a) {
-                        var u, o, c, l, p
-                        return i.default.wrap(
-                          function(e) {
-                            for (;;)
-                              switch ((e.prev = e.next)) {
-                                case 0:
-                                  if (
-                                    ((u = JSON.parse(a)),
-                                    (o = (0, s.default)(u, 2)),
-                                    (c = (0, s.default)(o[1], 2)),
-                                    (l = c[0]),
-                                    (p = c[1]),
-                                    l !==
-                                      d.Protocol
-                                        .MESSAGE_TYPE_AUTH_LOGIN)
-                                  ) {
-                                    e.next = 4
-                                    break
-                                  }
-                                  return e.abrupt(
-                                    "return",
-                                    n(I(t, p)),
-                                  )
-                                case 4:
-                                  return (e.next = 6), r.check(u)
-                                case 6:
-                                  if (e.sent) {
-                                    e.next = 8
-                                    break
-                                  }
-                                  return e.abrupt(
-                                    "return",
-                                    console.error(
-                                      "Client ".concat(
-                                        t,
-                                        " is not authenticated",
-                                      ),
-                                    ),
-                                  )
-                                case 8:
-                                  ;(e.t0 = l), (e.next = 11)
-                                  break
-                                case 11:
-                                  return e.abrupt(
-                                    "return",
-                                    console.error(
-                                      "Unrecognized message: ".concat(
-                                        a,
-                                      ),
-                                    ),
-                                  )
-                                case 12:
-                                case "end":
-                                  return e.stop()
-                              }
-                          },
-                          e,
-                          this,
-                        )
-                      }),
-                    )),
-                    function(e) {
-                      return a.apply(this, arguments)
-                    }),
-                  )
-                  var a
-                })(e, o, a),
-                a(P({ id: o, connectionId: e.id }))
+        var t = {},
+          n = function(e, r, t) {
+            var n
+            e.closed.subscribe(function() {
+              t(v(r))
             }),
+              e.messages.subscribe(
+                ((n = (0, i.default)(
+                  s.default.mark(function e(r) {
+                    var t, n, a
+                    return s.default.wrap(
+                      function(e) {
+                        for (;;)
+                          switch ((e.prev = e.next)) {
+                            case 0:
+                              ;(t = JSON.parse(r)),
+                                (n = (0, u.default)(t, 1)),
+                                (a = n[0]),
+                                (e.t0 = a),
+                                (e.next = 5)
+                              break
+                            case 5:
+                              return e.abrupt(
+                                "return",
+                                console.error(
+                                  "Unrecognized message: ".concat(r),
+                                ),
+                              )
+                            case 6:
+                            case "end":
+                              return e.stop()
+                          }
+                      },
+                      e,
+                      this,
+                    )
+                  }),
+                )),
+                function(e) {
+                  return n.apply(this, arguments)
+                }),
+              )
+          }
+        return function(a) {
+          var u
+          return (
+            e.connections.subscribe(
+              ((u = (0, i.default)(
+                s.default.mark(function e(u) {
+                  var i, o, c
+                  return s.default.wrap(
+                    function(e) {
+                      for (;;)
+                        switch ((e.prev = e.next)) {
+                          case 0:
+                            return (
+                              (e.prev = 0),
+                              (e.next = 3),
+                              r.verify(u.metadata.token)
+                            )
+                          case 3:
+                            ;(i = e.sent), (e.next = 12)
+                            break
+                          case 6:
+                            return (
+                              (e.prev = 6),
+                              (e.t0 = e.catch(0)),
+                              console.error(
+                                "Invalid credentials for connection ".concat(
+                                  u.id,
+                                ),
+                              ),
+                              u.send(
+                                JSON.stringify(
+                                  l.Protocol.authTokenInvalidMessage(),
+                                ),
+                              ),
+                              u.close(),
+                              e.abrupt("return")
+                            )
+                          case 12:
+                            ;(o = a.dispatch),
+                              (c = (0, d.default)()),
+                              o(
+                                b({
+                                  id: c,
+                                  userId: i.id,
+                                  connectionId: u.id,
+                                }),
+                              ),
+                              (t[u.id] = u),
+                              n(u, c, o)
+                          case 17:
+                          case "end":
+                            return e.stop()
+                        }
+                    },
+                    e,
+                    this,
+                    [[0, 6]],
+                  )
+                }),
+              )),
+              function(e) {
+                return u.apply(this, arguments)
+              }),
+            ),
             function(e) {
-              return function(a) {
-                switch (a.type) {
-                  case y:
-                    var i = a.payload,
-                      s = i.clientId,
-                      u = i.credentials
-                    r
-                      .login(u)
-                      .then(function(r) {
-                        e(g(s, r))
-                      })
-                      .catch(function(r) {
-                        e(S(s))
-                      })
+              return function(r) {
+                switch (r.type) {
+                  case f:
+                    var n = a.getState(),
+                      s = n.clients,
+                      u = r.payload,
+                      i = u.clientId,
+                      o = u.message,
+                      c = m(s, i),
+                      d = c.connectionId
+                    t[d].send(JSON.stringify(o))
                     break
                   case h:
-                    var o = a.payload,
-                      c = o.clientId,
-                      l = o.player,
-                      f = n.getState()
-                    if (d.Players.getPlayer(f.players, l.id))
-                      return void e(j(c))
-                    e(x(c, l.id)), e(p.loadPlayer(l.id))
-                    break
-                  case b:
-                    var v = a.payload.clientId
-                    e(E(v, d.Protocol.authLoginFailureMessage()))
-                    break
-                  case m:
-                    var P = n.getState(),
-                      I = P.clients,
-                      A = a.payload,
-                      C = A.clientId,
-                      R = A.message,
-                      L = O(I, C)
-                    t[L.connectionId].send(JSON.stringify(R))
-                    break
-                  case _:
-                    var w = a.payload.clientId,
-                      D = n.getState(),
-                      k = D.clients,
-                      q = O(k, w),
-                      T = q.connectionId
-                    t[T].close(), delete t[T]
+                    var l = r.payload.clientId,
+                      p = a.getState(),
+                      b = p.clients,
+                      v = m(b, l),
+                      y = v.connectionId
+                    t[y].close(), delete t[y]
                 }
-                return e(a)
+                return e(r)
               }
             }
           )
         }
       }),
-      (r.getClientByPlayerId = r.getClient = r.CLIENT_REMOVE = r.CLIENT_SEND = r.CLIENT_SET_PLAYER = r.CLIENT_LOGIN_SUCCESS = r.CLIENT_LOGIN_FAILURE = r.CLIENT_LOGIN = r.CLIENT_ADD = void 0)
-    var i = a(t("@babel/runtime/regenerator")),
-      s = a(t("@babel/runtime/helpers/slicedToArray")),
-      u = a(t("@babel/runtime/helpers/asyncToGenerator")),
+      (r.getClientByUserId = r.getClient = r.CLIENT_REMOVE = r.CLIENT_SEND = r.CLIENT_ADD = void 0)
+    var s = a(t("@babel/runtime/regenerator")),
+      u = a(t("@babel/runtime/helpers/slicedToArray")),
+      i = a(t("@babel/runtime/helpers/asyncToGenerator")),
       o = a(t("@babel/runtime/helpers/defineProperty")),
       c = a(t("@babel/runtime/helpers/objectSpread")),
-      l = a(t("shortid")),
-      d = t("@subspace/core"),
-      p = n(t("./src/modules/players/index.js")),
-      f = "client/add"
-    r.CLIENT_ADD = f
-    var y = "client/login!"
-    r.CLIENT_LOGIN = y
-    var b = "client/login_failure"
-    r.CLIENT_LOGIN_FAILURE = b
-    var h = "client/login_success"
-    r.CLIENT_LOGIN_SUCCESS = h
-    var v = "client/set_player"
-    r.CLIENT_SET_PLAYER = v
-    var m = "client/send!"
-    r.CLIENT_SEND = m
-    var _ = "client/remove!"
-    function P(e) {
-      return { type: f, payload: { client: e } }
+      d = a(t("shortid")),
+      l = t("@subspace/core"),
+      p = (n(t("./src/modules/users/index.js")), "client/add")
+    r.CLIENT_ADD = p
+    var f = "client/send!"
+    r.CLIENT_SEND = f
+    var h = "client/remove!"
+    function b(e) {
+      return { type: p, payload: { client: e } }
     }
-    function I(e, r) {
-      return { type: y, payload: { clientId: e, credentials: r } }
+    function v(e) {
+      return { type: h, payload: { clientId: e } }
     }
-    function S(e) {
-      return { type: b, payload: { clientId: e } }
-    }
-    function g(e, r) {
-      return { type: h, payload: { clientId: e, player: r } }
-    }
-    function x(e, r) {
-      return { type: v, payload: { clientId: e, playerId: r } }
-    }
-    function E(e, r) {
-      return { type: m, payload: { clientId: e, message: r } }
-    }
-    function j(e) {
-      return { type: _, payload: { clientId: e } }
-    }
-    r.CLIENT_REMOVE = _
-    var A = { byId: {}, byPlayerId: {} }
-    var O = function(e, r) {
+    r.CLIENT_REMOVE = h
+    var y = { byId: {}, byUserId: {} }
+    var m = function(e, r) {
       return e.byId[r]
     }
-    r.getClient = O
-    r.getClientByPlayerId = function(e, r) {
-      return e.byPlayerId[r]
+    r.getClient = m
+    r.getClientByUserId = function(e, r) {
+      return e.byUserId[r]
     }
   },
-  "./src/modules/players/index.js": function(e, r, t) {
+  "./src/modules/ships/index.js": function(e, r, t) {
     "use strict"
     var n = t("@babel/runtime/helpers/interopRequireWildcard")
     Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.loadPlayer = function(e) {
-        return { type: c, payload: { playerId: e } }
+      (r.loadShip = function(e) {
+        return { type: u, payload: { shipId: e } }
       }),
-      (r.loadPlayerFailure = p),
-      (r.loadPlayerSuccess = f),
+      (r.loadShipFailure = c),
+      (r.loadShipSuccess = d),
       (r.default = function(e, r) {
-        return a.Players.default(e, r)
+        return a.Ships.default(e, r)
+      }),
+      (r.createMiddleware = function(e) {
+        return function(r) {
+          return function(t) {
+            return function(n) {
+              switch (n.type) {
+                case u:
+                  var i = n.payload.shipId
+                  e.Ship.findById(i)
+                    .then(function(e) {
+                      if (!e)
+                        throw new Error(
+                          "Ship ".concat(i, " not found."),
+                        )
+                      var r = e.toJSON()
+                      t(d(r)),
+                        t(a.Ships.addShip(r)),
+                        r.body && t(a.Physics.addBody(r.body))
+                    })
+                    .catch(function(e) {
+                      return t(c(i, e))
+                    })
+                  break
+                case a.Ships.SHIP_ADD:
+                case a.Ships.SHIP_UPDATE:
+                  var o = r.getState(),
+                    l = o.clients,
+                    p = o.users,
+                    f = n.payload.ship,
+                    h = a.Users.getUserByActiveShipId(p, f.id)
+                  if (!h) break
+                  var b = s.getClientByUserId(l, h.id),
+                    v = a.Protocol.shipUpdateMessage(f)
+                  r.dispatch(s.sendClient(b.id, v))
+              }
+              return t(n)
+            }
+          }
+        }
+      }),
+      (r.SHIP_LOAD_SUCCESS = r.SHIP_LOAD_FAILURE = r.SHIP_LOAD = void 0)
+    var a = t("@subspace/core"),
+      s = n(t("./src/modules/clients/index.js")),
+      u = (n(t("./src/modules/users/index.js")), "ships/load!")
+    r.SHIP_LOAD = u
+    var i = "ships/load_failure"
+    r.SHIP_LOAD_FAILURE = i
+    var o = "ships/load_success"
+    function c(e, r) {
+      return { type: i, payload: { shipId: e, err: r } }
+    }
+    function d(e) {
+      return { type: o, payload: { ship: e } }
+    }
+    r.SHIP_LOAD_SUCCESS = o
+  },
+  "./src/modules/users/index.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.registerUser = function(e, r) {
+        return {
+          type: o,
+          payload: { clientId: clientId, username: e, password: r },
+        }
+      }),
+      (r.loadUser = function(e) {
+        return { type: c, payload: { userId: e } }
+      }),
+      (r.loadUserFailure = p),
+      (r.loadUserSuccess = f),
+      (r.default = function(e, r) {
+        return a.Users.default(e, r)
       }),
       (r.createMiddleware = function(e, r) {
         return function(t) {
-          var n = o.throttle(function() {
+          var n = i.throttle(function() {
             var e = t.getState(),
               r = e.adjacentBodies,
               n = e.clients,
-              i = e.players,
+              i = e.users,
               o = e.physics,
               c = e.loop,
-              l = u.getAdjacentBodies(r)
-            for (var d in a.Players.getPlayers(i)) {
-              var p = Number(d),
-                f = s.getClientByPlayerId(n, p),
-                y = l[p].map(function(e) {
+              d = u.getAdjacentBodies(r)
+            for (var l in a.Users.getUsers(i)) {
+              var p = Number(l),
+                f = s.getClientByUserId(n, p),
+                h = d[p].map(function(e) {
                   return a.Physics.getBody(o, e)
                 }),
-                b = a.Protocol.snapshotMessage(c.frame, y)
+                b = a.Protocol.snapshotMessage(c.frame, h)
               t.dispatch(s.sendClient(f.id, b))
             }
           }, r)
@@ -944,113 +1260,73 @@
                 case a.Loop.LOOP_TICK:
                   n()
                   break
-                case c:
-                  var o = u.payload.playerId
-                  e
-                    .getPlayer(o)
+                case o:
+                  var i = u.payload,
+                    d = i.clientId,
+                    l = i.username,
+                    h = i.password
+                  e.User.create({ username: l, password: h })
                     .then(function(e) {
-                      r(f(o)),
-                        r(a.Players.addPlayer(e)),
-                        e.activeShipId &&
-                          r(i.loadShip(e.activeShipId))
+                      e.toJSON()
+                      var t = a.Protocol.userRegisterSuccessMessage()
+                      r(s.sendClient(d, t))
                     })
                     .catch(function(e) {
-                      return r(p(o, e))
+                      var t = a.Protocol.userRegisterFailureMessage()
+                      r(s.sendClient(d, t))
+                    })
+                case c:
+                  var b = u.payload.userId
+                  e.User.findById(b)
+                    .then(function(e) {
+                      if (!e)
+                        throw new Error(
+                          "User ".concat(b, " not found"),
+                        )
+                      var t = e.toJSON()
+                      r(f(b)),
+                        r(a.Users.addUser(t)),
+                        t.activeShip &&
+                          r(a.Ships.addShip(t.activeShip))
+                    })
+                    .catch(function(e) {
+                      return r(p(b, e))
                     })
                   break
-                case a.Players.PLAYER_ADD:
-                case a.Players.PLAYER_UPDATE:
-                  var l = t.getState(),
-                    d = l.clients,
-                    y = u.payload.player,
-                    b = s.getClientByPlayerId(d, y.id),
-                    h = a.Protocol.playerUpdateMessage(y)
-                  t.dispatch(s.sendClient(b.id, h))
+                case a.Users.USER_ADD:
+                case a.Users.USER_UPDATE:
+                  var v = t.getState(),
+                    y = v.clients,
+                    m = u.payload.user,
+                    x = s.getClientByUserId(y, m.id),
+                    j = a.Protocol.userUpdateMessage(m)
+                  r(s.sendClient(x.id, j))
               }
               return r(u)
             }
           }
         }
       }),
-      (r.PLAYER_LOAD_SUCCESS = r.PLAYER_LOAD_FAILURE = r.PLAYER_LOAD = void 0)
+      (r.USER_LOAD_SUCCESS = r.USER_LOAD_FAILURE = r.USER_LOAD = r.USER_REGISTER = void 0)
     var a = t("@subspace/core"),
-      i = n(t("./src/modules/ships/index.js")),
-      s = n(t("./src/modules/clients/index.js")),
+      s = (n(t("./src/modules/ships/index.js")),
+      n(t("./src/modules/clients/index.js"))),
       u = n(t("./src/modules/adjacent-bodies/index.js")),
-      o = n(t("./src/util/hrtime.js")),
-      c = "players/load!"
-    r.PLAYER_LOAD = c
-    var l = "players/load_failure"
-    r.PLAYER_LOAD_FAILURE = l
-    var d = "players/load_success"
+      i = n(t("./src/util/hrtime.js")),
+      o = "users/register!"
+    r.USER_REGISTER = o
+    var c = "users/load!"
+    r.USER_LOAD = c
+    var d = "users/load_failure"
+    r.USER_LOAD_FAILURE = d
+    var l = "users/load_success"
     function p(e, r) {
-      return { type: l, payload: { playerId: e, err: r } }
+      return { type: d, payload: { userId: e, err: r } }
     }
     function f(e) {
-      return { type: d, payload: { playerId: e } }
+      return { type: l, payload: { userId: e } }
     }
-    r.PLAYER_LOAD_SUCCESS = d
-  },
-  "./src/modules/ships/index.js": function(e, r, t) {
-    "use strict"
-    var n = t("@babel/runtime/helpers/interopRequireWildcard")
-    Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.loadShip = function(e) {
-        return { type: s, payload: { shipId: e } }
-      }),
-      (r.loadShipFailure = c),
-      (r.loadShipSuccess = l),
-      (r.default = function(e, r) {
-        return a.Ships.default(e, r)
-      }),
-      (r.createMiddleware = function(e) {
-        return function(r) {
-          return function(t) {
-            return function(n) {
-              switch (n.type) {
-                case s:
-                  var u = n.payload.shipId
-                  e
-                    .getShip(u)
-                    .then(function(e) {
-                      t(l(e)), t(a.Ships.addShip(e))
-                    })
-                    .catch(function(e) {
-                      return t(c(u, e))
-                    })
-                  break
-                case a.Ships.SHIP_ADD:
-                case a.Ships.SHIP_UPDATE:
-                  var o = r.getState(),
-                    d = o.clients,
-                    p = o.players,
-                    f = n.payload.ship,
-                    y = a.Players.getPlayerByActiveShipId(p, f.id)
-                  if (!y) break
-                  var b = i.getClientByPlayerId(d, y.id),
-                    h = a.Protocol.shipUpdateMessage(f)
-                  r.dispatch(i.sendClient(b.id, h))
-              }
-              return t(n)
-            }
-          }
-        }
-      }),
-      (r.SHIP_LOAD_SUCCESS = r.SHIP_LOAD_FAILURE = r.SHIP_LOAD = void 0)
-    var a = t("@subspace/core"),
-      i = n(t("./src/modules/clients/index.js")),
-      s = (n(t("./src/modules/players/index.js")), "ships/load!")
-    r.SHIP_LOAD = s
-    var u = "ships/load_failure"
-    r.SHIP_LOAD_FAILURE = u
-    var o = "ships/load_success"
-    function c(e, r) {
-      return { type: u, payload: { shipId: e, err: r } }
-    }
-    function l(e) {
-      return { type: o, payload: { ship: e } }
-    }
-    r.SHIP_LOAD_SUCCESS = o
+    r.USER_LOAD_SUCCESS = l
   },
   "./src/reducers.js": function(e, r, t) {
     "use strict"
@@ -1058,21 +1334,21 @@
     Object.defineProperty(r, "__esModule", { value: !0 }),
       (r.default = void 0)
     var a = t("@subspace/core"),
-      i = n(t("./src/modules/adjacent-bodies/index.js")),
-      s = n(t("./src/modules/clients/index.js")),
-      u = n(t("./src/modules/players/index.js")),
+      s = n(t("./src/modules/adjacent-bodies/index.js")),
+      u = n(t("./src/modules/clients/index.js")),
+      i = n(t("./src/modules/users/index.js")),
       o = n(t("./src/modules/ships/index.js")),
       c = a.reducers.loop,
-      l = a.reducers.physics,
-      d = {
-        adjacentBodies: i.default,
-        clients: s.default,
-        players: u.default,
+      d = a.reducers.physics,
+      l = {
+        adjacentBodies: s.default,
+        clients: u.default,
+        users: i.default,
         ships: o.default,
         loop: c,
-        physics: l,
+        physics: d,
       }
-    r.default = d
+    r.default = l
   },
   "./src/scheduler.js": function(e, r, t) {
     "use strict"
@@ -1085,15 +1361,15 @@
         return function() {
           return new Promise(function(e) {
             setTimeout(
-              (function e(i) {
+              (function e(s) {
                 return function() {
-                  var s = process.hrtime(n),
-                    u = a.sub(s, t),
-                    o = a.sum(u)
+                  var u = process.hrtime(n),
+                    i = a.sub(u, t),
+                    o = a.sum(i)
                   o < 0
-                    ? setImmediate(e(i))
-                    : (i((o + r) / a.NS_PER_SEC),
-                      (n = a.add(process.hrtime(), u)))
+                    ? setImmediate(e(s))
+                    : (s((o + r) / a.NS_PER_SEC),
+                      (n = a.add(process.hrtime(), i)))
                 }
               })(e),
             )
@@ -1102,50 +1378,275 @@
       })
     var a = n(t("./src/util/hrtime.js"))
   },
+  "./src/server.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireWildcard"),
+      a = t("@babel/runtime/helpers/interopRequireDefault"),
+      s = a(t("@babel/runtime/regenerator")),
+      u = a(t("@babel/runtime/helpers/asyncToGenerator")),
+      i = (a(t("bcrypt")), t("http")),
+      o = n(t("@web-udp/server")),
+      c = t("@subspace/core"),
+      d = a(t("express")),
+      l = a(t("passport")),
+      p = a(t("body-parser")),
+      f = a(t("./src/data/index.js")),
+      h = a(t("./cfg/server.config.json")),
+      b = t("./src/store/index.js"),
+      v = t("./src/auth/index.js"),
+      y = t("./src/auth/strategy.js"),
+      m = t("./src/auth/middleware.js"),
+      x = t("./src/auth/jwt.js"),
+      j = process.env,
+      S = j.TICK_RATE,
+      _ = j.SEND_RATE,
+      w = j.PORT,
+      g = 1 / (Number(S) || h.default.tick_rate),
+      I = 1 / (Number(_) || h.default.send_rate),
+      E = (0, d.default)(),
+      k = new i.createServer(E),
+      O = new o.Server({ server: k })
+    function R() {
+      return (R = (0, u.default)(
+        s.default.mark(function e() {
+          return s.default.wrap(
+            function(e) {
+              for (;;)
+                switch ((e.prev = e.next)) {
+                  case 0:
+                    return (e.next = 2), f.default.sequelize.sync()
+                  case 2:
+                    console.log(
+                      "Server listening at //localhost:".concat(
+                        String(w),
+                      ),
+                    ),
+                      k.listen(Number(w))
+                  case 4:
+                  case "end":
+                    return e.stop()
+                }
+            },
+            e,
+            this,
+          )
+        }),
+      )).apply(this, arguments)
+    }
+    l.default.use(y.jwt),
+      l.default.use(y.local),
+      E.use((0, p.default)()),
+      (0, b.configureStore)({
+        db: f.default,
+        auth: { authenticate: v.authenticate, verify: v.verify },
+        tickRate: g,
+        sendRate: I,
+        udp: O,
+      }).dispatch(c.Loop.startLoop()),
+      E.post(
+        "/users",
+        (function() {
+          var e = (0, u.default)(
+            s.default.mark(function e(r, t) {
+              var n, a, u, i, o
+              return s.default.wrap(
+                function(e) {
+                  for (;;)
+                    switch ((e.prev = e.next)) {
+                      case 0:
+                        return (
+                          (n = r.body),
+                          (a = n.username),
+                          (u = n.password),
+                          (e.next = 3),
+                          f.default.User.findOne({
+                            where: { username: a },
+                          })
+                        )
+                      case 3:
+                        if (!e.sent) {
+                          e.next = 6
+                          break
+                        }
+                        return (
+                          t
+                            .status(409)
+                            .json({
+                              error: "Username already taken",
+                            }),
+                          e.abrupt("return")
+                        )
+                      case 6:
+                        return (
+                          (e.prev = 6),
+                          (e.next = 9),
+                          f.default.User.create({
+                            username: a,
+                            password: u,
+                          })
+                        )
+                      case 9:
+                        ;(i = e.sent), (e.next = 16)
+                        break
+                      case 12:
+                        return (
+                          (e.prev = 12),
+                          (e.t0 = e.catch(6)),
+                          t.status(400).json({ error: e.t0 }),
+                          e.abrupt("return")
+                        )
+                      case 16:
+                        ;(o = i.toJSON()),
+                          t
+                            .status(201)
+                            .json({
+                              token: (0, x.generateToken)(o),
+                              user: o,
+                            })
+                      case 18:
+                      case "end":
+                        return e.stop()
+                    }
+                },
+                e,
+                this,
+                [[6, 12]],
+              )
+            }),
+          )
+          return function(r, t) {
+            return e.apply(this, arguments)
+          }
+        })(),
+      ),
+      E.post(
+        "/login",
+        m.login,
+        (function() {
+          var e = (0, u.default)(
+            s.default.mark(function e(r, t) {
+              var n, a, u, i
+              return s.default.wrap(
+                function(e) {
+                  for (;;)
+                    switch ((e.prev = e.next)) {
+                      case 0:
+                        ;(n = r.user),
+                          (a = n.id),
+                          (u = n.username),
+                          (i = { id: a, username: u }),
+                          t
+                            .status(200)
+                            .json({
+                              token: (0, x.generateToken)(i),
+                              user: i,
+                            })
+                      case 3:
+                      case "end":
+                        return e.stop()
+                    }
+                },
+                e,
+                this,
+              )
+            }),
+          )
+          return function(r, t) {
+            return e.apply(this, arguments)
+          }
+        })(),
+      ),
+      E.post(
+        "/auth",
+        m.auth,
+        (function() {
+          var e = (0, u.default)(
+            s.default.mark(function e(r, t) {
+              var n, a, u, i
+              return s.default.wrap(
+                function(e) {
+                  for (;;)
+                    switch ((e.prev = e.next)) {
+                      case 0:
+                        ;(n = r.user),
+                          (a = n.id),
+                          (u = n.username),
+                          (i = { id: a, username: u }),
+                          t
+                            .status(200)
+                            .json({
+                              token: (0, x.generateToken)(i),
+                              user: i,
+                            })
+                      case 3:
+                      case "end":
+                        return e.stop()
+                    }
+                },
+                e,
+                this,
+              )
+            }),
+          )
+          return function(r, t) {
+            return e.apply(this, arguments)
+          }
+        })(),
+      ),
+      (function() {
+        R.apply(this, arguments)
+      })()
+  },
   "./src/store/index.js": function(e, r, t) {
     "use strict"
     var n = t("@babel/runtime/helpers/interopRequireWildcard"),
       a = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
       (r.configureStore = function(e) {
-        var r = e.auth,
-          t = e.tickRate,
-          n = e.sendRate,
-          a = e.udp,
-          u = o.create(t),
-          c = [
-            (0, s.applyMiddleware)(
-              i.Loop.createMiddleware(u),
-              d.createMiddleware(h),
-              i.Ships.createMiddleware(),
-              f.createMiddleware(b),
-              p.createMiddleware(h, n),
-              l.createMiddleware(a, r),
+        var r = e.db,
+          t = e.auth,
+          n = e.tickRate,
+          a = e.sendRate,
+          i = e.udp,
+          o = c.create(n),
+          d = [
+            (0, u.applyMiddleware)(
+              s.Loop.createMiddleware(o),
+              p.createMiddleware(r),
+              s.Ships.createMiddleware(),
+              h.createMiddleware(v),
+              f.createMiddleware(r, a),
+              l.createMiddleware(i, t),
             ),
-          ]
-        "undefined" != typeof window &&
-          window.__REDUX_DEVTOOLS_EXTENSION__ &&
-          c.push(window.__REDUX_DEVTOOLS_EXTENSION__())
-        var v = (0, s.combineReducers)(y.default)
-        return (0, s.createStore)(v, s.compose.apply(void 0, c))
+          ],
+          m = (0, u.combineReducers)(b.default)
+        return (0, u.createStore)(m, y.apply(void 0, d))
       })
-    var i = t("@subspace/core"),
-      s = t("redux"),
-      u = a(t("./cfg/redis.config.js")),
-      o = n(t("./src/scheduler.js")),
-      c = t("./src/cache/index.js"),
+    var s = t("@subspace/core"),
+      u = t("redux"),
+      i = t("remote-redux-devtools"),
+      o = a(t("./cfg/redis.config.js")),
+      c = n(t("./src/scheduler.js")),
+      d = t("./src/cache/index.js"),
       l = n(t("./src/modules/clients/index.js")),
-      d = n(t("./src/modules/ships/index.js")),
-      p = n(t("./src/modules/players/index.js")),
-      f = n(t("./src/modules/adjacent-bodies/index.js")),
-      y = a(t("./src/reducers.js")),
-      b = (i.Physics.P2Driver.create({ gravity: [0, 0] }),
-      c.SpatialIndex.create({
-        redis: u.default,
+      p = n(t("./src/modules/ships/index.js")),
+      f = n(t("./src/modules/users/index.js")),
+      h = n(t("./src/modules/adjacent-bodies/index.js")),
+      b = a(t("./src/reducers.js")),
+      v = (s.Physics.P2Driver.create({ gravity: [0, 0] }),
+      d.SpatialIndex.create({
+        redis: o.default,
         key: "ss-body",
         dimensions: 2,
       })),
-      h = {}
+      y = (0, i.composeWithDevTools)({
+        port: 9001,
+        actionsBlacklist: [
+          s.Loop.LOOP_TICK,
+          s.Physics.PHYSICS_UPDATE_BODY,
+          h.ADJACENT_BODIES_UPDATE,
+        ],
+      })
   },
   "./src/util/async.js": function(e, r, t) {
     "use strict"
@@ -1161,11 +1662,11 @@
               : promiseAllObject(t)
           }),
         ).then(function(e) {
-          return i(r, e)
+          return s(r, e)
         })
       })
     var a = n(t("@babel/runtime/helpers/typeof")),
-      i = function() {
+      s = function() {
         var e =
             arguments.length > 0 && void 0 !== arguments[0]
               ? arguments[0]
@@ -1183,16 +1684,16 @@
     "use strict"
     Object.defineProperty(r, "__esModule", { value: !0 }),
       (r.add = a),
-      (r.sub = i),
-      (r.sum = s),
+      (r.sub = s),
+      (r.sum = u),
       (r.throttle = function(e, r) {
         var t,
-          u = [0, r * n],
+          i = [0, r * n],
           o = process.hrtime()
         return function() {
           var r = process.hrtime(o),
-            n = i(r, u),
-            c = s(n)
+            n = s(r, i),
+            c = u(n)
           return (
             c >= 0 &&
               ((o = a(process.hrtime(), n)),
@@ -1206,10 +1707,10 @@
     function a(e, r) {
       return [e[0] + r[0], e[1] + r[1]]
     }
-    function i(e, r) {
+    function s(e, r) {
       return [e[0] - r[0], e[1] - r[1]]
     }
-    function s(e) {
+    function u(e) {
       return e[0] * n + e[1]
     }
     r.NS_PER_SEC = n
@@ -1247,14 +1748,47 @@
   "@web-udp/server": function(e, r) {
     e.exports = require("@web-udp/server")
   },
+  bcrypt: function(e, r) {
+    e.exports = require("bcrypt")
+  },
+  "body-parser": function(e, r) {
+    e.exports = require("body-parser")
+  },
+  dotenv: function(e, r) {
+    e.exports = require("dotenv")
+  },
+  express: function(e, r) {
+    e.exports = require("express")
+  },
   http: function(e, r) {
     e.exports = require("http")
+  },
+  jsonwebtoken: function(e, r) {
+    e.exports = require("jsonwebtoken")
+  },
+  passport: function(e, r) {
+    e.exports = require("passport")
+  },
+  "passport-jwt": function(e, r) {
+    e.exports = require("passport-jwt")
+  },
+  "passport-local": function(e, r) {
+    e.exports = require("passport-local")
+  },
+  path: function(e, r) {
+    e.exports = require("path")
   },
   redis: function(e, r) {
     e.exports = require("redis")
   },
   redux: function(e, r) {
     e.exports = require("redux")
+  },
+  "remote-redux-devtools": function(e, r) {
+    e.exports = require("remote-redux-devtools")
+  },
+  "remotedev-server": function(e, r) {
+    e.exports = require("remotedev-server")
   },
   sequelize: function(e, r) {
     e.exports = require("sequelize")

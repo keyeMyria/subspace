@@ -2,29 +2,26 @@
 
 import { Loop, Physics, Ships as CoreShips } from "@subspace/core"
 
-import {
-  createStore,
-  combineReducers,
-  applyMiddleware,
-  compose,
-} from "redux"
+import { createStore, combineReducers, applyMiddleware } from "redux"
+import { composeWithDevTools } from "remote-redux-devtools"
 
 import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type { AuthClient } from "../auth"
+import type { Db } from "../data"
 
 import redisConfig from "../../cfg/redis.config"
-import db from "../data"
 import * as Scheduler from "../scheduler"
 import { SpatialIndex } from "../cache"
 import * as Clients from "../modules/clients"
 import * as Ships from "../modules/ships"
-import * as Players from "../modules/players"
+import * as Users from "../modules/users"
 import * as AdjacentBodies from "../modules/adjacent-bodies"
 import reducers from "../reducers"
 
 import type { Store } from "../types"
 
 type ConfigureStoreOptions = {
+  db: Db,
   auth: AuthClient,
   tickRate: number,
   sendRate: number,
@@ -41,10 +38,19 @@ const spatialIndex = SpatialIndex.create({
   dimensions: 2,
 })
 
+const composeEnhancers = composeWithDevTools({
+  port: 9001,
+  actionsBlacklist: [
+    Loop.LOOP_TICK,
+    Physics.PHYSICS_UPDATE_BODY,
+    AdjacentBodies.ADJACENT_BODIES_UPDATE,
+  ],
+})
+
 export function configureStore(
   options: ConfigureStoreOptions,
 ): Store {
-  const { auth, tickRate, sendRate, udp } = options
+  const { db, auth, tickRate, sendRate, udp } = options
 
   const scheduler = Scheduler.create(tickRate)
 
@@ -58,24 +64,18 @@ export function configureStore(
       CoreShips.createMiddleware(),
       // Manages spatial index and queries the index each tick
       AdjacentBodies.createMiddleware(spatialIndex),
-      // Handles loading of players and sending model updates to client
-      Players.createMiddleware(db, sendRate),
+      // Handles loading of users and sending model updates to client
+      Users.createMiddleware(db, sendRate),
       // Handles authentication of new connections and sending of messages
       Clients.createMiddleware(udp, auth),
     ),
   ]
 
-  if (
-    typeof window !== "undefined" &&
-    window.__REDUX_DEVTOOLS_EXTENSION__ // eslint-disable-line no-underscore-dangle
-  ) {
-    enhancers.push(
-      window.__REDUX_DEVTOOLS_EXTENSION__(), // eslint-disable-line no-underscore-dangle
-    )
-  }
-
   const rootReducer = combineReducers(reducers)
-  const store = createStore(rootReducer, compose(...enhancers))
+  const store = createStore(
+    rootReducer,
+    composeEnhancers(...enhancers),
+  )
 
   return store
 }

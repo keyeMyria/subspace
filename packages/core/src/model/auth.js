@@ -1,4 +1,6 @@
 // @flow
 
-export type AuthCredentials = {}
-export type AuthToken = string
+export type AuthCredentials = {
+  username: string,
+  password: string,
+}

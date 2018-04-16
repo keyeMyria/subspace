@@ -1,12 +1,12 @@
 // @flow
 
-import type { MessageTypeAuthLoginFailure } from "./message-types"
-import { MESSAGE_TYPE_AUTH_LOGIN_FAILURE } from "./message-types"
+import type { MessageTypeAuthTokenInvalid } from "./message-types"
+import { MESSAGE_TYPE_AUTH_TOKEN_INVALID } from "./message-types"
 
-export type AuthLoginFailureMessage = [MessageTypeAuthLoginFailure]
+export type AuthTokenInvalidMessage = [MessageTypeAuthTokenInvalid]
 
-export type AuthMessage = AuthLoginFailureMessage
+export type AuthMessage = AuthTokenInvalidMessage
 
-export const authLoginFailureMessage = (): AuthLoginFailureMessage => [
-  MESSAGE_TYPE_AUTH_LOGIN_FAILURE,
+export const authTokenInvalidMessage = (): AuthTokenInvalidMessage => [
+  MESSAGE_TYPE_AUTH_TOKEN_INVALID,
 ]

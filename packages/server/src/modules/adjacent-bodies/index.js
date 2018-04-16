@@ -1,8 +1,8 @@
 // @flow
 
-import { Loop, Players, Physics, getPlayerBody } from "@subspace/core"
+import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
-import type { PlayerId, BodyId } from "@subspace/core"
+import type { UserId, BodyId } from "@subspace/core"
 
 import * as Async from "../../util/async"
 
@@ -18,7 +18,7 @@ export const ADJACENT_BODIES_UPDATE = "adjacent-bodies/update"
 export type AdjacentBodiesUpdate = {
   type: "adjacent-bodies/update",
   payload: {
-    adjacentBodies: { [PlayerId]: BodyId[] },
+    adjacentBodies: { [UserId]: BodyId[] },
   },
 }
 
@@ -27,7 +27,7 @@ export type AdjacentBodiesAction = AdjacentBodiesUpdate
 // Action creators
 
 export function updateAdjacentBodies(adjacentBodies: {
-  [PlayerId]: BodyId[],
+  [UserId]: BodyId[],
 }) {
   return {
     type: ADJACENT_BODIES_UPDATE,
@@ -40,11 +40,11 @@ export function updateAdjacentBodies(adjacentBodies: {
 // Reducer
 
 export type AdjacentBodiesState = {
-  byPlayerId: { [PlayerId]: BodyId[] },
+  byUserId: { [UserId]: BodyId[] },
 }
 
 const initialAdjacentBodiesState = {
-  byPlayerId: {},
+  byUserId: {},
 }
 
 export default function reducer(
@@ -55,8 +55,8 @@ export default function reducer(
     case ADJACENT_BODIES_UPDATE:
       return {
         ...state,
-        byPlayerId: {
-          ...state.byPlayerId,
+        byUserId: {
+          ...state.byUserId,
           ...action.payload.adjacentBodies,
         },
       }
@@ -68,7 +68,7 @@ export default function reducer(
 // Selectors
 
 export const getAdjacentBodies = (state: AdjacentBodiesState) =>
-  state.byPlayerId
+  state.byUserId
 
 // Middleware
 
@@ -76,10 +76,10 @@ async function queryAdjacentBodies(
   state: State,
   index: SpatialIndex,
 ) {
-  const players = Players.getPlayers(state.players)
-  const playerIds = Object.keys(players)
-  const query = playerIds.reduce((a, playerId) => {
-    const body = getPlayerBody(state, Number(playerId))
+  const users = Users.getUsers(state.users)
+  const userIds = Object.keys(users)
+  const query = userIds.reduce((a, userId) => {
+    const body = getUserBody(state, Number(userId))
 
     if (body === null) {
       return a
@@ -91,7 +91,7 @@ async function queryAdjacentBodies(
       [y - halfUpdateArea, y + halfUpdateArea],
     ]
 
-    a[playerId] = index
+    a[userId] = index
       .query(range)
       .then(res => res.map(([, bodyId]) => bodyId))
 

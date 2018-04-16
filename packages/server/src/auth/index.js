@@ -1,20 +1,25 @@
 // @flow
 
-import type { Player, ClientMessage } from "@subspace/core"
+import type { User as UserModel } from "@subspace/core"
 
-export type AuthCredentials = {}
+import { User } from "../data"
+import * as Util from "./util"
+import { generateToken, verifyToken } from "./jwt"
 
 export type AuthClient = {
-  check: ClientMessage => Promise<boolean>,
-  login: AuthCredentials => Promise<Player>,
+  authenticate: (username: string, password: string) => string,
+  verify: string => Promise<UserModel>,
 }
 
-export function create(): AuthClient {
-  const check = () => Promise.resolve(false)
-  const login = () => Promise.reject()
+export async function authenticate(
+  username: string,
+  password: string,
+) {
+  const user = await Util.authenticate(username, password)
 
-  return {
-    check,
-    login,
-  }
+  return generateToken(user)
+}
+
+export async function verify(token: string) {
+  return verifyToken(token)
 }

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 HOSTPARAMS="--host $DB_HOST --insecure"
-SQL="/cockroach/cockroach.sh sql $HOSTPARAMS"
+SQL="cockroach sql $HOSTPARAMS"
+# SQL="/cockroach/cockroach.sh sql $HOSTPARAMS"
 
 # down
 $SQL -e 'REVOKE ALL ON TABLE ss_dev.*, ss_test.*, ss.* FROM cockroach'

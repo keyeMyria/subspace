@@ -4,7 +4,7 @@ import { reducers as coreReducers } from "@subspace/core"
 
 import adjacentBodies from "./modules/adjacent-bodies"
 import clients from "./modules/clients"
-import players from "./modules/players"
+import users from "./modules/users"
 import ships from "./modules/ships"
 
 const { loop, physics } = coreReducers
@@ -12,7 +12,7 @@ const { loop, physics } = coreReducers
 const reducers = {
   adjacentBodies,
   clients,
-  players,
+  users,
   ships,
   loop,
   physics,

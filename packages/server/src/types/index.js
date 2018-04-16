@@ -15,14 +15,14 @@ import type { Reducers } from "../reducers"
 
 import type { AdjacentBodiesAction } from "../modules/adjacent-bodies"
 import type { ClientAction } from "../modules/clients"
-import type { PlayerAction } from "../modules/players"
+import type { UserAction } from "../modules/users"
 import type { ShipAction } from "../modules/ships"
 
 export type Action =
   | CoreAction
   | AdjacentBodiesAction
   | ClientAction
-  | PlayerAction
+  | UserAction
   | ShipAction
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V

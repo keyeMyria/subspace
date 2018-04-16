@@ -73,6 +73,7 @@ services:
       DB_NAME: ss_test
       DB_HOST: db-1
       DB_PORT: 26257
+      JWT_SECRET: yolo
     ports:
       - 8081:8081
     depends_on:

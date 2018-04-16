@@ -1,16 +1,16 @@
 // @flow
 
 import shortid from "shortid"
-import { Players as CorePlayers, Protocol } from "@subspace/core"
+import { Users as CoreUsers, Protocol } from "@subspace/core"
 
 import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type {
   AuthCredentials,
-  Player,
-  PlayerId,
+  User,
+  UserId,
   ServerMessage,
 } from "@subspace/core"
-import * as Players from "../players"
+import * as Users from "../users"
 import type { Action, Middleware } from "../../types"
 import type { ClientId, Client } from "../../model/client"
 import type { AuthClient } from "../../auth"
@@ -22,41 +22,6 @@ export type ClientAdd = {
   type: "client/add",
   payload: {
     client: Client,
-  },
-}
-
-export const CLIENT_LOGIN = "client/login!"
-export type ClientLogin = {
-  type: "client/login!",
-  payload: {
-    clientId: ClientId,
-    credentials: AuthCredentials,
-  },
-}
-
-export const CLIENT_LOGIN_FAILURE = "client/login_failure"
-export type ClientLoginFailure = {
-  type: "client/login_failure",
-  payload: {
-    clientId: ClientId,
-  },
-}
-
-export const CLIENT_LOGIN_SUCCESS = "client/login_success"
-export type ClientLoginSuccess = {
-  type: "client/login_success",
-  payload: {
-    clientId: ClientId,
-    player: Player,
-  },
-}
-
-export const CLIENT_SET_PLAYER = "client/set_player"
-export type ClientSetPlayer = {
-  type: "client/set_player",
-  payload: {
-    clientId: ClientId,
-    playerId: PlayerId,
   },
 }
 
@@ -77,14 +42,7 @@ export type ClientRemove = {
   },
 }
 
-export type ClientAction =
-  | ClientAdd
-  | ClientLogin
-  | ClientLoginFailure
-  | ClientLoginSuccess
-  | ClientSetPlayer
-  | ClientSend
-  | ClientRemove
+export type ClientAction = ClientAdd | ClientSend | ClientRemove
 
 // Action creators
 
@@ -93,54 +51,6 @@ export function addClient(client: Client) {
     type: CLIENT_ADD,
     payload: {
       client,
-    },
-  }
-}
-
-export function loginClient(
-  clientId: ClientId,
-  credentials: AuthCredentials,
-) {
-  return {
-    type: CLIENT_LOGIN,
-    payload: {
-      clientId,
-      credentials,
-    },
-  }
-}
-
-export function loginClientFailure(clientId: ClientId) {
-  return {
-    type: CLIENT_LOGIN_FAILURE,
-    payload: {
-      clientId,
-    },
-  }
-}
-
-export function loginClientSuccess(
-  clientId: ClientId,
-  player: Player,
-) {
-  return {
-    type: CLIENT_LOGIN_SUCCESS,
-    payload: {
-      clientId,
-      player,
-    },
-  }
-}
-
-export function setClientPlayer(
-  clientId: ClientId,
-  playerId: PlayerId,
-) {
-  return {
-    type: CLIENT_SET_PLAYER,
-    payload: {
-      clientId,
-      playerId,
     },
   }
 }
@@ -171,12 +81,12 @@ export function removeClient(clientId: ClientId) {
 
 export type State = {
   byId: { [ClientId]: Client },
-  byPlayerId: { [PlayerId]: Client },
+  byUserId: { [UserId]: Client },
 }
 
 const initialState = {
   byId: {},
-  byPlayerId: {},
+  byUserId: {},
 }
 
 export default function reducer(
@@ -191,35 +101,19 @@ export default function reducer(
         [client.id]: client,
       }
 
-      let byPlayerId = state.byPlayerId
+      let byUserId = state.byUserId
 
-      if (client.playerId) {
-        byPlayerId = {
-          ...byPlayerId,
-          [client.playerId]: client,
+      if (client.userId) {
+        byUserId = {
+          ...byUserId,
+          [client.userId]: client,
         }
       }
 
       return {
         ...state,
         byId,
-        byPlayerId,
-      }
-    }
-    case CLIENT_SET_PLAYER: {
-      const { clientId, playerId } = action.payload
-      const client = { ...getClient(state, clientId), playerId }
-
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [clientId]: client,
-        },
-        byPlayerId: {
-          ...state.byPlayerId,
-          [playerId]: client,
-        },
+        byUserId,
       }
     }
     case CLIENT_REMOVE: {
@@ -229,8 +123,8 @@ export default function reducer(
 
       delete nextState.byId[clientId]
 
-      if (client.playerId) {
-        delete nextState.byPlayerId[client.playerId]
+      if (client.userId) {
+        delete nextState.byUserId[client.userId]
       }
 
       return nextState
@@ -245,10 +139,8 @@ export default function reducer(
 export const getClient = (state: State, clientId: ClientId) =>
   state.byId[clientId]
 
-export const getClientByPlayerId = (
-  state: State,
-  playerId: PlayerId,
-) => state.byPlayerId[playerId]
+export const getClientByUserId = (state: State, userId: UserId) =>
+  state.byUserId[userId]
 
 // Middleware
 
@@ -263,19 +155,14 @@ export function createMiddleware(
     clientId: ClientId,
     dispatch: Dispatch,
   ) => {
+    // Remove client from store on connection close
+    connection.closed.subscribe(() => {
+      dispatch(removeClient(clientId))
+    })
+    // Subscribe to client messages
     connection.messages.subscribe(async data => {
       const message = JSON.parse(data)
-      const [, [type, payload]] = message
-
-      if (type === Protocol.MESSAGE_TYPE_AUTH_LOGIN) {
-        return dispatch(loginClient(clientId, payload))
-      }
-
-      if (!await auth.check(message)) {
-        return console.error(
-          `Client ${clientId} is not authenticated`,
-        )
-      }
+      const [type] = message
 
       switch (type) {
         default:
@@ -285,62 +172,45 @@ export function createMiddleware(
   }
 
   return store => {
-    udp.connections.subscribe(connection => {
+    udp.connections.subscribe(async connection => {
+      let user
+
+      try {
+        user = await auth.verify(connection.metadata.token)
+      } catch (err) {
+        console.error(
+          `Invalid credentials for connection ${connection.id}`,
+        )
+        connection.send(
+          JSON.stringify(Protocol.authTokenInvalidMessage()),
+        )
+        connection.close()
+        return
+      }
+
       const { dispatch } = store
       const clientId = shortid()
 
+      dispatch(
+        addClient({
+          id: clientId,
+          userId: user.id,
+          connectionId: connection.id,
+        }),
+      )
+
       connections[connection.id] = connection
       listen(connection, clientId, dispatch)
-      dispatch(
-        addClient({ id: clientId, connectionId: connection.id }),
-      )
     })
 
     return next => action => {
       switch (action.type) {
-        case CLIENT_LOGIN: {
-          const { clientId, credentials } = action.payload
-
-          auth
-            .login(credentials)
-            .then(player => {
-              next(loginClientSuccess(clientId, player))
-            })
-            .catch(err => {
-              next(loginClientFailure(clientId))
-            })
-
-          break
-        }
-        case CLIENT_LOGIN_SUCCESS: {
-          const { clientId, player } = action.payload
-          const state = store.getState()
-
-          if (CorePlayers.getPlayer(state.players, player.id)) {
-            next(removeClient(clientId))
-            return
-          }
-
-          next(setClientPlayer(clientId, player.id))
-          next(Players.loadPlayer(player.id))
-          break
-        }
-        case CLIENT_LOGIN_FAILURE: {
-          const { clientId } = action.payload
-
-          next(
-            sendClient(clientId, Protocol.authLoginFailureMessage()),
-          )
-          break
-        }
         case CLIENT_SEND: {
           const { clients } = store.getState()
           const { clientId, message } = action.payload
-          const client = getClient(clients, clientId)
+          const { connectionId } = getClient(clients, clientId)
 
-          connections[client.connectionId].send(
-            JSON.stringify(message),
-          )
+          connections[connectionId].send(JSON.stringify(message))
 
           break
         }

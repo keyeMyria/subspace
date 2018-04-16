@@ -53,6 +53,8 @@
   },
   "scripts": {
     "test": "npm run flow && jest --forceExit",
+    "dev":
+      "lerna run build -- --mode=development && NODE_ENV=development lerna run start --parallel",
     "build": "lerna run build",
     "start": "lerna run start --parallel",
     "flow": "killall flow || true && flow"
