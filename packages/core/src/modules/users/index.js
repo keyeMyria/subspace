@@ -1,7 +1,7 @@
 // @flow
 
 import type { Action } from "../../types"
-import type { User, UserId, ShipId } from "../../model"
+import type { User } from "../../model"
 
 // Actions
 
@@ -47,10 +47,10 @@ export function updateUser(user: User) {
 
 export type UserState = {
   byId: {
-    [UserId]: User,
+    [number]: User,
   },
   byActiveShipId: {
-    [ShipId]: User,
+    [number]: User,
   },
 }
 
@@ -119,8 +119,8 @@ export default function reducer(
 
 export const getUsers = (state: UserState) => state.byId
 
-export const getUser = (state: UserState, id: UserId) =>
+export const getUser = (state: UserState, id: number) =>
   state.byId[id]
 
-export const getUserByActiveShipId = (state: UserState, id: ShipId) =>
+export const getUserByActiveShipId = (state: UserState, id: number) =>
   state.byActiveShipId[id]

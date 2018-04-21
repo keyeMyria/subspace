@@ -53,10 +53,12 @@
   },
   "scripts": {
     "test": "npm run flow && jest --forceExit",
-    "dev":
-      "lerna run build -- --mode=development && NODE_ENV=development lerna run start --parallel",
+    "dev": "docker-compose up -d",
+    "dev:client":
+      "lerna run --parallel --scope=@subspace/client start:dev",
+    "dev:server":
+      "lerna run --parallel --scope=@subspace/server start:dev",
     "build": "lerna run build",
-    "start": "lerna run start --parallel",
     "flow": "killall flow || true && flow"
   }
 }

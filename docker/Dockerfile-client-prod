@@ -1,0 +1,30 @@
+FROM node:9.8.0
+
+WORKDIR /opt/subspace
+
+# npm manifests
+COPY package*.json ./
+
+# monorepo configs/utils
+RUN npm i lerna -g --loglevel notice
+COPY lerna.json .
+
+# dev configs/utils
+COPY .eslintrc.json .
+COPY .eslintignore .
+COPY .babelrc .
+
+# package and monorepo dependencies
+COPY packages/core ./packages/core
+COPY packages/client ./packages/client
+
+# install dependencies and build
+RUN npm i --loglevel notice
+RUN lerna bootstrap
+
+# copy build to public directory
+FROM nginx
+
+WORKDIR /usr/share/nginx/html
+
+COPY --from=0 /opt/subspace-client/packages/client/dist .

@@ -1,12 +1,11 @@
 // @flow
 
 import { Observable } from "rxjs/Observable"
-// import { normalize } from "normalizr"
 
 const Resources = {
-  LOGIN: "/server/login",
-  REGISTER: "/server/users",
-  AUTHENTICATE: "/server/auth",
+  LOGIN: "/server/auth/login",
+  REGISTER: "/server/auth/register",
+  AUTHENTICATE: "/server/auth/verify",
 }
 
 const HttpMethods = {

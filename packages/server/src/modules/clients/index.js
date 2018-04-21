@@ -7,7 +7,6 @@ import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type {
   AuthCredentials,
   User,
-  UserId,
   ServerMessage,
 } from "@subspace/core"
 import * as Users from "../users"
@@ -81,7 +80,7 @@ export function removeClient(clientId: ClientId) {
 
 export type State = {
   byId: { [ClientId]: Client },
-  byUserId: { [UserId]: Client },
+  byUserId: { [number]: Client },
 }
 
 const initialState = {
@@ -139,7 +138,7 @@ export default function reducer(
 export const getClient = (state: State, clientId: ClientId) =>
   state.byId[clientId]
 
-export const getClientByUserId = (state: State, userId: UserId) =>
+export const getClientByUserId = (state: State, userId: number) =>
   state.byUserId[userId]
 
 // Middleware

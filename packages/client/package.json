@@ -7,8 +7,8 @@
     "build":
       "npm run build:dll & webpack --entry ./src/main.jsx --config build/webpack.config.js --mode production",
     "build:dll": "node ./build/build-dll",
-    "start":
-      "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.js --mode development",
+    "start:dev":
+      "webpack-dev-server --config build/webpack.config.js --mode development",
     "prepare": "npm run build"
   },
   "author": "",

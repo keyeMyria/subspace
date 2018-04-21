@@ -7,32 +7,18 @@ import Sequelize from "sequelize-cockroachdb"
 import type {
   Body as BodyModel,
   Ship as ShipModel,
+  ShipType as ShipTypeModel,
+  Station as StationModel,
+  Hangar as HangarModel,
+  Inventory as InventoryModel,
+  Item as ItemModel,
+  ItemType as ItemTypeModel,
 } from "@subspace/core"
 
 import configs from "../../cfg/db.config"
 import type { User as UserModel } from "../model/user"
 
-const env = process.env.NODE_ENV || "development"
-const config = configs[env]
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config,
-)
-
-export const User: Class<Model<UserModel>> = sequelize.define(
-  "User",
-  {
-    username: Sequelize.STRING,
-    password: Sequelize.STRING,
-    activeShipId: Sequelize.INTEGER,
-  },
-)
-
-User.beforeCreate(async (user: UserModel) => {
-  user.password = await encryptPassword(user.password)
-})
+const { NODE_ENV } = process.env
 
 async function encryptPassword(password: String) {
   const salt = await bcrypt.genSalt(10)
@@ -41,14 +27,21 @@ async function encryptPassword(password: String) {
   return hash
 }
 
-export const Ship: Class<Model<ShipModel>> = sequelize.define(
-  "Ship",
+const config = configs[NODE_ENV]
+
+export const sequelize = new Sequelize(config)
+
+export const User: Class<Model<UserModel>> = sequelize.define(
+  "User",
   {
-    bodyId: Sequelize.INTEGER,
+    username: Sequelize.STRING,
+    password: Sequelize.STRING,
   },
 )
 
-User.hasOne(Ship, { as: "activeShip", foreignKey: "activeShipId" })
+User.beforeCreate(async (user: UserModel) => {
+  user.password = await encryptPassword(user.password)
+})
 
 export const Body: Class<Model<BodyModel>> = sequelize.define(
   "Body",
@@ -64,10 +57,72 @@ export const Body: Class<Model<BodyModel>> = sequelize.define(
   },
 )
 
-Ship.hasOne(Body, { as: "body", foreignKey: "bodyId" })
+export const ShipType: Class<Model<ShipTypeModel>> = sequelize.define(
+  "ShipType",
+  {
+    name: Sequelize.STRING,
+  },
+)
 
-const db = { sequelize, User, Ship, Body }
+export const Ship: Class<Model<ShipModel>> = sequelize.define(
+  "Ship",
+  {},
+)
 
-export type Db = typeof db
+export const Inventory: Class<
+  Model<InventoryModel>,
+> = sequelize.define("Inventory", {})
 
-export default db
+export const ItemType: Class<Model<ItemTypeModel>> = sequelize.define(
+  "ItemType",
+  {
+    name: Sequelize.STRING,
+  },
+)
+
+export const Item: Class<Model<ItemModel>> = sequelize.define(
+  "Item",
+  {},
+)
+
+export const Station: Class<Model<StationModel>> = sequelize.define(
+  "Station",
+  {},
+)
+
+export const Hangar: Class<Model<HangarModel>> = sequelize.define(
+  "Hangar",
+  {},
+)
+
+User.hasOne(Ship, { as: "activeShip" })
+User.hasMany(Hangar, { as: "hangars" })
+
+Ship.belongsTo(Body, { as: "body" })
+Ship.belongsTo(Inventory, { as: "inventory" })
+Ship.belongsTo(ShipType, { as: "shipType" })
+Ship.belongsTo(Hangar, { as: "hangar" })
+
+Item.belongsTo(Inventory, { as: "inventory" })
+Inventory.hasMany(Item, { as: "items" })
+
+Item.belongsTo(ItemType, { as: "itemType" })
+
+Station.hasMany(Hangar, { as: "hangars" })
+
+Hangar.belongsTo(Station, { as: "station" })
+Hangar.belongsTo(User, { as: "user" })
+Hangar.hasMany(Ship, { as: "ships" })
+
+export type Db = {
+  sequelize: Sequelize,
+  User: Class<Model<UserModel>>,
+  Body: Class<Model<BodyModel>>,
+  ShipType: Class<Model<ShipTypeModel>>,
+  Ship: Class<Model<ShipModel>>,
+  Inventory: Class<Model<InventoryModel>>,
+  ItemType: Class<Model<ItemTypeModel>>,
+  Item: Class<Model<ItemModel>>,
+  Station: Class<Model<StationModel>>,
+  Hangar: Class<Model<HangarModel>>,
+}

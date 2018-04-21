@@ -1,9 +1,7 @@
 // @flow
 
-export type BodyId = string
-
 export type Body = {
-  id: BodyId,
+  id: number,
   angle: number,
   angularVelocity: number,
   mass: number,

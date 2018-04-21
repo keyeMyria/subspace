@@ -2,9 +2,9 @@
 
 import P2 from "p2"
 
-import type { BodyId, Body } from "../../model"
+import type { Body } from "../../model"
 
-const serializeBody = (id: BodyId, body: P2.Body) => {
+const serializeBody = (id: number, body: P2.Body) => {
   const {
     angle,
     angularVelocity,
@@ -33,13 +33,13 @@ type PhysicsDriverOptions = {
 
 export const create = (options: PhysicsDriverOptions) => {
   const { gravity } = options
-  const bodies: { [BodyId]: P2.Body } = {}
+  const bodies: { [number]: P2.Body } = {}
   const world = new P2.World({
     gravity,
     sleepMode: P2.World.BODY_SLEEPING,
   })
 
-  const addBody = async (id: BodyId, model: Body) => {
+  const addBody = async (id: number, model: Body) => {
     if (bodies[id]) {
       throw new Error(
         `Cannot add body with id ${id}: id already exists.`,
@@ -72,7 +72,7 @@ export const create = (options: PhysicsDriverOptions) => {
     return serializeBody(id, body)
   }
 
-  const rotateBody = async (id: BodyId, angle: number) => {
+  const rotateBody = async (id: number, angle: number) => {
     const body = bodies[id]
 
     if (!body) {

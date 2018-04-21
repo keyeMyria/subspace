@@ -1,9 +1,6 @@
 // @flow
 
-import type {
-  UserId,
-  UserState as CoreUserState,
-} from "@subspace/core"
+import type { UserState as CoreUserState } from "@subspace/core"
 
 import {
   Loop,
@@ -39,7 +36,7 @@ export const USER_LOAD = "users/load!"
 export type UserLoad = {
   type: "users/load!",
   payload: {
-    userId: UserId,
+    userId: number,
   },
 }
 
@@ -47,7 +44,7 @@ export const USER_LOAD_FAILURE = "users/load_failure"
 export type UserLoadFailure = {
   type: "users/load_failure",
   payload: {
-    userId: UserId,
+    userId: number,
     err: Error,
   },
 }
@@ -56,7 +53,7 @@ export const USER_LOAD_SUCCESS = "users/load_success"
 export type UserLoadSuccess = {
   type: "users/load_success",
   payload: {
-    userId: UserId,
+    userId: number,
   },
 }
 
@@ -79,7 +76,7 @@ export function registerUser(username: string, password: string) {
   }
 }
 
-export function loadUser(userId: UserId) {
+export function loadUser(userId: number) {
   return {
     type: USER_LOAD,
     payload: {
@@ -88,7 +85,7 @@ export function loadUser(userId: UserId) {
   }
 }
 
-export function loadUserFailure(userId: UserId, err: Error) {
+export function loadUserFailure(userId: number, err: Error) {
   return {
     type: USER_LOAD_FAILURE,
     payload: {
@@ -98,7 +95,7 @@ export function loadUserFailure(userId: UserId, err: Error) {
   }
 }
 
-export function loadUserSuccess(userId: UserId) {
+export function loadUserSuccess(userId: number) {
   return {
     type: USER_LOAD_SUCCESS,
     payload: {

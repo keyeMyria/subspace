@@ -1,6 +1,6 @@
 FROM node:9.8.0
 
-WORKDIR /opt/subspace-server
+WORKDIR /opt/subspace
 
 # npm manifests
 COPY package*.json ./
@@ -10,6 +10,7 @@ RUN npm i lerna -g --loglevel notice
 COPY lerna.json .
 
 # dev configs/utils
+COPY bin .
 COPY .eslintrc.json .
 COPY .eslintignore .
 COPY .babelrc .
@@ -22,9 +23,10 @@ COPY packages/server ./packages/server
 RUN npm i --loglevel notice
 RUN lerna bootstrap
 
-# rebuild wrtc on container architecture
+# rebuild binaries on container architecture
 RUN npm --prefix packages/server rebuild wrtc --update-binary
+RUN npm --prefix packages/server rebuild bcrypt --update-binary
 
 # serve
-CMD bash -c "while ping -c1 db-init &>/dev/null; do :; done; echo Database initialized... starting game server" && \
-    npm run --prefix packages/server serve
+CMD bash -c "while ping -c1 db-init &>/dev/null; do :; done;" && \
+    npm run dev:server

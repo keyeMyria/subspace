@@ -1,40 +1,55 @@
 // @flow
 
 import express from "express"
-import { User } from "../models/user"
-import { generateToken, setUserInfo } from "../auth/jwt"
+import { User } from "../data"
+import { generateToken } from "../auth/jwt"
 import { auth, login } from "../auth/middleware"
 
 const router = express.Router()
 
-router.route("/login").post(login, (req, res) => {
-  const userInfo = setUserInfo(req.user)
+router.route("/register").post(async (req, res) => {
+  let { username, password } = req.body
 
-  res.status(200).json({
-    token: generateToken(userInfo),
-    user: userInfo,
-  })
-})
+  if (await User.findOne({ where: { username } })) {
+    res.status(409).json({ error: "Username already taken" })
+    return
+  }
 
-router.route("/authenticate").post(auth, (req, res) => {
-  const userInfo = setUserInfo(req.user)
+  let model
 
-  res.status(200).json({
-    token: generateToken(userInfo),
-    user: userInfo,
-  })
-})
+  try {
+    model = await User.create({ username, password })
+  } catch (error) {
+    res.status(400).json({ error })
+    return
+  }
 
-router.route("/users").post((req, res) => {
-  const user = new User(req.body)
-  user.save()
-
-  const userInfo = setUserInfo(user)
+  const user = model.toJSON()
 
   res.status(201).json({
-    token: generateToken(userInfo),
-    user: userInfo,
+    token: generateToken(user),
+    user,
   })
 })
 
-module.exports = router
+router.route("/login").post(login, (req, res) => {
+  const { user: { id, username } } = req
+  const user = { id, username }
+
+  res.status(200).json({
+    token: generateToken(user),
+    user,
+  })
+})
+
+router.route("/verify").post(auth, (req, res) => {
+  const { user: { id, username } } = req
+  const user = { id, username }
+
+  res.status(200).json({
+    token: generateToken(user),
+    user,
+  })
+})
+
+export default router

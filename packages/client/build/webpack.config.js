@@ -119,6 +119,7 @@ module.exports = {
     stats: "minimal",
     publicPath: "/",
     contentBase: "dist",
+    host: "0.0.0.0",
     port: Number(PORT),
     historyApiFallback: true,
     proxy: {

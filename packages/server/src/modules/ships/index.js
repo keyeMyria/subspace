@@ -23,7 +23,7 @@ export const SHIP_LOAD = "ships/load!"
 export type ShipLoad = {
   type: "ships/load!",
   payload: {
-    shipId: ShipId,
+    shipId: number,
   },
 }
 
@@ -31,7 +31,7 @@ export const SHIP_LOAD_FAILURE = "ships/load_failure"
 export type ShipLoadFailure = {
   type: "ships/load_failure",
   payload: {
-    shipId: ShipId,
+    shipId: number,
     err: Error,
   },
 }
@@ -48,7 +48,7 @@ export type ShipAction = ShipLoad | ShipLoadFailure | ShipLoadSuccess
 
 // Action creators
 
-export function loadShip(shipId: ShipId) {
+export function loadShip(shipId: number) {
   return {
     type: SHIP_LOAD,
     payload: {
@@ -57,7 +57,7 @@ export function loadShip(shipId: ShipId) {
   }
 }
 
-export function loadShipFailure(shipId: ShipId, err: Error) {
+export function loadShipFailure(shipId: number, err: Error) {
   return {
     type: SHIP_LOAD_FAILURE,
     payload: {

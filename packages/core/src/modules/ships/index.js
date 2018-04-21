@@ -1,7 +1,7 @@
 // @flow
 
 import type { Action, GetState, Middleware } from "../../types"
-import type { Ship, ShipId, TurnDirection } from "../../model"
+import type { Ship, TurnDirection } from "../../model"
 
 import { TURN_DIRECTION } from "../../model"
 import { getShipBody } from "../../selectors"
@@ -29,7 +29,7 @@ export const SHIP_TURN = "ship/turn!"
 export type ShipTurn = {
   type: "ship/turn!",
   payload: {
-    shipId: ShipId,
+    shipId: number,
     direction: TurnDirection,
   },
 }
@@ -48,7 +48,7 @@ export function addShip(ship: Ship): ShipAdd {
 }
 
 export function turnShip(
-  shipId: ShipId,
+  shipId: number,
   direction: TurnDirection,
 ): ShipTurn {
   return {
@@ -64,7 +64,7 @@ export function turnShip(
 
 export type ShipState = {
   byId: {
-    [ShipId]: Ship,
+    [number]: Ship,
   },
 }
 
@@ -104,7 +104,7 @@ export default function reducer(
 
 // Selectors
 
-export const getShip = (state: ShipState, id: ShipId) =>
+export const getShip = (state: ShipState, id: number) =>
   state.byId[id]
 
 // Middleware

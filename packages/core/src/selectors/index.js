@@ -3,14 +3,13 @@
 // This file defines selectors used to query the game state starting at the
 // root of the Redux store.
 
-import type { UserId, ShipId } from "../model"
 import type { State } from "../types"
 
 import { getUser, getUsers } from "../modules/users"
 import { getShip } from "../modules/ships"
 import { getBody } from "../modules/physics"
 
-export const getShipBody = (state: State, id: ShipId) => {
+export const getShipBody = (state: State, id: number) => {
   const ship = getShip(state.ships, id)
 
   if (!ship.bodyId) {
@@ -22,7 +21,7 @@ export const getShipBody = (state: State, id: ShipId) => {
   return body
 }
 
-export const getUserShip = (state: State, id: UserId) => {
+export const getUserShip = (state: State, id: number) => {
   const { activeShipId } = getUser(state.users, id)
 
   if (!activeShipId) {
@@ -32,7 +31,7 @@ export const getUserShip = (state: State, id: UserId) => {
   return getShip(state.ships, activeShipId)
 }
 
-export const getUserBody = (state: State, id: UserId) => {
+export const getUserBody = (state: State, id: number) => {
   const { activeShipId } = getUser(state.users, id)
 
   if (!activeShipId) {

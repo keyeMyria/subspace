@@ -34,7 +34,7 @@ export const PHYSICS_ROTATE_BODY = "physics/rotate_body!"
 export type PhysicsRotateBody = {
   type: "physics/rotate_body!",
   payload: {
-    bodyId: BodyId,
+    bodyId: number,
     angle: number,
   },
 }
@@ -56,7 +56,7 @@ export function addBody(body: Body): PhysicsAddBody {
 }
 
 export function rotateBody(
-  bodyId: BodyId,
+  bodyId: number,
   angle: number,
 ): PhysicsRotateBody {
   return {
@@ -79,13 +79,13 @@ export function updateBody(body: Body): PhysicsUpdateBody {
 
 // Selectors
 
-export const getBody = (state: PhysicsState, id: BodyId) => state[id]
+export const getBody = (state: PhysicsState, id: number) => state[id]
 
 // Reducer
 
 export type PhysicsState = {
   byId: {
-    [BodyId]: Body,
+    [number]: Body,
   },
 }
 

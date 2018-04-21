@@ -2,8 +2,6 @@
 
 import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
-import type { UserId, BodyId } from "@subspace/core"
-
 import * as Async from "../../util/async"
 
 import type { Action, Dispatch, Middleware, State } from "../../types"
@@ -18,7 +16,7 @@ export const ADJACENT_BODIES_UPDATE = "adjacent-bodies/update"
 export type AdjacentBodiesUpdate = {
   type: "adjacent-bodies/update",
   payload: {
-    adjacentBodies: { [UserId]: BodyId[] },
+    adjacentBodies: { [number]: number[] },
   },
 }
 
@@ -27,7 +25,7 @@ export type AdjacentBodiesAction = AdjacentBodiesUpdate
 // Action creators
 
 export function updateAdjacentBodies(adjacentBodies: {
-  [UserId]: BodyId[],
+  [number]: number[],
 }) {
   return {
     type: ADJACENT_BODIES_UPDATE,
@@ -40,7 +38,7 @@ export function updateAdjacentBodies(adjacentBodies: {
 // Reducer
 
 export type AdjacentBodiesState = {
-  byUserId: { [UserId]: BodyId[] },
+  byUserId: { [number]: number[] },
 }
 
 const initialAdjacentBodiesState = {

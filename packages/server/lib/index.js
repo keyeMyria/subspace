@@ -505,20 +505,20 @@
                 y,
                 m,
                 x,
+                g,
                 j,
                 S,
                 _,
                 w,
-                g,
                 I,
-                E,
-                k,
-                O,
-                R,
-                U,
-                P,
                 T,
-                A
+                E,
+                O,
+                k,
+                R,
+                P,
+                U,
+                q
               return a.default.wrap(
                 function(t) {
                   for (;;)
@@ -538,28 +538,28 @@
                           t.next = 25
                           break
                         }
-                        for (m = [], x = [], j = 0; j < n; j++)
-                          m.push(o(v[j] * l)),
-                            x.push(o(m[j] | (l - 1)))
+                        for (m = [], x = [], g = 0; g < n; g++)
+                          m.push(o(v[g] * l)),
+                            x.push(o(m[g] | (l - 1)))
                         b.push([
                           "[".concat(f(m), ":"),
                           "[".concat(f(x), ":ÿ"),
                         ]),
-                          (S = 0)
+                          (j = 0)
                       case 13:
-                        if (!(S < n)) {
+                        if (!(j < n)) {
                           t.next = 23
                           break
                         }
-                        if (v[S] === c[S]) {
+                        if (v[j] === c[j]) {
                           t.next = 19
                           break
                         }
-                        return (v[S] += 1), t.abrupt("break", 23)
+                        return (v[j] += 1), t.abrupt("break", 23)
                       case 19:
-                        S === n - 1 ? (y = !1) : (v[S] = i[S])
+                        j === n - 1 ? (y = !1) : (v[j] = i[j])
                       case 20:
-                        S++, (t.next = 13)
+                        j++, (t.next = 13)
                         break
                       case 23:
                         t.next = 7
@@ -575,58 +575,58 @@
                           })
                         )
                       case 27:
-                        ;(_ = t.sent), (w = []), (g = 0)
+                        ;(S = t.sent), (_ = []), (w = 0)
                       case 30:
-                        if (!(g < _.length)) {
+                        if (!(w < S.length)) {
                           t.next = 52
                           break
                         }
-                        ;(I = _[g]), (E = 0)
+                        ;(I = S[w]), (T = 0)
                       case 33:
-                        if (!(E < I.length)) {
+                        if (!(T < I.length)) {
                           t.next = 49
                           break
                         }
-                        ;(k = I[E]),
-                          (O = k.split(":")),
-                          (R = !1),
-                          (U = 0)
+                        ;(E = I[T]),
+                          (O = E.split(":")),
+                          (k = !1),
+                          (R = 0)
                       case 38:
-                        if (!(U < n)) {
+                        if (!(R < n)) {
                           t.next = 45
                           break
                         }
                         if (
                           !(
-                            o(O[U + 1]) < s[U][0] ||
-                            o(O[U + 1]) > s[U][1]
+                            o(O[R + 1]) < s[R][0] ||
+                            o(O[R + 1]) > s[R][1]
                           )
                         ) {
                           t.next = 42
                           break
                         }
-                        return (R = !0), t.abrupt("break", 45)
+                        return (k = !0), t.abrupt("break", 45)
                       case 42:
-                        U++, (t.next = 38)
+                        R++, (t.next = 38)
                         break
                       case 45:
-                        if (!R) {
+                        if (!k) {
                           for (
-                            P = [], T = O[O.length - 1], A = 1;
-                            A < O.length - 1;
-                            A++
+                            P = [], U = O[O.length - 1], q = 1;
+                            q < O.length - 1;
+                            q++
                           )
-                            P.push(o(O[A]))
-                          w.push([P, T])
+                            P.push(o(O[q]))
+                          _.push([P, U])
                         }
                       case 46:
-                        E++, (t.next = 33)
+                        T++, (t.next = 33)
                         break
                       case 49:
-                        g++, (t.next = 30)
+                        w++, (t.next = 30)
                         break
                       case 52:
-                        return t.abrupt("return", w)
+                        return t.abrupt("return", _)
                       case 53:
                       case "end":
                         return t.stop()
@@ -730,23 +730,16 @@
     "use strict"
     var n = t("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(r, "__esModule", { value: !0 }),
-      (r.default = r.Body = r.Ship = r.User = void 0)
+      (r.Hangar = r.Station = r.Item = r.ItemType = r.Inventory = r.Ship = r.ShipType = r.Body = r.User = r.sequelize = void 0)
     var a = n(t("@babel/runtime/regenerator")),
       s = n(t("@babel/runtime/helpers/asyncToGenerator")),
       u = n(t("bcrypt")),
-      i = n(t("sequelize-cockroachdb")),
-      o = n(t("./cfg/db.config.js")).default.production,
-      c = new i.default(o.database, o.username, o.password, o),
-      d = c.define("User", {
-        username: i.default.STRING,
-        password: i.default.STRING,
-        activeShipId: i.default.INTEGER,
-      })
-    function l(e) {
-      return p.apply(this, arguments)
+      i = n(t("sequelize-cockroachdb"))
+    function o(e) {
+      return c.apply(this, arguments)
     }
-    function p() {
-      return (p = (0, s.default)(
+    function c() {
+      return (c = (0, s.default)(
         a.default.mark(function e(r) {
           var t, n
           return a.default.wrap(
@@ -774,8 +767,15 @@
         }),
       )).apply(this, arguments)
     }
-    ;(r.User = d),
-      d.beforeCreate(
+    var d = n(t("./cfg/db.config.js")).default.production,
+      l = new i.default(d)
+    r.sequelize = l
+    var p = l.define("User", {
+      username: i.default.STRING,
+      password: i.default.STRING,
+    })
+    ;(r.User = p),
+      p.beforeCreate(
         (function() {
           var e = (0, s.default)(
             a.default.mark(function e(r) {
@@ -784,7 +784,7 @@
                   for (;;)
                     switch ((e.prev = e.next)) {
                       case 0:
-                        return (e.next = 2), l(r.password)
+                        return (e.next = 2), o(r.password)
                       case 2:
                         r.password = e.sent
                       case 3:
@@ -802,10 +802,7 @@
           }
         })(),
       )
-    var f = c.define("Ship", { bodyId: i.default.INTEGER })
-    ;(r.Ship = f),
-      d.hasOne(f, { as: "activeShip", foreignKey: "activeShipId" })
-    var h = c.define("Body", {
+    var f = l.define("Body", {
       angle: i.default.FLOAT,
       angularVelocity: i.default.FLOAT,
       positionX: i.default.FLOAT,
@@ -815,9 +812,34 @@
       width: i.default.FLOAT,
       height: i.default.FLOAT,
     })
-    ;(r.Body = h), f.hasOne(h, { as: "body", foreignKey: "bodyId" })
-    var b = { sequelize: c, User: d, Ship: f, Body: h }
-    r.default = b
+    r.Body = f
+    var h = l.define("ShipType", { name: i.default.STRING })
+    r.ShipType = h
+    var b = l.define("Ship", {})
+    r.Ship = b
+    var v = l.define("Inventory", {})
+    r.Inventory = v
+    var y = l.define("ItemType", { name: i.default.STRING })
+    r.ItemType = y
+    var m = l.define("Item", {})
+    r.Item = m
+    var x = l.define("Station", {})
+    r.Station = x
+    var g = l.define("Hangar", {})
+    ;(r.Hangar = g),
+      p.hasOne(b, { as: "activeShip" }),
+      p.hasMany(g, { as: "hangars" }),
+      b.belongsTo(f, { as: "body" }),
+      b.belongsTo(v, { as: "inventory" }),
+      b.belongsTo(h, { as: "shipType" }),
+      b.belongsTo(g, { as: "hangar" }),
+      m.belongsTo(v, { as: "inventory" }),
+      v.hasMany(m, { as: "items" }),
+      m.belongsTo(y, { as: "itemType" }),
+      x.hasMany(g, { as: "hangars" }),
+      g.belongsTo(x, { as: "station" }),
+      g.belongsTo(p, { as: "user" }),
+      g.hasMany(b, { as: "ships" })
   },
   "./src/index.js": function(e, r, t) {
     "use strict"
@@ -1299,8 +1321,8 @@
                     y = v.clients,
                     m = u.payload.user,
                     x = s.getClientByUserId(y, m.id),
-                    j = a.Protocol.userUpdateMessage(m)
-                  r(s.sendClient(x.id, j))
+                    g = a.Protocol.userUpdateMessage(m)
+                  r(s.sendClient(x.id, g))
               }
               return r(u)
             }
@@ -1350,6 +1372,103 @@
       }
     r.default = l
   },
+  "./src/routers/auth.js": function(e, r, t) {
+    "use strict"
+    var n = t("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(r, "__esModule", { value: !0 }),
+      (r.default = void 0)
+    var a = n(t("@babel/runtime/regenerator")),
+      s = n(t("@babel/runtime/helpers/asyncToGenerator")),
+      u = n(t("express")),
+      i = t("./src/data/index.js"),
+      o = t("./src/auth/jwt.js"),
+      c = t("./src/auth/middleware.js"),
+      d = u.default.Router()
+    d.route("/register").post(
+      (function() {
+        var e = (0, s.default)(
+          a.default.mark(function e(r, t) {
+            var n, s, u, c, d
+            return a.default.wrap(
+              function(e) {
+                for (;;)
+                  switch ((e.prev = e.next)) {
+                    case 0:
+                      return (
+                        (n = r.body),
+                        (s = n.username),
+                        (u = n.password),
+                        (e.next = 3),
+                        i.User.findOne({ where: { username: s } })
+                      )
+                    case 3:
+                      if (!e.sent) {
+                        e.next = 6
+                        break
+                      }
+                      return (
+                        t
+                          .status(409)
+                          .json({ error: "Username already taken" }),
+                        e.abrupt("return")
+                      )
+                    case 6:
+                      return (
+                        (e.prev = 6),
+                        (e.next = 9),
+                        i.User.create({ username: s, password: u })
+                      )
+                    case 9:
+                      ;(c = e.sent), (e.next = 16)
+                      break
+                    case 12:
+                      return (
+                        (e.prev = 12),
+                        (e.t0 = e.catch(6)),
+                        t.status(400).json({ error: e.t0 }),
+                        e.abrupt("return")
+                      )
+                    case 16:
+                      ;(d = c.toJSON()),
+                        t
+                          .status(201)
+                          .json({
+                            token: (0, o.generateToken)(d),
+                            user: d,
+                          })
+                    case 18:
+                    case "end":
+                      return e.stop()
+                  }
+              },
+              e,
+              this,
+              [[6, 12]],
+            )
+          }),
+        )
+        return function(r, t) {
+          return e.apply(this, arguments)
+        }
+      })(),
+    ),
+      d.route("/login").post(c.login, function(e, r) {
+        var t = e.user,
+          n = { id: t.id, username: t.username }
+        r
+          .status(200)
+          .json({ token: (0, o.generateToken)(n), user: n })
+      }),
+      d.route("/verify").post(c.auth, function(e, r) {
+        var t = e.user,
+          n = { id: t.id, username: t.username }
+        r
+          .status(200)
+          .json({ token: (0, o.generateToken)(n), user: n })
+      })
+    var l = d
+    r.default = l
+  },
   "./src/scheduler.js": function(e, r, t) {
     "use strict"
     var n = t("@babel/runtime/helpers/interopRequireWildcard")
@@ -1384,45 +1503,58 @@
       a = t("@babel/runtime/helpers/interopRequireDefault"),
       s = a(t("@babel/runtime/regenerator")),
       u = a(t("@babel/runtime/helpers/asyncToGenerator")),
-      i = (a(t("bcrypt")), t("http")),
+      i = t("http"),
       o = n(t("@web-udp/server")),
       c = t("@subspace/core"),
       d = a(t("express")),
       l = a(t("passport")),
       p = a(t("body-parser")),
-      f = a(t("./src/data/index.js")),
-      h = a(t("./cfg/server.config.json")),
+      f = a(t("./cfg/server.config.json")),
+      h = a(t("./src/data/index.js")),
       b = t("./src/store/index.js"),
       v = t("./src/auth/index.js"),
       y = t("./src/auth/strategy.js"),
-      m = t("./src/auth/middleware.js"),
-      x = t("./src/auth/jwt.js"),
-      j = process.env,
-      S = j.TICK_RATE,
-      _ = j.SEND_RATE,
-      w = j.PORT,
-      g = 1 / (Number(S) || h.default.tick_rate),
-      I = 1 / (Number(_) || h.default.send_rate),
-      E = (0, d.default)(),
-      k = new i.createServer(E),
-      O = new o.Server({ server: k })
-    function R() {
-      return (R = (0, u.default)(
+      m = a(t("./src/routers/auth.js")),
+      x = process.env,
+      g = x.TICK_RATE,
+      j = x.SEND_RATE,
+      S = x.PORT,
+      _ = 1 / (Number(g) || f.default.tick_rate),
+      w = 1 / (Number(j) || f.default.send_rate),
+      I = (0, d.default)(),
+      T = new i.createServer(I),
+      E = new o.Server({ server: T })
+    function O() {
+      return (O = (0, u.default)(
         s.default.mark(function e() {
           return s.default.wrap(
             function(e) {
               for (;;)
                 switch ((e.prev = e.next)) {
                   case 0:
-                    return (e.next = 2), f.default.sequelize.sync()
-                  case 2:
+                    return (
+                      (0, b.configureStore)({
+                        auth: {
+                          authenticate: v.authenticate,
+                          verify: v.verify,
+                        },
+                        db: h.default,
+                        tickRate: _,
+                        sendRate: w,
+                        udp: E,
+                      }).dispatch(c.Loop.startLoop()),
+                      console.log("syncing database"),
+                      (e.next = 5),
+                      h.default.sequelize.sync()
+                    )
+                  case 5:
                     console.log(
-                      "Server listening at //localhost:".concat(
-                        String(w),
+                      "server listening at //localhost:".concat(
+                        String(S),
                       ),
                     ),
-                      k.listen(Number(w))
-                  case 4:
+                      T.listen(Number(S))
+                  case 7:
                   case "end":
                     return e.stop()
                 }
@@ -1435,166 +1567,10 @@
     }
     l.default.use(y.jwt),
       l.default.use(y.local),
-      E.use((0, p.default)()),
-      (0, b.configureStore)({
-        db: f.default,
-        auth: { authenticate: v.authenticate, verify: v.verify },
-        tickRate: g,
-        sendRate: I,
-        udp: O,
-      }).dispatch(c.Loop.startLoop()),
-      E.post(
-        "/users",
-        (function() {
-          var e = (0, u.default)(
-            s.default.mark(function e(r, t) {
-              var n, a, u, i, o
-              return s.default.wrap(
-                function(e) {
-                  for (;;)
-                    switch ((e.prev = e.next)) {
-                      case 0:
-                        return (
-                          (n = r.body),
-                          (a = n.username),
-                          (u = n.password),
-                          (e.next = 3),
-                          f.default.User.findOne({
-                            where: { username: a },
-                          })
-                        )
-                      case 3:
-                        if (!e.sent) {
-                          e.next = 6
-                          break
-                        }
-                        return (
-                          t
-                            .status(409)
-                            .json({
-                              error: "Username already taken",
-                            }),
-                          e.abrupt("return")
-                        )
-                      case 6:
-                        return (
-                          (e.prev = 6),
-                          (e.next = 9),
-                          f.default.User.create({
-                            username: a,
-                            password: u,
-                          })
-                        )
-                      case 9:
-                        ;(i = e.sent), (e.next = 16)
-                        break
-                      case 12:
-                        return (
-                          (e.prev = 12),
-                          (e.t0 = e.catch(6)),
-                          t.status(400).json({ error: e.t0 }),
-                          e.abrupt("return")
-                        )
-                      case 16:
-                        ;(o = i.toJSON()),
-                          t
-                            .status(201)
-                            .json({
-                              token: (0, x.generateToken)(o),
-                              user: o,
-                            })
-                      case 18:
-                      case "end":
-                        return e.stop()
-                    }
-                },
-                e,
-                this,
-                [[6, 12]],
-              )
-            }),
-          )
-          return function(r, t) {
-            return e.apply(this, arguments)
-          }
-        })(),
-      ),
-      E.post(
-        "/login",
-        m.login,
-        (function() {
-          var e = (0, u.default)(
-            s.default.mark(function e(r, t) {
-              var n, a, u, i
-              return s.default.wrap(
-                function(e) {
-                  for (;;)
-                    switch ((e.prev = e.next)) {
-                      case 0:
-                        ;(n = r.user),
-                          (a = n.id),
-                          (u = n.username),
-                          (i = { id: a, username: u }),
-                          t
-                            .status(200)
-                            .json({
-                              token: (0, x.generateToken)(i),
-                              user: i,
-                            })
-                      case 3:
-                      case "end":
-                        return e.stop()
-                    }
-                },
-                e,
-                this,
-              )
-            }),
-          )
-          return function(r, t) {
-            return e.apply(this, arguments)
-          }
-        })(),
-      ),
-      E.post(
-        "/auth",
-        m.auth,
-        (function() {
-          var e = (0, u.default)(
-            s.default.mark(function e(r, t) {
-              var n, a, u, i
-              return s.default.wrap(
-                function(e) {
-                  for (;;)
-                    switch ((e.prev = e.next)) {
-                      case 0:
-                        ;(n = r.user),
-                          (a = n.id),
-                          (u = n.username),
-                          (i = { id: a, username: u }),
-                          t
-                            .status(200)
-                            .json({
-                              token: (0, x.generateToken)(i),
-                              user: i,
-                            })
-                      case 3:
-                      case "end":
-                        return e.stop()
-                    }
-                },
-                e,
-                this,
-              )
-            }),
-          )
-          return function(r, t) {
-            return e.apply(this, arguments)
-          }
-        })(),
-      ),
+      I.use((0, p.default)()),
+      I.use("/auth", m.default),
       (function() {
-        R.apply(this, arguments)
+        O.apply(this, arguments)
       })()
   },
   "./src/store/index.js": function(e, r, t) {
