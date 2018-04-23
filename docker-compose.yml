@@ -20,20 +20,20 @@ services:
       - net_roach
     volumes:
       - data_db-2:/cockroach/cockroach-data
-  db-3:
-    image: cockroachdb/cockroach
-    command: start --advertise-host=db-3 --join=db-1:26257 --insecure
-    networks:
-      - net_roach
-    volumes:
-      - data_db-3:/cockroach/cockroach-data
-  db-4:
-    image: cockroachdb/cockroach
-    command: start --advertise-host=db-4 --join=db-1:26257 --insecure
-    networks:
-      - net_roach
-    volumes:
-      - data_db-4:/cockroach/cockroach-data
+  # db-3:
+  #   image: cockroachdb/cockroach
+  #   command: start --advertise-host=db-3 --join=db-1:26257 --insecure
+  #   networks:
+  #     - net_roach
+  #   volumes:
+  #     - data_db-3:/cockroach/cockroach-data
+  # db-4:
+  #   image: cockroachdb/cockroach
+  #   command: start --advertise-host=db-4 --join=db-1:26257 --insecure
+  #   networks:
+  #     - net_roach
+  #   volumes:
+  #     - data_db-4:/cockroach/cockroach-data
   db-init:
     image: cockroachdb/cockroach
     environment:
@@ -69,8 +69,10 @@ services:
     container_name: subspace-server
     ports:
       - 8081:8081
+      - 9001:9001
     expose:
       - 8081
+      - 9001
     environment:
       NODE_ENV: test
       PORT: 8081
@@ -100,6 +102,10 @@ services:
       - 8082:8082
     expose:
       - 8082
+    environment:
+      SERVER_URL: http://subspace-server:8081
+      PORT: 8082
+      HOST: 0.0.0.0
     volumes:
       - .:/opt/subspace/
       - /opt/subspace/node_modules
