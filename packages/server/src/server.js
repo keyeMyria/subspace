@@ -3,25 +3,18 @@
 import { createServer } from "http"
 import * as Udp from "@web-udp/server"
 import { Loop } from "@subspace/core"
-
 import type { Connection } from "@web-udp/server"
 import type { UserId, UserMessage } from "@subspace/core"
-
 import express from "express"
 import passport from "passport"
-import body from "body-parser"
+import { json } from "body-parser"
 
-import serverConfig from "../cfg/server.config.json"
 import * as db from "./data"
-import { configureStore } from "./store"
-import { authenticate, verify } from "./auth"
+import { AppConfig, GameConfig } from "../cfg"
+import { configureStore } from "./state/store"
+import * as auth from "./auth"
 import { jwt, local } from "./auth/strategy"
 import authRouter from "./routers/auth"
-
-const { TICK_RATE, SEND_RATE, PORT } = process.env
-
-const tickRate = 1 / (Number(TICK_RATE) || serverConfig.tick_rate)
-const sendRate = 1 / (Number(SEND_RATE) || serverConfig.send_rate)
 
 const app = express()
 const server = new createServer(app)
@@ -32,17 +25,17 @@ passport.use(jwt)
 passport.use(local)
 
 // middleware
-app.use(body())
+app.use(json())
 
 // routes
 app.use("/auth", authRouter)
 
 async function main() {
   const store = configureStore({
-    auth: { authenticate, verify },
+    auth,
     db,
-    tickRate,
-    sendRate,
+    tickRate: 1 / GameConfig.tickRate,
+    sendRate: 1 / GameConfig.sendRate,
     udp,
   })
 
@@ -50,9 +43,11 @@ async function main() {
   console.log("syncing database")
   await db.sequelize.sync()
 
-  console.log(`server listening at //localhost:${String(PORT)}`)
+  console.log(
+    `server listening at //localhost:${String(AppConfig.port)}`,
+  )
 
-  server.listen(Number(PORT))
+  server.listen(Number(AppConfig.port))
 }
 
 main()

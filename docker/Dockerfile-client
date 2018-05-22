@@ -2,25 +2,23 @@ FROM node:9.8.0
 
 WORKDIR /opt/subspace
 
-# npm manifests
-COPY package*.json ./
+RUN npm i lerna -g --unsafe-perm --loglevel notice
 
-# monorepo configs/utils
-RUN npm i lerna -g --loglevel notice
-COPY lerna.json .
+RUN chown -R node:node /opt/subspace/
 
-# dev configs/utils
-COPY .eslintrc.json .
-COPY .eslintignore .
-COPY .babelrc .
+COPY package*.json lerna.json .eslintrc.json .eslintignore .babelrc ./
 
 # package and monorepo dependencies
-COPY packages/core ./packages/core
-COPY packages/client ./packages/client
+COPY packages/core/package*.json ./packages/core/
+COPY packages/client/package*.json ./packages/client/
 
 # install dependencies and build
 RUN npm i --loglevel notice
-RUN lerna bootstrap
+RUN lerna bootstrap --ignore-scripts
+
+RUN npm cache clean --force
+
+USER node
 
 # serve
 CMD npm run dev:client

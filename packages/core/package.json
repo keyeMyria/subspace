@@ -4,18 +4,25 @@
   "description": "Subspace core game lib",
   "main": "lib/index.js",
   "scripts": {
-    "build": "webpack --config build/webpack.config.js",
-    "types": "flow gen-flow-files index.js > index.js.flow"
+    "test": "jest",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "flow-bin": "^0.69.0",
+    "@babel/core": "^7.0.0-beta.46",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^22.4.3",
+    "flow-bin": "^0.71.0",
+    "jest": "^22.4.3",
     "webpack": "^4.3.0",
     "webpack-cli": "^2.0.13"
   },
   "dependencies": {
+    "@subspace/redux-module": "^0.1.0",
     "p2": "^0.7.1",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "redux-observable": "^0.18.0",
+    "rxjs": "^6.0.0"
   }
 }

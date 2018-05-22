@@ -1,6 +1,6 @@
 // @flow
 
-import authEpics from "./auth"
-import udpEpics from "./udp"
+import auth from "./auth"
+import udp from "./udp"
 
-export default [...authEpics, ...udpEpics]
+export default [...auth, ...udp]

@@ -5,6 +5,7 @@ import { compose } from "redux"
 import { withRouter } from "react-router-dom"
 
 import { Auth as AuthModule, Async } from "../../state"
+import type { Dispatch } from "../../types"
 
 import Auth from "../../components/auth"
 
@@ -14,7 +15,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   authenticate: token => dispatch(AuthModule.authenticate(token)),
 })
 

@@ -1,6 +1,8 @@
 // @flow
 
 import { Observable } from "rxjs/Observable"
+import { map } from "rxjs/operators"
+import { ajax } from "rxjs/ajax"
 
 const Resources = {
   LOGIN: "/server/auth/login",
@@ -35,8 +37,8 @@ const headers = {
   [HttpHeaders.CONTENT_TYPE]: ContentTypes.APPLICATION_JSON,
 }
 
-export function login(username, password) {
-  return Observable.ajax({
+export function login(username: string, password: string) {
+  return ajax({
     url: Resources.LOGIN,
     method: HttpMethods.POST,
     responseType: ResponseTypes.JSON,
@@ -45,11 +47,11 @@ export function login(username, password) {
       username,
       password,
     },
-  }).map(ajaxResponse => ajaxResponse.response)
+  }).pipe(map(ajaxResponse => ajaxResponse.response))
 }
 
-export function register(username, password) {
-  return Observable.ajax({
+export function register(username: string, password: string) {
+  return ajax({
     url: Resources.REGISTER,
     method: HttpMethods.POST,
     responseType: ResponseTypes.JSON,
@@ -58,11 +60,11 @@ export function register(username, password) {
       username,
       password,
     },
-  }).map(ajaxResponse => ajaxResponse.response)
+  }).pipe(map(ajaxResponse => ajaxResponse.response))
 }
 
-export function authenticate(token) {
-  return Observable.ajax({
+export function authenticate(token: string) {
+  return ajax({
     url: Resources.AUTHENTICATE,
     method: HttpMethods.POST,
     responseType: ResponseTypes.JSON,
@@ -70,5 +72,5 @@ export function authenticate(token) {
       ...headers,
       [HttpHeaders.AUTHORIZATION]: `Bearer ${token}`,
     },
-  }).map(ajaxResponse => ajaxResponse.response)
+  }).pipe(map(ajaxResponse => ajaxResponse.response))
 }

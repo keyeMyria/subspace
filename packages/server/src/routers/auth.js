@@ -2,12 +2,16 @@
 
 import express from "express"
 import { User } from "../data"
-import { generateToken } from "../auth/jwt"
-import { auth, login } from "../auth/middleware"
+import { token } from "../auth"
+import {
+  auth as authMiddleware,
+  login as loginMiddleware,
+} from "../auth/middleware"
+import asyncMiddleware from "./async"
 
 const router = express.Router()
 
-router.route("/register").post(async (req, res) => {
+const register = asyncMiddleware(async (req, res) => {
   let { username, password } = req.body
 
   if (await User.findOne({ where: { username } })) {
@@ -27,29 +31,35 @@ router.route("/register").post(async (req, res) => {
   const user = model.toJSON()
 
   res.status(201).json({
-    token: generateToken(user),
+    token: token(user),
     user,
   })
 })
 
-router.route("/login").post(login, (req, res) => {
+function login(req, res, next: Function) {
   const { user: { id, username } } = req
   const user = { id, username }
 
   res.status(200).json({
-    token: generateToken(user),
+    token: token(user),
     user,
   })
-})
+}
 
-router.route("/verify").post(auth, (req, res) => {
+function verify(req, res, next: Function) {
   const { user: { id, username } } = req
   const user = { id, username }
 
   res.status(200).json({
-    token: generateToken(user),
+    token: token(user),
     user,
   })
-})
+}
+
+router.route("/register").post(register)
+
+router.route("/login").post(loginMiddleware, login)
+
+router.route("/verify").post(authMiddleware, verify)
 
 export default router

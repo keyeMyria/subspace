@@ -5,7 +5,6 @@
 .dockerignore
 *.swp
 node_modules
-packages/**/node_modules
 Dockerfile
 npm-debug.log
 cockroach-data

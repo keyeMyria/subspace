@@ -6,7 +6,12 @@ import { Menu, Container } from "semantic-ui-react"
 
 import * as Paths from "../../routes/constants/paths"
 
-function Nav(props) {
+type Props = {
+  isAuthenticated: boolean,
+  onLogoutClick: Function,
+}
+
+function Nav(props: Props) {
   return (
     <Menu fixed="top" inverted style={{ borderRadius: 0 }}>
       <Container>

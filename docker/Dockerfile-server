@@ -2,30 +2,26 @@ FROM node:9.8.0
 
 WORKDIR /opt/subspace
 
-# npm manifests
-COPY package*.json ./
+RUN npm i lerna -g --unsafe-perm --loglevel notice
 
-# monorepo configs/utils
-RUN npm i lerna -g --loglevel notice
-COPY lerna.json .
+RUN chown -R node:node /opt/subspace/
 
-# dev configs/utils
-COPY bin .
-COPY .eslintrc.json .
-COPY .eslintignore .
-COPY .babelrc .
+COPY package*.json lerna.json .eslintrc.json .eslintignore .babelrc ./
 
 # package and monorepo dependencies
-COPY packages/core ./packages/core
-COPY packages/server ./packages/server
+COPY packages/core/package*.json ./packages/core/
+COPY packages/server/package*.json ./packages/server/
 
 # install dependencies and build
 RUN npm i --loglevel notice
-RUN lerna bootstrap
+RUN lerna bootstrap --ignore-scripts
 
 # rebuild binaries on container architecture
-RUN npm --prefix packages/server rebuild wrtc --update-binary
-RUN npm --prefix packages/server rebuild bcrypt --update-binary
+RUN npm --prefix packages/server rebuild wrtc bcrypt --update-binary
+
+RUN npm cache clean --force
+
+USER node
 
 # serve
 CMD bash -c "while ping -c1 db-init &>/dev/null; do :; done;" && \

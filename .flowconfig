@@ -10,3 +10,4 @@
 
 [options]
 module.name_mapper='^@subspace/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
+esproposal.export_star_as=enable

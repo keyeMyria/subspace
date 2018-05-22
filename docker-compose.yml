@@ -20,20 +20,20 @@ services:
       - net_roach
     volumes:
       - data_db-2:/cockroach/cockroach-data
-  # db-3:
-  #   image: cockroachdb/cockroach
-  #   command: start --advertise-host=db-3 --join=db-1:26257 --insecure
-  #   networks:
-  #     - net_roach
-  #   volumes:
-  #     - data_db-3:/cockroach/cockroach-data
-  # db-4:
-  #   image: cockroachdb/cockroach
-  #   command: start --advertise-host=db-4 --join=db-1:26257 --insecure
-  #   networks:
-  #     - net_roach
-  #   volumes:
-  #     - data_db-4:/cockroach/cockroach-data
+  db-3:
+    image: cockroachdb/cockroach
+    command: start --advertise-host=db-3 --join=db-1:26257 --insecure
+    networks:
+      - net_roach
+    volumes:
+      - data_db-3:/cockroach/cockroach-data
+  db-4:
+    image: cockroachdb/cockroach
+    command: start --advertise-host=db-4 --join=db-1:26257 --insecure
+    networks:
+      - net_roach
+    volumes:
+      - data_db-4:/cockroach/cockroach-data
   db-init:
     image: cockroachdb/cockroach
     environment:

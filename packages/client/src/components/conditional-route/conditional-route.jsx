@@ -3,7 +3,16 @@
 import React from "react"
 import { Route, Redirect } from "react-router-dom"
 
-function ConditionalRoute({ condition, redirectTo, ...props }) {
+type Props = {
+  condition: boolean,
+  redirectTo: string,
+}
+
+function ConditionalRoute({
+  condition,
+  redirectTo,
+  ...props
+}: Props) {
   return condition ? (
     <Route {...props} />
   ) : (

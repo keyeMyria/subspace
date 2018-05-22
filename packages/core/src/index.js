@@ -3,17 +3,11 @@
 import * as Protocol from "./protocol"
 
 // Modules
-import * as Loop from "./modules/loop"
-import * as Users from "./modules/users"
-import * as Physics from "./modules/physics"
-import * as Ships from "./modules/ships"
+export * from "./state/modules"
+export * as reduxModules from "./state/modules"
+export { default as epics } from "./state/epics"
 
-export type * from "./modules/loop"
-export type * from "./modules/users"
-export type * from "./modules/physics"
-export type * from "./modules/ships"
-
-export { Loop, Users, Physics, Ships }
+export type * from "./state/modules"
 
 // Models
 export type * from "./model"
@@ -26,7 +20,8 @@ export type * from "./protocol"
 export * from "./selectors"
 
 // etc
-export type { Scheduler } from "./modules/loop"
 export type * from "./types"
+export * from "./util"
+export * from "./state/modules/async/util"
 
 export { default as reducers } from "./reducers"

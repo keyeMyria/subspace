@@ -11,8 +11,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.46",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^22.4.3",
     "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "flow-bin": "^0.71.0",
     "html-webpack-plugin": "3.2.0",
+    "jest": "^22.4.3",
     "postcss-loader": "^2.1.4",
     "redux-devtools-extension": "2.13.2",
     "style-loader": "^0.21.0",
@@ -22,10 +28,11 @@
     "webpack-dev-server": "3.1.3"
   },
   "dependencies": {
+    "@subspace/core": "^0.0.0",
+    "@subspace/redux-module": "^0.1.0",
     "@web-udp/client": "2.1.0",
     "connected-react-router": "4.3.0",
     "dotenv": "5.0.1",
-    "file-loader": "^1.1.11",
     "postcss-cssnext": "^3.1.0",
     "react": "16.3.2",
     "react-dom": "16.3.2",
@@ -35,6 +42,7 @@
     "react-router-dom": "4.2.2",
     "redux": "4.0.0",
     "redux-observable": "0.18.0",
+    "rxjs": "^6.0.0",
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.79.1"
   }

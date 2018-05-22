@@ -10,7 +10,8 @@
   "plugins": ["flowtype", "react", "standard"],
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "rules": {
     "arrow-parens": 0,

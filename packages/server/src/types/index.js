@@ -13,16 +13,16 @@ import type {
 
 import type { Reducers } from "../reducers"
 
-import type { AdjacentBodiesAction } from "../modules/adjacent-bodies"
-import type { ClientAction } from "../modules/clients"
-import type { UserAction } from "../modules/users"
-import type { ShipAction } from "../modules/ships"
+import type { Action as AdjacentBodiesAction } from "../state/modules/adjacent-bodies/action-types"
+import type { Action as ClientsAction } from "../state/modules/clients/action-types"
+import type { Action as UsersAction } from "../state/modules/users/action-types"
+import type { Action as ShipAction } from "../state/modules/ships/action-types"
 
 export type Action =
   | CoreAction
   | AdjacentBodiesAction
-  | ClientAction
-  | UserAction
+  | ClientsAction
+  | UsersAction
   | ShipAction
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V

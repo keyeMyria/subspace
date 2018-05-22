@@ -15,11 +15,8 @@ root.classList.add("Root")
 
 document.body.appendChild(root)
 
-const reducers = {}
-const middleware = []
-
 render(
-  <Provider store={configureStore(reducers, middleware, { history })}>
+  <Provider store={configureStore({ history })}>
     <App history={history} routes={routes} />
   </Provider>,
   root,

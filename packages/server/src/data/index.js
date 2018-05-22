@@ -15,10 +15,9 @@ import type {
   ItemType as ItemTypeModel,
 } from "@subspace/core"
 
+import { EnvConfig } from "../../cfg"
 import configs from "../../cfg/db.config"
 import type { User as UserModel } from "../model/user"
-
-const { NODE_ENV } = process.env
 
 async function encryptPassword(password: String) {
   const salt = await bcrypt.genSalt(10)
@@ -27,7 +26,7 @@ async function encryptPassword(password: String) {
   return hash
 }
 
-const config = configs[NODE_ENV]
+const config = configs[EnvConfig.node]
 
 export const sequelize = new Sequelize(config)
 

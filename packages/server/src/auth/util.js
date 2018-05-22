@@ -1,7 +1,7 @@
 // @flow
 
 import bcrypt from "bcrypt"
-import type { User as UserModel } from "../model"
+import type { User as UserModel } from "../model/user"
 
 import { User } from "../data"
 

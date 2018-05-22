@@ -1,13 +1,25 @@
 // @flow
 
-import React from "react"
-import PropTypes from "prop-types"
+import * as React from "react"
 
-class Auth extends React.Component {
-  constructor(props) {
+import { JwtConfig } from "../../cfg"
+
+type Props = {
+  authenticate: Function,
+  pending: boolean,
+  children: React.Node[],
+}
+
+type State = {
+  initialized: boolean,
+  token: string | null | typeof undefined,
+}
+
+class Auth extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props)
 
-    const token = localStorage.getItem(process.env.JWT_STORAGE_KEY)
+    const token = localStorage.getItem(JwtConfig.storageKey)
 
     this.state = {
       initialized: !token,
@@ -24,7 +36,7 @@ class Auth extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     const { initialized } = this.state
     const { pending } = this.props
 

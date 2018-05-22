@@ -1,10 +1,16 @@
+// @flow
+
+import { RedisConfig } from "."
+
+const { port, host } = RedisConfig
+
 export default {
-  port: 6379,
-  host: "localhost",
-  family: 4,
+  port,
+  host,
+  family: "IPv4",
   db: 0,
   enableReadyCheck: true,
-  retry_strategy: options => {
+  retry_strategy: (options: Object) => {
     if (options.error && options.error.code === "ECONNREFUSED") {
       // End reconnecting on a specific error and flush all commands with
       // a individual error
