@@ -1,5 +1,6 @@
 // @flow
 
+import type { UserAction } from "@subspace/core"
 import { toAsync } from "@subspace/core"
 
 export const REGISTER = "REGISTER"
@@ -37,5 +38,10 @@ export type LoadRejected = {
   },
 }
 
-export type Action = Register | Load | LoadFulfilled | LoadRejected
+export type Action =
+  | UserAction
+  | Register
+  | Load
+  | LoadFulfilled
+  | LoadRejected
 export default { REGISTER, LOAD, LOAD_FULFILLED, LOAD_REJECTED }

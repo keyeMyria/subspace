@@ -33,10 +33,6 @@ type ConfigureStoreOptions = {
   udp: UdpServer,
 }
 
-const physicsDriver = Physics.P2Driver.create({
-  gravity: [0, 0],
-})
-
 const spatialIndex = SpatialIndex.create({
   redis: redisConfig,
   key: "ss-body",

@@ -1,18 +1,18 @@
 // @flow
 
-import type { Ship } from "@subspace/core"
+import type { Ship, ShipAction } from "@subspace/core"
 import { toAsync } from "@subspace/core"
 
 export const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
 
-export type ShipLoad = {
+export type Load = {
   type: "LOAD!",
   payload: {
     shipId: number,
   },
 }
 
-export type ShipLoadFulfilled = {
+export type LoadFulfilled = {
   type: "LOAD-",
   payload: {
     shipId: number,
@@ -20,12 +20,12 @@ export type ShipLoadFulfilled = {
   error: Error,
 }
 
-export type ShipLoadRejected = {
+export type LoadRejected = {
   type: "LOAD+",
   payload: {
     ship: Ship,
   },
 }
 
-export type Action = ShipLoad | ShipLoadFulfilled | ShipLoadRejected
+export type Action = ShipAction | Load | LoadFulfilled | LoadRejected
 export default { LOAD, LOAD_FULFILLED, LOAD_REJECTED }

@@ -1,7 +1,7 @@
 // @flow
 
 import type { Client } from "../../../model/client"
-import type { Action } from "../../../types"
+import type { Action } from "./action-types"
 import { getClient } from "./selectors"
 import { ADD, REMOVE } from "./action-types"
 

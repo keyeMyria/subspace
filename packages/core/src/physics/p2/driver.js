@@ -2,7 +2,7 @@
 
 import P2 from "p2"
 
-import type { Body } from "../../../model"
+import type { Body } from "../../model"
 
 const serializeBody = (id: number, body: P2.Body) => {
   const {
@@ -31,7 +31,7 @@ type PhysicsDriverOptions = {
   gravity: [number, number],
 }
 
-export const create = (options: PhysicsDriverOptions) => {
+export default function(options: PhysicsDriverOptions) {
   const { gravity } = options
   const bodies: { [number]: P2.Body } = {}
   const world = new P2.World({

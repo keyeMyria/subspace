@@ -1,12 +1,12 @@
 // @flow
 
-import type { UserState as CoreUserState } from "@subspace/core"
-import { Users as CoreUsers } from "@subspace/core"
+import { Users } from "@subspace/core"
+import type { UserState } from "@subspace/core"
 
-import type { Action, Dispatch, Middleware } from "../../../types"
+import type { Action } from "./action-types"
 
-export type UserState = $Supertype<CoreUserState>
+export type State = UserState & {}
 
-export default function reducer(state: UserState, action: Action) {
-  return CoreUsers(state, action)
+export default function reducer(state: State, action: Action) {
+  return state
 }

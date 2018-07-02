@@ -14,7 +14,7 @@ type ModuleConfig<S, A, AT, AC, SL: Selectors<S>> = {
 type ExtractSelector = <S, F, A1, A2, A3, A4, A5, A6, A7>(
   (S, A1, A2, A3, A4, A5, A6, A7) => F,
 ) => (Object, A1, A2, A3, A4, A5, A6, A7) => F
-type Module<R, AT, AC, SL> = { reducer: R } & AT & AC & SL
+type ReduxModule<R, AT, AC, SL> = { reducer: R } & AT & AC & SL
 
 function fromObj<T>(obj: T, reducer: Function) {
   return Object.entries(obj).reduce(reducer, {})
@@ -29,7 +29,7 @@ export function createReduxModule<
 >(
   reduxModuleName: string,
   config: ModuleConfig<S, A, AT, AC, SL>,
-): Module<Reducer<S, A>, AT, AC, $ObjMap<SL, ExtractSelector>> {
+): ReduxModule<Reducer<S, A>, AT, AC, $ObjMap<SL, ExtractSelector>> {
   function reducer(state: S, action: A) {
     return config.reducer(state, {
       ...action,
@@ -91,17 +91,17 @@ export function composeReduxModules<
   AT,
   AC,
   SL,
-  M: Module<Reducer<S, A>, AT, AC, SL>,
+  M: ReduxModule<Reducer<S, A>, AT, AC, SL>,
   S2,
   A2,
   AT2,
   AC2,
   SL2,
-  M2: Module<Reducer<S2, A2>, AT2, AC2, SL2>,
+  M2: ReduxModule<Reducer<S2, A2>, AT2, AC2, SL2>,
 >(
   reduxModuleA: M,
   reduxModuleB: M2,
-): Module<
+): ReduxModule<
   Reducer<S & S2, A & A2>,
   AT & AT2,
   AC & AC2,
@@ -119,4 +119,22 @@ export function composeReduxModules<
   }
 
   return module
+}
+
+type ExtractReducer = <R, AT, AC, SL>(ReduxModule<R, AT, AC, SL>) => R
+
+export function extractReducers<
+  M: { [string]: { reducer: Reducer<any, any> } },
+>(modules: M): $ObjMap<M, ExtractReducer> {
+  const result = {}
+
+  for (const [reduxModuleName, reduxModule] of Object.entries(
+    modules,
+  )) {
+    if (typeof reduxModule === "object" && reduxModule !== null) {
+      result[reduxModuleName] = reduxModule.reducer
+    }
+  }
+
+  return result
 }

@@ -4,7 +4,6 @@ import { createServer } from "http"
 import * as Udp from "@web-udp/server"
 import { Loop } from "@subspace/core"
 import type { Connection } from "@web-udp/server"
-import type { UserId, UserMessage } from "@subspace/core"
 import express from "express"
 import passport from "passport"
 import { json } from "body-parser"
@@ -39,7 +38,7 @@ async function main() {
     udp,
   })
 
-  store.dispatch(Loop.startLoop())
+  store.dispatch(Loop.start())
   console.log("syncing database")
   await db.sequelize.sync()
 

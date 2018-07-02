@@ -1,10 +1,15 @@
 // @flow
 
+import { createReduxModule } from "@subspace/redux-module"
+
 import * as actionCreators from "./action-creators"
-import * as actionTypes from "./action-types"
+import actionTypes from "./action-types"
 import * as selectors from "./selectors"
 import reducer from "./reducer"
 
-export { reducer, actionCreators, actionTypes, selectors }
-
-export * from "./util"
+export default createReduxModule("Async", {
+  actionTypes,
+  actionCreators,
+  reducer,
+  selectors,
+})

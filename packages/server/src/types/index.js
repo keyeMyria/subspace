@@ -6,11 +6,6 @@ import type {
   Middleware as ReduxMiddleware,
 } from "redux"
 
-import type {
-  Action as CoreAction,
-  State as CoreState,
-} from "@subspace/core"
-
 import type { Reducers } from "../reducers"
 
 import type { Action as AdjacentBodiesAction } from "../state/modules/adjacent-bodies/action-types"
@@ -19,7 +14,6 @@ import type { Action as UsersAction } from "../state/modules/users/action-types"
 import type { Action as ShipAction } from "../state/modules/ships/action-types"
 
 export type Action =
-  | CoreAction
   | AdjacentBodiesAction
   | ClientsAction
   | UsersAction

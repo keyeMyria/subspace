@@ -21,3 +21,5 @@ export function pause(): Pause {
     type: PAUSE,
   }
 }
+
+export default { start, tick, pause }

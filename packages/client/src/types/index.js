@@ -6,22 +6,13 @@ import type {
   Middleware as ReduxMiddleware,
 } from "redux"
 
-import type {
-  Action as CoreAction,
-  State as CoreState,
-} from "@subspace/core"
-
 import type { Reducers } from "../reducers"
 
 import type { Action as AuthAction } from "../state/modules/auth/action-types"
 import type { Action as CounterAction } from "../state/modules/counter/action-types"
 import type { Action as UdpAction } from "../state/modules/udp/action-types"
 
-export type Action =
-  | CoreAction
-  | AuthAction
-  | CounterAction
-  | UdpAction
+export type Action = AuthAction | CounterAction | UdpAction
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V
 

@@ -38,7 +38,7 @@ export const User: Class<Model<UserModel>> = sequelize.define(
   },
 )
 
-User.beforeCreate(async (user: UserModel) => {
+User.beforeCreate(async (user: any) => {
   user.password = await encryptPassword(user.password)
 })
 

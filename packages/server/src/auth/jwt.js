@@ -1,14 +1,15 @@
 // @flow
 
 import jwt from "jsonwebtoken"
-import type { User } from "@subspace/core"
 
-export function verifyToken(token: string, secret: string) {
+import type { UserData } from "../model/user"
+
+export function verifyToken(token: string, secret: string): UserData {
   return jwt.verify(token, secret)
 }
 
 export function generateToken(
-  user: User,
+  user: UserData,
   secret: string,
   expiresIn: string,
 ) {

@@ -53,6 +53,10 @@ export default function(udp: UdpServer, auth: AuthClient) {
 
       connections[id] = connection
 
+      if (!user.id) {
+        return
+      }
+
       store.dispatch(
         Clients.add({
           id: clientId,

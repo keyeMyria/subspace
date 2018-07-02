@@ -1,8 +1,7 @@
 // @flow
 
-import type { User as UserModel } from "@subspace/core"
+import type { User, UserData } from "../model/user"
 
-import { User } from "../data"
 import * as Util from "./util"
 import { generateToken, verifyToken } from "./jwt"
 
@@ -15,7 +14,7 @@ export type AuthClient = {
     username: string,
     password: string,
   ) => Promise<string>,
-  verify: string => Promise<UserModel>,
+  verify: string => Promise<UserData>,
 }
 
 export async function authenticate(
@@ -27,10 +26,10 @@ export async function authenticate(
   return token(user)
 }
 
-export async function verify(token: string) {
+export async function verify(token: string): Promise<UserData> {
   return verifyToken(token, secret)
 }
 
-export async function token(user: UserModel) {
+export async function token(user: UserData) {
   return generateToken(user, secret, expire)
 }

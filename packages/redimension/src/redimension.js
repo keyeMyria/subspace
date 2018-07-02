@@ -1,11 +1,9 @@
 // @flow
 
 import type { RedisClientPromisified } from "redis"
-
-import type { SpatialIndex, Range, Values } from "./types"
+import type { Redimension, Range, Values } from "./types"
 
 const zip = (a: any[], b: any[]) => a.map((x, i) => [x, b[i]])
-
 const int10 = (a: number | string) => parseInt(a, 10)
 
 function flatten(arr, res = []) {
@@ -47,40 +45,48 @@ function batch(
   return b.execAsync()
 }
 
-export function create(
+function checkDimensions(
+  values: $ReadOnlyArray<any>,
+  dimensions: number,
+) {
+  if (values.length !== dimensions) {
+    throw new Error(
+      `Please always use ${dimensions} dimensions with this index.`,
+    )
+  }
+}
+
+function encode(
+  values: Values,
+  dimensions: number,
+  precision: number,
+) {
+  const comb = values.reduce((a, x, i) => {
+    const bin = x
+      .toString(2)
+      .padStart(precision, "0")
+      .split("")
+
+    return i === 0 ? bin : zip(a, bin)
+  }, [])
+  const interleaved = flatten(comb).join("")
+
+  return int10(interleaved)
+    .toString(16)
+    .padStart(precision * dimensions / 4, "0")
+}
+
+export function redimension(
   client: RedisClientPromisified,
   key: string,
   hashkey: string,
   dimensions: number,
   precision: number = 64,
-): SpatialIndex {
-  function checkDimensions(values: $ReadOnlyArray<any>) {
-    if (values.length !== dimensions) {
-      throw new Error(
-        `Please always use ${dimensions} dimensions with this index.`,
-      )
-    }
-  }
-
-  function encode(values: Values) {
-    const comb = values.reduce((a, x, i) => {
-      const bin = x
-        .toString(2)
-        .padStart(precision, "0")
-        .split("")
-
-      return i === 0 ? bin : zip(a, bin)
-    }, [])
-    const interleaved = flatten(comb).join("")
-
-    return int10(interleaved)
-      .toString(16)
-      .padStart(precision * dimensions / 4, "0")
-  }
-
+): Redimension {
   function buildElementString(values: Values, id: string) {
-    checkDimensions(values)
-    const encoded = encode(values)
+    checkDimensions(values, dimensions)
+
+    const encoded = encode(values, dimensions, precision)
     const appended = values.reduce((a, x) => `${a}:${x}`, encoded)
 
     return `${appended}:${id}`
@@ -155,8 +161,8 @@ export function create(
       }
 
       ranges.push([
-        `[${encode(rangeStart)}:`,
-        `[${encode(rangeEnd)}:\xff`,
+        `[${encode(rangeStart, dimensions, precision)}:`,
+        `[${encode(rangeEnd, dimensions, precision)}:\xff`,
       ])
 
       for (let i = 0; i < dimensions; i++) {
@@ -215,7 +221,7 @@ export function create(
   }
 
   function query(range: Range[]) {
-    checkDimensions(range)
+    checkDimensions(range, dimensions)
 
     const ordered = range.map(r => {
       if (r[0] < r[1]) {

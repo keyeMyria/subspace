@@ -1,6 +1,6 @@
 // @flow
 
-import type { Action } from "../../../types"
+import type { Action } from "./action-types"
 
 import { UPDATE } from "./action-types"
 

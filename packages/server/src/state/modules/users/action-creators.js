@@ -7,12 +7,17 @@ import {
   LOAD_REJECTED,
 } from "./action-types"
 
-export function registerUser(username: string, password: string) {
+export function registerUser(
+  username: string,
+  password: string,
+  clientId: string,
+) {
   return {
     type: REGISTER,
     payload: {
       username,
       password,
+      clientId,
     },
   }
 }
@@ -26,7 +31,7 @@ export function loadUser(userId: number) {
   }
 }
 
-export function loadUserFulfilled(userId: number) {
+export function fulfillLoad(userId: number) {
   return {
     type: LOAD_FULFILLED,
     payload: {
@@ -35,7 +40,7 @@ export function loadUserFulfilled(userId: number) {
   }
 }
 
-export function loadUserFailure(userId: number, err: Error) {
+export function rejectLoad(userId: number, err: Error) {
   return {
     type: LOAD_REJECTED,
     payload: {

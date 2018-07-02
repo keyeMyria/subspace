@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@subspace/core": "^0.0.0",
+    "@subspace/redimension": "^1.0.0",
     "@subspace/redux-module": "^0.1.0",
     "@web-udp/server": "^2.1.0",
     "bcrypt": "^2.0.0",

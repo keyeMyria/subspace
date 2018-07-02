@@ -1,22 +1,19 @@
 // @flow
 
 import type { ActionsObservable } from "redux-observable"
+import type { Redimension } from "@subspace/redimension"
 
 import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
 import * as Async from "../../../util/async"
 
 import type { Action, Store, State } from "../../../types"
-import type { SpatialIndex } from "../../../cache/types"
 import { AdjacentBodies } from "../../modules"
 
 const UPDATE_AREA = 1000
 const halfUpdateArea = 0.5 * UPDATE_AREA
 
-async function queryAdjacentBodies(
-  state: State,
-  index: SpatialIndex,
-) {
+async function queryAdjacentBodies(state: State, index: Redimension) {
   const users = Users.getUsers(state)
   const userIds = Object.keys(users)
   const query = userIds.reduce((results, userId) => {
@@ -42,7 +39,7 @@ async function queryAdjacentBodies(
   return await Async.object(query)
 }
 
-export default function(index: SpatialIndex) {
+export default function(index: Redimension) {
   function query($action: ActionsObservable<Action>, store: Store) {
     return $action
       .ofType(Loop.TICK)

@@ -1,17 +1,17 @@
 // @flow
 
-import {
-  reduxModules as coreReduxModules,
-  extractReducers,
-} from "@subspace/core"
-import * as reduxModules from "./state/modules"
+import { extractReducers } from "@subspace/redux-module"
 
-const coreReducers = extractReducers(coreReduxModules)
-const localReducers = extractReducers(reduxModules)
+import { Async, Loop, Physics, Ships, Users } from "./state/modules"
 
-export default {
-  ...coreReducers,
-  ...localReducers,
-}
+const reducers = extractReducers({
+  Async,
+  Loop,
+  Physics,
+  Ships,
+  Users,
+})
 
-export type Reducers = $Subtype<typeof localReducers>
+export type Reducers = typeof reducers
+
+export default reducers
