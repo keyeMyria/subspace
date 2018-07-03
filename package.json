@@ -42,7 +42,7 @@
   },
   "scripts": {
     "test": "npm run flow && jest --forceExit",
-    "dev": "docker-compose down && docker-compose up -d",
+    "dev": "docker-compose down && docker-compose up",
     "dev:client":
       "lerna run --parallel --scope=@subspace/client start:dev",
     "dev:server":

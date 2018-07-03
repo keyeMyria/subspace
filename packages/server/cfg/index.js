@@ -28,11 +28,12 @@ const alpha = joi
   .required()
 
 const schema = joi
-  .schema({
+  .object()
+  .keys({
     PORT: alpha,
     DB_HOST: host,
     DB_PORT: alpha,
-    DB_NAME: alpha,
+    DB_NAME: joi.string().required(),
     DB_USERNAME: alpha,
     DB_PASSWORD: alpha,
     NODE_ENV: joi

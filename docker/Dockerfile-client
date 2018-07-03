@@ -10,6 +10,7 @@ COPY package*.json lerna.json .eslintrc.json .eslintignore .babelrc ./
 
 # package and monorepo dependencies
 COPY packages/core/package*.json ./packages/core/
+COPY packages/redux-module/package*.json ./packages/redux-module/
 COPY packages/client/package*.json ./packages/client/
 
 # install dependencies and build

@@ -3,10 +3,8 @@
 import { Loop, Physics, Protocol } from "@subspace/core"
 import { ofType } from "redux-observable"
 import type { ActionsObservable } from "redux-observable"
-import { from } from "rxjs/observable/from"
-import { of } from "rxjs/observable/of"
-import { interval } from "rxjs/observable/interval"
-import { fromPromise } from "rxjs/observable/fromPromise"
+// $FlowFixMe
+import { from, of, interval, fromPromise } from "rxjs"
 import {
   throttleTime,
   mapTo,

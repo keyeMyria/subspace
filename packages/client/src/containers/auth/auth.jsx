@@ -4,7 +4,8 @@ import { connect } from "react-redux"
 import { compose } from "redux"
 import { withRouter } from "react-router-dom"
 
-import { Auth as AuthModule, Async } from "../../state"
+import { Async } from "@subspace/core"
+import { Auth as AuthModule } from "../../state"
 import type { Dispatch } from "../../types"
 
 import Auth from "../../components/auth"

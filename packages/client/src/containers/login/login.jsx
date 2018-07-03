@@ -1,7 +1,8 @@
 import { connect } from "react-redux"
 import { compose } from "redux"
+import { Async } from "@subspace/core"
 
-import { Auth, Async } from "../../state"
+import { Auth } from "../../state"
 
 import Login from "../../components/login"
 
