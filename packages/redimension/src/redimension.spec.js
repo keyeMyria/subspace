@@ -1,8 +1,8 @@
 import redis from "redis"
 import promisifyAll from "util-promisifyall"
 
-import redimension from "@subspace/redimension"
-import config from "../../cfg/redis.config"
+import * as Redimension from "./redimension"
+import config from "./redis.config"
 
 promisifyAll(redis.RedisClient.prototype)
 promisifyAll(redis.Multi.prototype)
@@ -14,13 +14,7 @@ describe("redimension", () => {
   beforeEach(async () => {
     client = redis.createClient(config)
     await client.delAsync("ss-test")
-    index = Redimension.create(
-      client,
-      "ss-test",
-      "ss-test-map",
-      2,
-      64,
-    )
+    index = Redimension.make(client, "ss-test", "ss-test-map", 2, 64)
   })
 
   it("supports 2-dimensional queries of indexed data", async () => {
@@ -35,7 +29,7 @@ describe("redimension", () => {
   })
 
   it("supports n-dimensional queries of indexed data", async () => {
-    const index3d = Redimension.create(
+    const index3d = Redimension.make(
       client,
       "ss-test",
       "ss-test-map",

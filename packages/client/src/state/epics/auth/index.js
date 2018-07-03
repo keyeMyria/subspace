@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Observable"
+import { Observable } from "rxjs"
 
 import * as API from "../../../api"
 import { Auth } from "../../modules"

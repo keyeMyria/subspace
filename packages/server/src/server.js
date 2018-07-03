@@ -39,7 +39,7 @@ async function main() {
   })
 
   store.dispatch(Loop.start())
-  console.log("syncing database")
+
   await db.sequelize.sync()
 
   console.log(

@@ -2,23 +2,46 @@
   var t = {}
   function r(s) {
     if (t[s]) return t[s].exports
-    var n = (t[s] = { i: s, l: !1, exports: {} })
+    var o = (t[s] = { i: s, l: !1, exports: {} })
     return (
-      e[s].call(n.exports, n, n.exports, r), (n.l = !0), n.exports
+      e[s].call(o.exports, o, o.exports, r), (o.l = !0), o.exports
     )
   }
   ;(r.m = e),
     (r.c = t),
     (r.d = function(e, t, s) {
       r.o(e, t) ||
-        Object.defineProperty(e, t, {
-          configurable: !1,
-          enumerable: !0,
-          get: s,
-        })
+        Object.defineProperty(e, t, { enumerable: !0, get: s })
     }),
     (r.r = function(e) {
-      Object.defineProperty(e, "__esModule", { value: !0 })
+      "undefined" != typeof Symbol &&
+        Symbol.toStringTag &&
+        Object.defineProperty(e, Symbol.toStringTag, {
+          value: "Module",
+        }),
+        Object.defineProperty(e, "__esModule", { value: !0 })
+    }),
+    (r.t = function(e, t) {
+      if ((1 & t && (e = r(e)), 8 & t)) return e
+      if (4 & t && "object" == typeof e && e && e.__esModule) return e
+      var s = Object.create(null)
+      if (
+        (r.r(s),
+        Object.defineProperty(s, "default", {
+          enumerable: !0,
+          value: e,
+        }),
+        2 & t && "string" != typeof e)
+      )
+        for (var o in e)
+          r.d(
+            s,
+            o,
+            function(t) {
+              return e[t]
+            }.bind(null, o),
+          )
+      return s
     }),
     (r.n = function(e) {
       var t =
@@ -35,65 +58,120 @@
       return Object.prototype.hasOwnProperty.call(e, t)
     }),
     (r.p = ""),
-    (r.w = {}),
     r((r.s = "./src/index.js"))
 })({
   "./cfg/db.config.js": function(e, t, r) {
     "use strict"
-    const s = r("sequelize"),
-      {
-        DB_USERNAME: n,
-        DB_PASSWORD: o,
-        DB_NAME: a,
-        DB_HOST: i,
-        DB_PORT: c,
-      } = process.env,
-      u = {
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var o = s(r("sequelize")),
+      n = r("./cfg/index.js")
+    const {
+      username: i,
+      password: a,
+      database: u,
+      host: c,
+      port: d,
+    } = n.DbConfig
+    var l = {
+      username: i,
+      password: a,
+      database: u,
+      host: c,
+      port: d,
+      dialect: "postgres",
+      retry: {
         match: [
-          s.ConnectionError,
-          s.ConnectionRefusedError,
-          s.ConnectionTimedOutError,
-          s.OptimisticLockError,
+          o.default.ConnectionError,
+          o.default.ConnectionRefusedError,
+          o.default.ConnectionTimedOutError,
         ],
-      }
-    e.exports = {
-      development: {
-        username: "cockroach",
-        password: null,
-        database: "ss_dev",
-        host: "127.0.0.1",
-        port: 26257,
-        dialect: "postgres",
-        retry: u,
-      },
-      test: {
-        username: n,
-        password: o,
-        database: a,
-        host: i,
-        port: c,
-        dialect: "postgres",
-        retry: u,
-      },
-      production: {
-        username: n,
-        password: o,
-        database: a,
-        host: i,
-        port: c,
-        dialect: "postgres",
-        retry: u,
       },
     }
+    t.default = l
+  },
+  "./cfg/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.GameConfig = t.RedisConfig = t.JwtConfig = t.DbConfig = t.AppConfig = t.EnvConfig = void 0)
+    var o = s(r("joi"))
+    const {
+        PORT: n,
+        DB_HOST: i,
+        DB_PORT: a,
+        DB_NAME: u,
+        DB_USERNAME: c,
+        DB_PASSWORD: d,
+        NODE_ENV: l,
+        JWT_SECRET: p,
+        JWT_EXPIRE: f,
+        REDIS_HOST: b,
+        REDIS_PORT: y,
+        TICK_RATE: j,
+        SEND_RATE: m,
+      } = process.env,
+      v = o.default
+        .string()
+        .hostname()
+        .required(),
+      h = o.default
+        .string()
+        .alphanum()
+        .required(),
+      g = o.default
+        .schema({
+          PORT: h,
+          DB_HOST: v,
+          DB_PORT: h,
+          DB_NAME: h,
+          DB_USERNAME: h,
+          DB_PASSWORD: h,
+          NODE_ENV: o.default
+            .string()
+            .valid("production", "development")
+            .required(),
+          JWT_SECRET: h,
+          JWT_EXPIRE: h,
+          REDIS_HOST: v,
+          REDIS_PORT: h,
+          TICK_RATE: h,
+          SEND_RATE: h,
+        })
+        .unknown(!0),
+      x = o.default.validate(process.env, g)
+    if (x.error)
+      throw new Error(`Invalid environment configuration: ${x.error}`)
+    const E = { node: String(l) }
+    t.EnvConfig = E
+    const D = { port: Number(n) }
+    t.AppConfig = D
+    const _ = {
+      host: String(i),
+      port: Number(a),
+      database: String(u),
+      username: String(c),
+      password: String(d),
+    }
+    t.DbConfig = _
+    const O = { secret: String(p), expire: String(f) }
+    t.JwtConfig = O
+    const R = { host: String(b), port: Number(y) }
+    t.RedisConfig = R
+    const T = { tickRate: Number(j), sendRate: Number(m) }
+    t.GameConfig = T
   },
   "./cfg/redis.config.js": function(e, t, r) {
     "use strict"
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.default = void 0)
-    var s = {
-      port: 6379,
-      host: "localhost",
-      family: 4,
+    var s = r("./cfg/index.js")
+    const { port: o, host: n } = s.RedisConfig
+    var i = {
+      port: o,
+      host: n,
+      family: "IPv4",
       db: 0,
       enableReadyCheck: !0,
       retry_strategy: e =>
@@ -105,77 +183,77 @@
               ? void 0
               : Math.min(100 * e.attempt, 3e3),
     }
-    t.default = s
-  },
-  "./cfg/server.config.json": function(e) {
-    e.exports = { tick_rate: 60, send_rate: 20 }
+    t.default = i
   },
   "./src/auth/index.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireWildcard")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.authenticate = async function(e, t) {
-        const r = await n.authenticate(e, t)
-        return (0, o.generateToken)(r)
+        return c(await o.authenticate(e, t))
       }),
       (t.verify = async function(e) {
-        return (0, o.verifyToken)(e)
-      })
-    r("./src/data/index.js")
-    var n = s(r("./src/auth/util.js")),
-      o = r("./src/auth/jwt.js")
+        return (0, n.verifyToken)(e, a)
+      }),
+      (t.token = c)
+    var o = s(r("./src/auth/util.js")),
+      n = r("./src/auth/jwt.js"),
+      i = r("./cfg/index.js")
+    const { secret: a, expire: u } = i.JwtConfig
+    async function c(e) {
+      return (0, n.generateToken)(e, a, u)
+    }
   },
   "./src/auth/jwt.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.verifyToken = function(e) {
-        return n.default.verify(e, o)
+      (t.verifyToken = function(e, t) {
+        return o.default.verify(e, t)
       }),
-      (t.generateToken = function(e) {
-        return n.default.sign(e, o, { expiresIn: "24h" })
+      (t.generateToken = function(e, t, r) {
+        return o.default.sign(e, t, { expiresIn: r })
       })
-    var n = s(r("jsonwebtoken"))
-    const { JWT_SECRET: o, JWT_EXPIRE_SECONDS: a } = process.env
+    var o = s(r("jsonwebtoken"))
   },
   "./src/auth/middleware.js": function(e, t, r) {
     "use strict"
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.login = t.auth = void 0)
     const s = r("passport"),
-      n = s.authenticate("jwt", { session: !1 })
-    t.auth = n
-    const o = s.authenticate("local", { session: !1 })
-    t.login = o
+      o = s.authenticate("jwt", { session: !1 })
+    t.auth = o
+    const n = s.authenticate("local", { session: !1 })
+    t.login = n
   },
   "./src/auth/strategy.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.jwt = t.local = void 0)
-    var n = r("passport-jwt"),
-      o = s(r("passport-local")),
-      a = r("./src/auth/util.js"),
-      i = r("./src/data/index.js")
-    const { JWT_SECRET: c } = process.env,
-      u = {
-        jwtFromRequest: n.ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: c,
+    var o = r("passport-jwt"),
+      n = s(r("passport-local")),
+      i = r("./src/auth/util.js"),
+      a = r("./src/data/index.js")
+    const { JWT_SECRET: u } = process.env,
+      c = {
+        jwtFromRequest: o.ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: u,
       },
-      d = new o.default(async (e, t, r) => {
+      d = new n.default(async (e, t, r) => {
         let s
         try {
-          s = await (0, a.authenticate)(e, t)
+          s = await (0, i.authenticate)(e, t)
         } catch (e) {
           return r(e)
         }
         return r(null, s)
       })
     t.local = d
-    const l = new n.Strategy(u, async (e, t) => {
+    const l = new o.Strategy(c, async (e, t) => {
       let r
       try {
-        r = await i.User.findById(e.id)
+        r = await a.User.findById(e.id)
       } catch (e) {
         return t(e)
       }
@@ -187,19 +265,19 @@
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.comparePassword = a),
+      (t.comparePassword = i),
       (t.authenticate = async function(e, t) {
-        let r = await o.User.findOne({ where: { username: e } })
+        let r = await n.User.findOne({ where: { username: e } })
         if (!r) throw new Error("Invalid username or password")
         let s = r.toJSON()
-        if (!await a(t, s))
+        if (!await i(t, s))
           throw new Error("Invalid username or password")
         return s
       })
-    var n = s(r("bcrypt")),
-      o = r("./src/data/index.js")
-    function a(e, t) {
-      return n.default.compare(e, t.password)
+    var o = s(r("bcrypt")),
+      n = r("./src/data/index.js")
+    function i(e, t) {
+      return o.default.compare(e, t.password)
     }
   },
   "./src/cache/index.js": function(e, t, r) {
@@ -207,172 +285,23 @@
     var s = r("@babel/runtime/helpers/interopRequireWildcard")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.SpatialIndex = void 0)
-    var n = s(r("./src/cache/spatial-index.js"))
-    t.SpatialIndex = n
-  },
-  "./src/cache/redimension.js": function(e, t, r) {
-    "use strict"
-    Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.create = function(e, t, r, a, i = 64) {
-        function c(e) {
-          if (e.length !== a)
-            throw new Error(
-              `Please always use ${a} dimensions with this index.`,
-            )
-        }
-        function u(e) {
-          const t = e.reduce((e, t, r) => {
-              const n = t
-                .toString(2)
-                .padStart(i, "0")
-                .split("")
-              return 0 === r ? n : s(e, n)
-            }, []),
-            r = (function e(t, r = []) {
-              const s = t.length
-              let n = 0
-              let o
-              for (; n < s; n++)
-                (o = t[n]), Array.isArray(o) ? e(o, r) : r.push(o)
-              return r
-            })(t).join("")
-          return n(r)
-            .toString(16)
-            .padStart(i * a / 4, "0")
-        }
-        function d(e, t) {
-          c(e)
-          const r = u(e),
-            s = e.reduce((e, t) => `${e}:${t}`, r)
-          return `${s}:${t}`
-        }
-        return {
-          insert: function(s, n) {
-            const a = d(s, n)
-            return o(e, e => {
-              e.zadd(t, 0, a), e.hset(r, n, a)
-            })
-          },
-          remove: function(r, s) {
-            const n = d(r, s)
-            return e.zremAsync(t, n)
-          },
-          removeById: async function(s) {
-            const n = await e.hgetAsync(r, s)
-            if (!n) throw new Error(`Element ${s} not found.`)
-            return o(e, e => {
-              e.zrem(t, n), e.hdel(r, s)
-            })
-          },
-          update: async function(s, n) {
-            const a = d(s, n),
-              i = await e.hgetAsync(r, n)
-            if (!i) throw new Error(`Element ${n} not found.`)
-            return o(e, e => {
-              e.zrem(t, i),
-                e.hdel(r, n),
-                e.zadd(t, 0, a),
-                e.hset(r, n, a)
-            })
-          },
-          query: function(r) {
-            c(r)
-            const s = r.map(e => (e[0] < e[1] ? e : [e[1], e[0]])),
-              o = s.map(e => e[1] - e[0] + 1)
-            let i = Math.min(...o),
-              d = 1
-            for (; i > 2; ) (i /= 2), (d += 1)
-            for (;;) {
-              const e = 2 ** d,
-                t = s.map(t => n(t[1] / e) - n(t[0] / e) + 1),
-                r = t.reduce((e, t) => e * t)
-              if (r < 20) break
-              d += 1
-            }
-            return (async function(r, s) {
-              const o = [],
-                i = [],
-                c = 2 ** s
-              for (let e = 0; e < r.length; e++) {
-                const t = r[e]
-                o.push(n(t[0] / c)), i.push(n(t[1] / c))
-              }
-              const d = [],
-                l = o.slice()
-              let p = !0
-              for (; p; ) {
-                const e = [],
-                  t = []
-                for (let r = 0; r < a; r++)
-                  e.push(n(l[r] * c)), t.push(n(e[r] | (c - 1)))
-                d.push([`[${u(e)}:`, `[${u(t)}:ÿ`])
-                for (let e = 0; e < a; e++) {
-                  if (l[e] !== i[e]) {
-                    l[e] += 1
-                    break
-                  }
-                  e === a - 1 ? (p = !1) : (l[e] = o[e])
-                }
-              }
-              const f = await (function(e, t) {
-                  const r = e.batch()
-                  return t(r), r.execAsync()
-                })(e, e => {
-                  for (let r = 0; r < d.length; r++) {
-                    const s = d[r]
-                    e.zrangebylex(t, s[0], s[1])
-                  }
-                }),
-                h = []
-              for (let e = 0; e < f.length; e++) {
-                const t = f[e]
-                for (let e = 0; e < t.length; e++) {
-                  const s = t[e],
-                    o = s.split(":")
-                  let i = !1
-                  for (let e = 0; e < a; e++)
-                    if (
-                      n(o[e + 1]) < r[e][0] ||
-                      n(o[e + 1]) > r[e][1]
-                    ) {
-                      i = !0
-                      break
-                    }
-                  if (!i) {
-                    const e = [],
-                      t = o[o.length - 1]
-                    for (let t = 1; t < o.length - 1; t++)
-                      e.push(n(o[t]))
-                    h.push([e, t])
-                  }
-                }
-              }
-              return h
-            })(s, d)
-          },
-        }
-      })
-    const s = (e, t) => e.map((e, r) => [e, t[r]]),
-      n = e => parseInt(e, 10)
-    function o(e, t) {
-      const r = e.multi()
-      return t(r), r.execAsync()
-    }
+    var o = s(r("./src/cache/spatial-index.js"))
+    t.SpatialIndex = o
   },
   "./src/cache/spatial-index.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.create = void 0)
-    var n = s(r("redis")),
-      o = s(r("util-promisifyall")),
-      a = (r("@subspace/core"), r("./src/cache/redimension.js"))
-    ;(0, o.default)(n.default.RedisClient.prototype),
-      (0, o.default)(n.default.Multi.prototype)
+    var o = s(r("redis")),
+      n = s(r("util-promisifyall")),
+      i = (r("@subspace/core"), s(r("@subspace/redimension")))
+    ;(0, n.default)(o.default.RedisClient.prototype),
+      (0, n.default)(o.default.Multi.prototype)
     t.create = e => {
-      const t = n.default.createClient(e.redis),
-        { key: r, dimensions: s, precision: o = 64 } = e
-      return (0, a.create)(t, r, `${r}-map`, s, o)
+      const t = o.default.createClient(e.redis),
+        { key: r, dimensions: s, precision: n = 64 } = e
+      return (0, i.default)(t, r, `${r}-map`, s, n)
     }
   },
   "./src/data/index.js": function(e, t, r) {
@@ -380,62 +309,61 @@
     var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.Hangar = t.Station = t.Item = t.ItemType = t.Inventory = t.Ship = t.ShipType = t.Body = t.User = t.sequelize = void 0)
-    var n = s(r("bcrypt")),
-      o = s(r("sequelize-cockroachdb")),
-      a = s(r("./cfg/db.config.js"))
-    const { NODE_ENV: i } = process.env
-    const c = a.default[i],
-      u = new o.default(c)
+    var o = s(r("bcrypt")),
+      n = s(r("sequelize-cockroachdb")),
+      i = r("./cfg/index.js")
+    const a = s(r("./cfg/db.config.js")).default[i.EnvConfig.node],
+      u = new n.default(a)
     t.sequelize = u
-    const d = u.define("User", {
-      username: o.default.STRING,
-      password: o.default.STRING,
+    const c = u.define("User", {
+      username: n.default.STRING,
+      password: n.default.STRING,
     })
-    ;(t.User = d),
-      d.beforeCreate(async e => {
+    ;(t.User = c),
+      c.beforeCreate(async e => {
         e.password = await (async function(e) {
-          const t = await n.default.genSalt(10)
-          return await n.default.hash(e, t, null)
+          const t = await o.default.genSalt(10)
+          return await o.default.hash(e, t, null)
         })(e.password)
       })
-    const l = u.define("Body", {
-      angle: o.default.FLOAT,
-      angularVelocity: o.default.FLOAT,
-      positionX: o.default.FLOAT,
-      positionY: o.default.FLOAT,
-      velocityX: o.default.FLOAT,
-      velocityY: o.default.FLOAT,
-      width: o.default.FLOAT,
-      height: o.default.FLOAT,
+    const d = u.define("Body", {
+      angle: n.default.FLOAT,
+      angularVelocity: n.default.FLOAT,
+      positionX: n.default.FLOAT,
+      positionY: n.default.FLOAT,
+      velocityX: n.default.FLOAT,
+      velocityY: n.default.FLOAT,
+      width: n.default.FLOAT,
+      height: n.default.FLOAT,
     })
-    t.Body = l
-    const p = u.define("ShipType", { name: o.default.STRING })
-    t.ShipType = p
-    const f = u.define("Ship", {})
-    t.Ship = f
-    const h = u.define("Inventory", {})
-    t.Inventory = h
-    const y = u.define("ItemType", { name: o.default.STRING })
-    t.ItemType = y
-    const b = u.define("Item", {})
-    t.Item = b
-    const m = u.define("Station", {})
-    t.Station = m
-    const v = u.define("Hangar", {})
-    ;(t.Hangar = v),
-      d.hasOne(f, { as: "activeShip" }),
-      d.hasMany(v, { as: "hangars" }),
-      f.belongsTo(l, { as: "body" }),
-      f.belongsTo(h, { as: "inventory" }),
-      f.belongsTo(p, { as: "shipType" }),
-      f.belongsTo(v, { as: "hangar" }),
-      b.belongsTo(h, { as: "inventory" }),
-      h.hasMany(b, { as: "items" }),
-      b.belongsTo(y, { as: "itemType" }),
-      m.hasMany(v, { as: "hangars" }),
-      v.belongsTo(m, { as: "station" }),
-      v.belongsTo(d, { as: "user" }),
-      v.hasMany(f, { as: "ships" })
+    t.Body = d
+    const l = u.define("ShipType", { name: n.default.STRING })
+    t.ShipType = l
+    const p = u.define("Ship", {})
+    t.Ship = p
+    const f = u.define("Inventory", {})
+    t.Inventory = f
+    const b = u.define("ItemType", { name: n.default.STRING })
+    t.ItemType = b
+    const y = u.define("Item", {})
+    t.Item = y
+    const j = u.define("Station", {})
+    t.Station = j
+    const m = u.define("Hangar", {})
+    ;(t.Hangar = m),
+      c.hasOne(p, { as: "activeShip" }),
+      c.hasMany(m, { as: "hangars" }),
+      p.belongsTo(d, { as: "body" }),
+      p.belongsTo(f, { as: "inventory" }),
+      p.belongsTo(l, { as: "shipType" }),
+      p.belongsTo(m, { as: "hangar" }),
+      y.belongsTo(f, { as: "inventory" }),
+      f.hasMany(y, { as: "items" }),
+      y.belongsTo(b, { as: "itemType" }),
+      j.hasMany(m, { as: "hangars" }),
+      m.belongsTo(j, { as: "station" }),
+      m.belongsTo(c, { as: "user" }),
+      m.hasMany(p, { as: "ships" })
   },
   "./src/index.js": function(e, t, r) {
     "use strict"
@@ -447,15 +375,413 @@
       r("./src/server.js"),
       process.on("SIGUSR2", () => process.exit(0))
   },
-  "./src/modules/adjacent-bodies/index.js": function(e, t, r) {
+  "./src/reducers.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireWildcard"),
-      n = r("@babel/runtime/helpers/interopRequireDefault")
+      o = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.updateAdjacentBodies = d),
-      (t.default = function(e = l, t) {
+      (t.default = void 0)
+    var n = o(r("@babel/runtime/helpers/objectSpread")),
+      i = r("@subspace/core"),
+      a = r("@subspace/redux-module"),
+      u = s(r("./src/state/modules/index.js"))
+    const c = (0, a.extractReducers)({
+        Async: i.Async,
+        Loop: i.Loop,
+        Physics: i.Physics,
+        Ships: i.Ships,
+        Users: i.Users,
+      }),
+      d = (0, a.extractReducers)(u)
+    var l = (0, n.default)({}, c, d)
+    t.default = l
+  },
+  "./src/routers/async.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e) {
+        return (t, r, s) => {
+          Promise.resolve(e(t, r, s)).catch(s)
+        }
+      })
+  },
+  "./src/routers/auth.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var o = s(r("express")),
+      n = r("./src/data/index.js"),
+      i = r("./src/auth/index.js"),
+      a = r("./src/auth/middleware.js"),
+      u = s(r("./src/routers/async.js"))
+    const c = o.default.Router(),
+      d = (0, u.default)(async (e, t) => {
+        let r,
+          { username: s, password: o } = e.body
+        if (await n.User.findOne({ where: { username: s } }))
+          return void t
+            .status(409)
+            .json({ error: "Username already taken" })
+        try {
+          r = await n.User.create({ username: s, password: o })
+        } catch (e) {
+          return void t.status(400).json({ error: e })
+        }
+        const a = r.toJSON()
+        t.status(201).json({ token: (0, i.token)(a), user: a })
+      })
+    c.route("/register").post(d),
+      c.route("/login").post(a.login, function(e, t, r) {
+        const { user: { id: s, username: o } } = e,
+          n = { id: s, username: o }
+        t.status(200).json({ token: (0, i.token)(n), user: n })
+      }),
+      c.route("/verify").post(a.auth, function(e, t, r) {
+        const { user: { id: s, username: o } } = e,
+          n = { id: s, username: o }
+        t.status(200).json({ token: (0, i.token)(n), user: n })
+      })
+    var l = c
+    t.default = l
+  },
+  "./src/server.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault"),
+      o = r("@babel/runtime/helpers/interopRequireWildcard"),
+      n = r("http"),
+      i = o(r("@web-udp/server")),
+      a = r("@subspace/core"),
+      u = s(r("express")),
+      c = s(r("passport")),
+      d = r("body-parser"),
+      l = o(r("./src/data/index.js")),
+      p = r("./cfg/index.js"),
+      f = r("./src/state/store.js"),
+      b = o(r("./src/auth/index.js")),
+      y = r("./src/auth/strategy.js"),
+      j = s(r("./src/routers/auth.js"))
+    const m = (0, u.default)(),
+      v = new n.createServer(m),
+      h = new i.Server({ server: v })
+    c.default.use(y.jwt),
+      c.default.use(y.local),
+      m.use((0, d.json)()),
+      m.use("/auth", j.default),
+      (async function() {
+        ;(0, f.configureStore)({
+          auth: b,
+          db: l,
+          tickRate: 1 / p.GameConfig.tickRate,
+          sendRate: 1 / p.GameConfig.sendRate,
+          udp: h,
+        }).dispatch(a.Loop.start()),
+          await l.sequelize.sync(),
+          console.log(
+            `server listening at //localhost:${String(
+              p.AppConfig.port,
+            )}`,
+          ),
+          v.listen(Number(p.AppConfig.port))
+      })()
+  },
+  "./src/state/epics/adjacent-bodies/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e) {
+        return [
+          function(t, r) {
+            return t
+              .ofType(o.Loop.TICK)
+              .map(() =>
+                (async function(e, t) {
+                  const r = o.Users.getUsers(e),
+                    s = Object.keys(r).reduce((r, s) => {
+                      const n = (0, o.getUserBody)(e, Number(s))
+                      if (null === n) return r
+                      const { position: [i, u] } = n,
+                        c = [[i - a, i + a], [u - a, u + a]]
+                      return (
+                        (r[s] = t
+                          .query(c)
+                          .then(e => e.map(([, e]) => e))),
+                        r
+                      )
+                    }, {})
+                  return await n.object(s)
+                })(r.getState(), e),
+              )
+              .mapTo(e => i.AdjacentBodies.update(e))
+          },
+          function(t, r) {
+            return t
+              .ofType(o.Physics.ADD_BODY)
+              .do(({ payload: { body: { position: t, id: r } } }) =>
+                e.insert(t, r),
+              )
+              .ignoreElements()
+          },
+          function(t, r) {
+            return t
+              .ofType(o.Physics.UPDATE_BODY)
+              .do(({ payload: { body: { position: t, id: r } } }) =>
+                e.update(t, r),
+              )
+              .ignoreElements()
+          },
+        ]
+      })
+    var o = r("@subspace/core"),
+      n = s(r("./src/util/async.js")),
+      i = r("./src/state/modules/index.js")
+    const a = 500
+  },
+  "./src/state/epics/clients/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e, t) {
+        const r = {}
+        return [
+          function(s, a) {
+            e.connections.subscribe(async function(e) {
+              let u
+              const { id: c } = e
+              try {
+                u = await t.verify(e.metadata.token)
+              } catch (t) {
+                return (
+                  console.error(
+                    `Invalid credentials for connection ${e.id}`,
+                  ),
+                  e.send(
+                    n.Protocol.serialize(
+                      n.Protocol.authTokenInvalidMessage(),
+                    ),
+                  ),
+                  void e.close()
+                )
+              }
+              const d = (0, o.default)()
+              if (((r[c] = e), !u.id)) return
+              a.dispatch(
+                i.Clients.add({
+                  id: d,
+                  userId: u.id,
+                  connectionId: c,
+                }),
+              ),
+                (function(e, t) {
+                  e.closed.subscribe(() =>
+                    a.dispatch(i.Clients.remove(t)),
+                  ),
+                    e.messages.subscribe(e => {
+                      const t = n.Protocol.deserialize(e),
+                        [r] = t
+                      return console.error(
+                        `Unrecognized message type ${r}`,
+                      )
+                    }),
+                    s.ignoreElements()
+                })(e, d)
+            })
+          },
+          function(e, t) {
+            return e
+              .ofType(i.Clients.SEND)
+              .do(({ payload: { clientId: e, message: s } }) => {
+                const { connectionId: o } = i.Clients.getClient(
+                  t.getState(),
+                  e,
+                )
+                r[o].send(n.Protocol.serialize(s))
+              })
+              .ignoreElements()
+          },
+          function(e, t) {
+            return e
+              .ofType(i.Clients.REMOVE)
+              .do(({ payload: { clientId: e } }) => {
+                const { connectionId: s } = i.Clients.getClient(
+                  t.getState(),
+                  e,
+                )
+                r[s].close(), delete r[s]
+              })
+              .ignoreElements()
+          },
+        ]
+      })
+    var o = s(r("shortid")),
+      n = r("@subspace/core"),
+      i = r("./src/state/modules/index.js")
+  },
+  "./src/state/epics/ships/index.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e) {
+        return [
+          function(t, r) {
+            return t
+              .ofType(o.Ships.LOAD)
+              .mapTo(({ payload: { shipId: t } }) =>
+                e.Ship.findById(t)
+                  .then(e => {
+                    if (!e) throw new Error(`Ship ${t} not found.`)
+                    return o.Ships.fulfillLoad(e.toJSON())
+                  })
+                  .catch(e => o.Ships.rejectLoad(t, e)),
+              )
+          },
+          function(e, t) {
+            return e
+              .ofType(o.Ships.ADD, o.Ships.UPDATE)
+              .mapTo(({ payload: { ship: e } }) => {
+                const r = t.getState(),
+                  n = o.Users.getUserByActiveShipId(r, e.id),
+                  i = o.Clients.getClientByUserId(r, n.id),
+                  a = s.Protocol.shipUpdateMessage(e)
+                return o.Clients.send(i.id, a)
+              })
+          },
+        ]
+      })
+    var s = r("@subspace/core"),
+      o = r("./src/state/modules/index.js")
+  },
+  "./src/state/epics/users/index.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e, t) {
+        return [
+          function(e, r) {
+            return e.pipe(
+              (0, o.ofType)(s.Loop.TICK),
+              (0, u.throttleTime)(t),
+              (0, u.switchMap)(() => {
+                const e = (function(e) {
+                  const {
+                      adjacentBodies: t,
+                      clients: r,
+                      users: o,
+                      physics: n,
+                      loop: i,
+                    } = e,
+                    a = c.AdjacentBodies.getAdjacentBodies(e)
+                  return Object.keys(c.Users.getUsers(o)).map(t => {
+                    const r = Number(t),
+                      o = c.Clients.getClientByUserId(e, r),
+                      u = a[r].map(e => s.Physics.getBody(n, e)),
+                      d = s.Protocol.snapshotMessage(i.frame, u)
+                    return c.Clients.send(o.id, d)
+                  })
+                })(r.getState())
+                return (0, n.from)(e)
+              }),
+            )
+          },
+          function(t, r) {
+            return t.pipe(
+              (0, o.ofType)(c.Users.LOAD),
+              (0, u.switchMap)(({ payload: { userId: t } }) =>
+                (0, a.fromPromise)(e.User.findById(t)).pipe(
+                  (0, u.map)(e => {
+                    if (!e) throw new Error(`User ${t} not found`)
+                    return e.toJSON()
+                  }),
+                  (0, u.catchError)(e =>
+                    (0, i.of)(c.Users.rejectLoad(t, e)),
+                  ),
+                ),
+              ),
+              (0, u.switchMap)(e => {
+                const t = [c.Users.fulfillLoad(e)]
+                return (
+                  e.activeShip &&
+                    t.push(c.Ships.addShip(e.activeShip)),
+                  (0, n.from)(t)
+                )
+              }),
+            )
+          },
+          function(e, t) {
+            return e.pipe(
+              (0, o.ofType)(c.Users.ADD, c.Users.UPDATE),
+              (0, u.mapTo)(e => {
+                const { payload: { user: r } } = e,
+                  s = c.Clients.getClientByUserId(t.getState(), r.id)
+                return c.Clients.send(s.id, e)
+              }),
+            )
+          },
+        ]
+      })
+    var s = r("@subspace/core"),
+      o = r("redux-observable"),
+      n = r("rxjs/observable/from"),
+      i = r("rxjs/observable/of"),
+      a = (r("rxjs/observable/interval"),
+      r("rxjs/observable/fromPromise")),
+      u = r("rxjs/operators"),
+      c = r("./src/state/modules/index.js")
+  },
+  "./src/state/modules/adjacent-bodies/action-creators.js": function(
+    e,
+    t,
+    r,
+  ) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.update = function(e) {
+        return { type: s.UPDATE, payload: { adjacentBodies: e } }
+      })
+    var s = r("./src/state/modules/adjacent-bodies/action-types.js")
+  },
+  "./src/state/modules/adjacent-bodies/action-types.js": function(
+    e,
+    t,
+    r,
+  ) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = t.UPDATE = void 0)
+    t.UPDATE = "UPDATE"
+    var s = { UPDATE: "UPDATE" }
+    t.default = s
+  },
+  "./src/state/modules/adjacent-bodies/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault"),
+      o = r("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var n = r("@subspace/redux-module"),
+      i = o(
+        r("./src/state/modules/adjacent-bodies/action-creators.js"),
+      ),
+      a = s(r("./src/state/modules/adjacent-bodies/action-types.js")),
+      u = o(r("./src/state/modules/adjacent-bodies/selectors.js")),
+      c = s(r("./src/state/modules/adjacent-bodies/reducer.js")),
+      d = (0, n.createReduxModule)("AdjacentBodies", {
+        actionTypes: a.default,
+        actionCreators: i,
+        reducer: c.default,
+        selectors: u,
+      })
+    t.default = d
+  },
+  "./src/state/modules/adjacent-bodies/reducer.js": function(
+    e,
+    t,
+    r,
+  ) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e = i, t) {
         switch (t.type) {
-          case u:
+          case n.UPDATE:
             return (0, o.default)({}, e, {
               byUserId: (0, o.default)(
                 {},
@@ -466,65 +792,75 @@
           default:
             return e
         }
-      }),
-      (t.createMiddleware = function(e) {
-        return t => r => s => {
-          switch (s.type) {
-            case a.Loop.LOOP_TICK:
-              ;(async function(e, t) {
-                const r = a.Users.getUsers(e.users),
-                  s = Object.keys(r).reduce((r, s) => {
-                    const n = (0, a.getUserBody)(e, Number(s))
-                    if (null === n) return r
-                    const { position: [o, i] } = n,
-                      u = [[o - c, o + c], [i - c, i + c]]
-                    return (
-                      (r[s] = t
-                        .query(u)
-                        .then(e => e.map(([, e]) => e))),
-                      r
-                    )
-                  }, {})
-                return await i.object(s)
-              })(t.getState(), e).then(e => {
-                r(d(e))
-              })
-              break
-            case a.Physics.PHYSICS_ADD_BODY:
-              e.insert(s.payload.body.position, s.payload.body.id)
-              break
-            case a.Physics.PHYSICS_UPDATE_BODY:
-              e.update(s.payload.body.position, s.payload.body.id)
-          }
-          return r(s)
-        }
-      }),
-      (t.getAdjacentBodies = t.ADJACENT_BODIES_UPDATE = void 0)
-    var o = n(r("@babel/runtime/helpers/objectSpread")),
-      a = r("@subspace/core"),
-      i = s(r("./src/util/async.js"))
-    const c = 500,
-      u = "adjacent-bodies/update"
-    function d(e) {
-      return { type: u, payload: { adjacentBodies: e } }
-    }
-    t.ADJACENT_BODIES_UPDATE = u
-    const l = { byUserId: {} }
+      })
+    var o = s(r("@babel/runtime/helpers/objectSpread")),
+      n = r("./src/state/modules/adjacent-bodies/action-types.js")
+    const i = { byUserId: {} }
+  },
+  "./src/state/modules/adjacent-bodies/selectors.js": function(
+    e,
+    t,
+    r,
+  ) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.getAdjacentBodies = void 0)
     t.getAdjacentBodies = e => e.byUserId
   },
-  "./src/modules/clients/index.js": function(e, t, r) {
+  "./src/state/modules/clients/action-creators.js": function(
+    e,
+    t,
+    r,
+  ) {
     "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireWildcard"),
-      n = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.addClient = l),
-      (t.sendClient = function(e, t) {
-        return { type: u, payload: { clientId: e, message: t } }
+      (t.add = function(e) {
+        return { type: s.ADD, payload: { client: e } }
       }),
-      (t.removeClient = p),
-      (t.default = function(e = f, t) {
+      (t.send = function(e, t) {
+        return { type: s.SEND, payload: { clientId: e, message: t } }
+      }),
+      (t.remove = function(e) {
+        return { type: s.REMOVE, payload: { clientId: e } }
+      })
+    var s = r("./src/state/modules/clients/action-types.js")
+  },
+  "./src/state/modules/clients/action-types.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = t.REMOVE = t.SEND = t.ADD = void 0)
+    t.ADD = "ADD"
+    t.SEND = "SEND"
+    t.REMOVE = "REMOVE"
+    var s = { ADD: "ADD", SEND: "SEND", REMOVE: "REMOVE" }
+    t.default = s
+  },
+  "./src/state/modules/clients/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault"),
+      o = r("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var n = r("@subspace/redux-module"),
+      i = o(r("./src/state/modules/clients/action-creators.js")),
+      a = s(r("./src/state/modules/clients/action-types.js")),
+      u = o(r("./src/state/modules/clients/selectors.js")),
+      c = s(r("./src/state/modules/clients/reducer.js")),
+      d = (0, n.createReduxModule)("Clients", {
+        actionTypes: a.default,
+        actionCreators: i,
+        reducer: c.default,
+        selectors: u,
+      })
+    t.default = d
+  },
+  "./src/state/modules/clients/reducer.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e = a, t) {
         switch (t.type) {
-          case c: {
+          case i.ADD: {
             const { client: r } = t.payload,
               s = (0, o.default)({}, e.byId, { [r.id]: r })
             let n = e.byUserId
@@ -534,446 +870,243 @@
               (0, o.default)({}, e, { byId: s, byUserId: n })
             )
           }
-          case d: {
+          case i.REMOVE: {
             const { clientId: r } = t.payload,
-              s = h(e, r),
-              n = (0, o.default)({}, e)
-            return (
-              delete n.byId[r],
-              s.userId && delete n.byUserId[s.userId],
-              n
-            )
+              s = (0, n.getClient)(e, r),
+              i = (0, o.default)({}, e),
+              { userId: a } = s
+            return delete i.byId[r], a && delete i.byUserId[a], i
           }
           default:
             return e
         }
-      }),
-      (t.createMiddleware = function(e, t) {
-        const r = {}
-        return s => (
-          e.connections.subscribe(async e => {
-            let n
-            try {
-              n = await t.verify(e.metadata.token)
-            } catch (t) {
-              return (
-                console.error(
-                  `Invalid credentials for connection ${e.id}`,
-                ),
-                e.send(
-                  JSON.stringify(
-                    i.Protocol.authTokenInvalidMessage(),
-                  ),
-                ),
-                void e.close()
-              )
-            }
-            const { dispatch: o } = s,
-              c = (0, a.default)()
-            o(l({ id: c, userId: n.id, connectionId: e.id })),
-              (r[e.id] = e),
-              (c = c),
-              (o = o),
-              (e = e).closed.subscribe(() => {
-                o(p(c))
-              }),
-              e.messages.subscribe(async e => {
-                const t = JSON.parse(e),
-                  [r] = t
-                return console.error(`Unrecognized message: ${e}`)
-              })
-          }),
-          e => t => {
-            switch (t.type) {
-              case u: {
-                const { clients: e } = s.getState(),
-                  { clientId: n, message: o } = t.payload,
-                  { connectionId: a } = h(e, n)
-                r[a].send(JSON.stringify(o))
-                break
-              }
-              case d: {
-                const { clientId: e } = t.payload,
-                  { clients: n } = s.getState(),
-                  { connectionId: o } = h(n, e)
-                r[o].close(), delete r[o]
-                break
-              }
-            }
-            return e(t)
-          }
-        )
-        var s, n, o
-      }),
-      (t.getClientByUserId = t.getClient = t.CLIENT_REMOVE = t.CLIENT_SEND = t.CLIENT_ADD = void 0)
-    var o = n(r("@babel/runtime/helpers/objectSpread")),
-      a = n(r("shortid")),
-      i = r("@subspace/core")
-    s(r("./src/modules/users/index.js"))
-    const c = "client/add"
-    t.CLIENT_ADD = c
-    const u = "client/send!"
-    t.CLIENT_SEND = u
-    const d = "client/remove!"
-    function l(e) {
-      return { type: c, payload: { client: e } }
-    }
-    function p(e) {
-      return { type: d, payload: { clientId: e } }
-    }
-    t.CLIENT_REMOVE = d
-    const f = { byId: {}, byUserId: {} }
-    const h = (e, t) => e.byId[t]
-    t.getClient = h
+      })
+    var o = s(r("@babel/runtime/helpers/objectSpread")),
+      n = r("./src/state/modules/clients/selectors.js"),
+      i = r("./src/state/modules/clients/action-types.js")
+    const a = { byId: {}, byUserId: {} }
+  },
+  "./src/state/modules/clients/selectors.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.getClientByUserId = t.getClient = void 0)
+    t.getClient = (e, t) => e.byId[t]
     t.getClientByUserId = (e, t) => e.byUserId[t]
   },
-  "./src/modules/ships/index.js": function(e, t, r) {
+  "./src/state/modules/index.js": function(e, t, r) {
     "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireWildcard")
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.loadShip = function(e) {
-        return { type: a, payload: { shipId: e } }
+      Object.defineProperty(t, "AdjacentBodies", {
+        enumerable: !0,
+        get: function() {
+          return o.default
+        },
       }),
-      (t.loadShipFailure = u),
-      (t.loadShipSuccess = d),
-      (t.default = function(e, t) {
-        return n.Ships.default(e, t)
+      Object.defineProperty(t, "Clients", {
+        enumerable: !0,
+        get: function() {
+          return n.default
+        },
       }),
-      (t.createMiddleware = function(e) {
-        return t => r => s => {
-          switch (s.type) {
-            case a: {
-              const { shipId: t } = s.payload
-              e.Ship.findById(t)
-                .then(e => {
-                  if (!e) throw new Error(`Ship ${t} not found.`)
-                  const s = e.toJSON()
-                  r(d(s)),
-                    r(n.Ships.addShip(s)),
-                    s.body && r(n.Physics.addBody(s.body))
-                })
-                .catch(e => r(u(t, e)))
-              break
-            }
-            case n.Ships.SHIP_ADD:
-            case n.Ships.SHIP_UPDATE: {
-              const { clients: e, users: r } = t.getState(),
-                { ship: a } = s.payload,
-                i = n.Users.getUserByActiveShipId(r, a.id)
-              if (!i) break
-              const c = o.getClientByUserId(e, i.id),
-                u = n.Protocol.shipUpdateMessage(a)
-              t.dispatch(o.sendClient(c.id, u))
-              break
-            }
-          }
-          return r(s)
-        }
+      Object.defineProperty(t, "Ships", {
+        enumerable: !0,
+        get: function() {
+          return i.default
+        },
       }),
-      (t.SHIP_LOAD_SUCCESS = t.SHIP_LOAD_FAILURE = t.SHIP_LOAD = void 0)
-    var n = r("@subspace/core"),
-      o = s(r("./src/modules/clients/index.js"))
-    s(r("./src/modules/users/index.js"))
-    const a = "ships/load!"
-    t.SHIP_LOAD = a
-    const i = "ships/load_failure"
-    t.SHIP_LOAD_FAILURE = i
-    const c = "ships/load_success"
-    function u(e, t) {
-      return { type: i, payload: { shipId: e, err: t } }
-    }
-    function d(e) {
-      return { type: c, payload: { ship: e } }
-    }
-    t.SHIP_LOAD_SUCCESS = c
+      Object.defineProperty(t, "Users", {
+        enumerable: !0,
+        get: function() {
+          return a.default
+        },
+      })
+    var o = s(r("./src/state/modules/adjacent-bodies/index.js")),
+      n = s(r("./src/state/modules/clients/index.js")),
+      i = s(r("./src/state/modules/ships/index.js")),
+      a = s(r("./src/state/modules/users/index.js"))
   },
-  "./src/modules/users/index.js": function(e, t, r) {
+  "./src/state/modules/ships/action-creators.js": function(e, t, r) {
     "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireWildcard")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.registerUser = function(e, t) {
+      (t.load = function(e) {
+        return { type: s.LOAD, payload: { shipId: e } }
+      }),
+      (t.fulfillLoad = function(e) {
+        return { type: s.LOAD_FULFILLED, payload: { ship: e } }
+      }),
+      (t.rejectLoad = function(e, t) {
         return {
-          type: c,
-          payload: { clientId: clientId, username: e, password: t },
+          type: s.LOAD_REJECTED,
+          payload: { shipId: e },
+          error: t,
+        }
+      })
+    var s = r("./src/state/modules/ships/action-types.js")
+  },
+  "./src/state/modules/ships/action-types.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = t.LOAD_REJECTED = t.LOAD_FULFILLED = t.LOAD = void 0)
+    var s = r("@subspace/core")
+    const [o, n, i] = (0, s.toAsync)("LOAD")
+    ;(t.LOAD_REJECTED = i), (t.LOAD_FULFILLED = n), (t.LOAD = o)
+    var a = { LOAD: o, LOAD_FULFILLED: n, LOAD_REJECTED: i }
+    t.default = a
+  },
+  "./src/state/modules/ships/index.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault"),
+      o = r("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var n = r("@subspace/core"),
+      i = r("@subspace/redux-module"),
+      a = o(r("./src/state/modules/ships/action-creators.js")),
+      u = s(r("./src/state/modules/ships/action-types.js")),
+      c = o(r("./src/state/modules/ships/selectors.js")),
+      d = s(r("./src/state/modules/ships/reducer.js"))
+    const l = (0, i.createReduxModule)("Ships", {
+      actionTypes: u.default,
+      actionCreators: a,
+      reducer: d.default,
+      selectors: c,
+    })
+    var p = (0, i.composeReduxModules)(n.Ships, l)
+    t.default = p
+  },
+  "./src/state/modules/ships/reducer.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e, t) {
+        return e
+      })
+    r("@subspace/core")
+  },
+  "./src/state/modules/ships/selectors.js": function(e, t, r) {
+    "use strict"
+  },
+  "./src/state/modules/users/action-creators.js": function(e, t, r) {
+    "use strict"
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.registerUser = function(e, t, r) {
+        return {
+          type: s.REGISTER,
+          payload: { username: e, password: t, clientId: r },
         }
       }),
       (t.loadUser = function(e) {
-        return { type: u, payload: { userId: e } }
+        return { type: s.LOAD, payload: { userId: e } }
       }),
-      (t.loadUserFailure = p),
-      (t.loadUserSuccess = f),
-      (t.default = function(e, t) {
-        return n.Users.default(e, t)
+      (t.fulfillLoad = function(e) {
+        return { type: s.LOAD_FULFILLED, payload: { userId: e } }
       }),
-      (t.createMiddleware = function(e, t) {
-        return r => {
-          const s = i.throttle(() => {
-            const {
-                adjacentBodies: e,
-                clients: t,
-                users: s,
-                physics: i,
-                loop: c,
-              } = r.getState(),
-              u = a.getAdjacentBodies(e)
-            for (const e in n.Users.getUsers(s)) {
-              const s = Number(e),
-                a = o.getClientByUserId(t, s),
-                d = u[s].map(e => n.Physics.getBody(i, e)),
-                l = n.Protocol.snapshotMessage(c.frame, d)
-              r.dispatch(o.sendClient(a.id, l))
-            }
-          }, t)
-          return t => a => {
-            switch (a.type) {
-              case n.Loop.LOOP_TICK:
-                s()
-                break
-              case c: {
-                const {
-                  clientId: r,
-                  username: s,
-                  password: i,
-                } = a.payload
-                e.User.create({ username: s, password: i })
-                  .then(e => {
-                    e.toJSON()
-                    const s = n.Protocol.userRegisterSuccessMessage()
-                    t(o.sendClient(r, s))
-                  })
-                  .catch(e => {
-                    const s = n.Protocol.userRegisterFailureMessage()
-                    t(o.sendClient(r, s))
-                  })
-              }
-              case u: {
-                const { userId: r } = a.payload
-                e.User.findById(r)
-                  .then(e => {
-                    if (!e) throw new Error(`User ${r} not found`)
-                    const s = e.toJSON()
-                    t(f(r)),
-                      t(n.Users.addUser(s)),
-                      s.activeShip && t(n.Ships.addShip(s.activeShip))
-                  })
-                  .catch(e => t(p(r, e)))
-                break
-              }
-              case n.Users.USER_ADD:
-              case n.Users.USER_UPDATE: {
-                const { clients: e } = r.getState(),
-                  { user: s } = a.payload,
-                  i = o.getClientByUserId(e, s.id),
-                  c = n.Protocol.userUpdateMessage(s)
-                t(o.sendClient(i.id, c))
-                break
-              }
-            }
-            return t(a)
-          }
+      (t.rejectLoad = function(e, t) {
+        return {
+          type: s.LOAD_REJECTED,
+          payload: { userId: e, err: t },
         }
-      }),
-      (t.USER_LOAD_SUCCESS = t.USER_LOAD_FAILURE = t.USER_LOAD = t.USER_REGISTER = void 0)
-    var n = r("@subspace/core"),
-      o = (s(r("./src/modules/ships/index.js")),
-      s(r("./src/modules/clients/index.js"))),
-      a = s(r("./src/modules/adjacent-bodies/index.js")),
-      i = s(r("./src/util/hrtime.js"))
-    const c = "users/register!"
-    t.USER_REGISTER = c
-    const u = "users/load!"
-    t.USER_LOAD = u
-    const d = "users/load_failure"
-    t.USER_LOAD_FAILURE = d
-    const l = "users/load_success"
-    function p(e, t) {
-      return { type: d, payload: { userId: e, err: t } }
-    }
-    function f(e) {
-      return { type: l, payload: { userId: e } }
-    }
-    t.USER_LOAD_SUCCESS = l
-  },
-  "./src/reducers.js": function(e, t, r) {
-    "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireDefault")
-    Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.default = void 0)
-    var n = r("@subspace/core"),
-      o = s(r("./src/modules/adjacent-bodies/index.js")),
-      a = s(r("./src/modules/clients/index.js")),
-      i = s(r("./src/modules/users/index.js")),
-      c = s(r("./src/modules/ships/index.js"))
-    const { loop: u, physics: d } = n.reducers
-    var l = {
-      adjacentBodies: o.default,
-      clients: a.default,
-      users: i.default,
-      ships: c.default,
-      loop: u,
-      physics: d,
-    }
-    t.default = l
-  },
-  "./src/routers/auth.js": function(e, t, r) {
-    "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireDefault")
-    Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.default = void 0)
-    var n = s(r("express")),
-      o = r("./src/data/index.js"),
-      a = r("./src/auth/jwt.js"),
-      i = r("./src/auth/middleware.js")
-    const c = n.default.Router()
-    c.route("/register").post(async (e, t) => {
-      let r,
-        { username: s, password: n } = e.body
-      if (await o.User.findOne({ where: { username: s } }))
-        return void t
-          .status(409)
-          .json({ error: "Username already taken" })
-      try {
-        r = await o.User.create({ username: s, password: n })
-      } catch (e) {
-        return void t.status(400).json({ error: e })
-      }
-      const i = r.toJSON()
-      t.status(201).json({ token: (0, a.generateToken)(i), user: i })
-    }),
-      c.route("/login").post(i.login, (e, t) => {
-        const { user: { id: r, username: s } } = e,
-          n = { id: r, username: s }
-        t
-          .status(200)
-          .json({ token: (0, a.generateToken)(n), user: n })
-      }),
-      c.route("/verify").post(i.auth, (e, t) => {
-        const { user: { id: r, username: s } } = e,
-          n = { id: r, username: s }
-        t
-          .status(200)
-          .json({ token: (0, a.generateToken)(n), user: n })
       })
-    var u = c
-    t.default = u
+    var s = r("./src/state/modules/users/action-types.js")
   },
-  "./src/scheduler.js": function(e, t, r) {
+  "./src/state/modules/users/action-types.js": function(e, t, r) {
     "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireWildcard")
     Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.create = function(e) {
-        const t = e * n.NS_PER_SEC,
-          r = [0, t]
-        let s = process.hrtime()
-        return () =>
-          new Promise(e => {
-            setTimeout(
-              (function e(o) {
-                return () => {
-                  const a = process.hrtime(s),
-                    i = n.sub(a, r),
-                    c = n.sum(i)
-                  c < 0
-                    ? setImmediate(e(o))
-                    : (o((c + t) / n.NS_PER_SEC),
-                      (s = n.add(process.hrtime(), i)))
-                }
-              })(e),
-            )
-          })
-      })
-    var n = s(r("./src/util/hrtime.js"))
+      (t.default = t.LOAD_REJECTED = t.LOAD_FULFILLED = t.LOAD = t.REGISTER = void 0)
+    var s = r("@subspace/core")
+    t.REGISTER = "REGISTER"
+    const [o, n, i] = (0, s.toAsync)("LOAD")
+    ;(t.LOAD_REJECTED = i), (t.LOAD_FULFILLED = n), (t.LOAD = o)
+    var a = {
+      REGISTER: "REGISTER",
+      LOAD: o,
+      LOAD_FULFILLED: n,
+      LOAD_REJECTED: i,
+    }
+    t.default = a
   },
-  "./src/server.js": function(e, t, r) {
+  "./src/state/modules/users/index.js": function(e, t, r) {
     "use strict"
     var s = r("@babel/runtime/helpers/interopRequireDefault"),
-      n = r("@babel/runtime/helpers/interopRequireWildcard"),
-      o = r("http"),
-      a = n(r("@web-udp/server")),
-      i = r("@subspace/core"),
-      c = s(r("express")),
-      u = s(r("passport")),
-      d = s(r("body-parser")),
-      l = s(r("./cfg/server.config.json")),
-      p = n(r("./src/data/index.js")),
-      f = r("./src/store/index.js"),
-      h = r("./src/auth/index.js"),
-      y = r("./src/auth/strategy.js"),
-      b = s(r("./src/routers/auth.js"))
-    const { TICK_RATE: m, SEND_RATE: v, PORT: j } = process.env,
-      S = 1 / (Number(m) || l.default.tick_rate),
-      _ = 1 / (Number(v) || l.default.send_rate),
-      g = (0, c.default)(),
-      I = new o.createServer(g),
-      w = new a.Server({ server: I })
-    u.default.use(y.jwt),
-      u.default.use(y.local),
-      g.use((0, d.default)()),
-      g.use("/auth", b.default),
-      (async function() {
-        ;(0, f.configureStore)({
-          auth: { authenticate: h.authenticate, verify: h.verify },
-          db: p,
-          tickRate: S,
-          sendRate: _,
-          udp: w,
-        }).dispatch(i.Loop.startLoop()),
-          console.log("syncing database"),
-          await p.sequelize.sync(),
-          console.log(`server listening at //localhost:${String(j)}`),
-          I.listen(Number(j))
-      })()
+      o = r("@babel/runtime/helpers/interopRequireWildcard")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = void 0)
+    var n = r("@subspace/core"),
+      i = r("@subspace/redux-module"),
+      a = o(r("./src/state/modules/users/action-creators.js")),
+      u = s(r("./src/state/modules/users/action-types.js")),
+      c = o(r("./src/state/modules/users/selectors.js")),
+      d = s(r("./src/state/modules/users/reducer.js"))
+    const l = (0, i.createReduxModule)("Users", {
+      actionTypes: u.default,
+      actionCreators: a,
+      reducer: d.default,
+      selectors: c,
+    })
+    var p = (0, i.composeReduxModules)(n.Users, l)
+    t.default = p
   },
-  "./src/store/index.js": function(e, t, r) {
+  "./src/state/modules/users/reducer.js": function(e, t, r) {
     "use strict"
-    var s = r("@babel/runtime/helpers/interopRequireWildcard"),
-      n = r("@babel/runtime/helpers/interopRequireDefault")
+    Object.defineProperty(t, "__esModule", { value: !0 }),
+      (t.default = function(e, t) {
+        return e
+      })
+    r("@subspace/core")
+  },
+  "./src/state/modules/users/selectors.js": function(e, t, r) {
+    "use strict"
+  },
+  "./src/state/store.js": function(e, t, r) {
+    "use strict"
+    var s = r("@babel/runtime/helpers/interopRequireDefault")
     Object.defineProperty(t, "__esModule", { value: !0 }),
       (t.configureStore = function(e) {
         const {
             db: t,
             auth: r,
             tickRate: s,
-            sendRate: n,
-            udp: i,
+            sendRate: i,
+            udp: u,
           } = e,
-          c = u.create(s),
-          d = [
-            (0, a.applyMiddleware)(
-              o.Loop.createMiddleware(c),
-              p.createMiddleware(t),
-              o.Ships.createMiddleware(),
-              h.createMiddleware(b),
-              f.createMiddleware(t, n),
-              l.createMiddleware(i, r),
+          c = (0, a.createEpicMiddleware)(
+            (0, a.combineEpics)(
+              ...[
+                (0, f.default)(j),
+                (0, p.default)(u, r),
+                (0, b.default)(t),
+                (0, y.default)(t, i),
+              ],
+              ...o.epics,
             ),
-          ],
-          v = (0, a.combineReducers)(y.default)
-        return (0, a.createStore)(v, m(...d))
+          ),
+          l = [(0, n.applyMiddleware)(c)],
+          v = (0, n.combineReducers)(d.default)
+        return (0, n.createStore)(v, m(...l))
       })
     var o = r("@subspace/core"),
-      a = r("redux"),
+      n = r("redux"),
       i = r("remote-redux-devtools"),
-      c = n(r("./cfg/redis.config.js")),
-      u = s(r("./src/scheduler.js")),
-      d = r("./src/cache/index.js"),
-      l = s(r("./src/modules/clients/index.js")),
-      p = s(r("./src/modules/ships/index.js")),
-      f = s(r("./src/modules/users/index.js")),
-      h = s(r("./src/modules/adjacent-bodies/index.js")),
-      y = n(r("./src/reducers.js"))
-    o.Physics.P2Driver.create({ gravity: [0, 0] })
-    const b = d.SpatialIndex.create({
-        redis: c.default,
+      a = r("redux-observable"),
+      u = s(r("./cfg/redis.config.js")),
+      c = r("./src/cache/index.js"),
+      d = s(r("./src/reducers.js")),
+      l = s(r("./src/state/modules/adjacent-bodies/index.js")),
+      p = s(r("./src/state/epics/clients/index.js")),
+      f = s(r("./src/state/epics/adjacent-bodies/index.js")),
+      b = s(r("./src/state/epics/ships/index.js")),
+      y = s(r("./src/state/epics/users/index.js"))
+    const j = c.SpatialIndex.create({
+        redis: u.default,
         key: "ss-body",
         dimensions: 2,
       }),
       m = (0, i.composeWithDevTools)({
         port: 9001,
         actionsBlacklist: [
-          o.Loop.LOOP_TICK,
-          o.Physics.PHYSICS_UPDATE_BODY,
-          h.ADJACENT_BODIES_UPDATE,
+          o.Loop.TICK,
+          o.Physics.UPDATE_BODY,
+          l.default.UPDATE,
         ],
       })
   },
@@ -994,38 +1127,6 @@
     const s = (e = [], t = []) =>
       e.reduce((e, r, s) => ((e[r] = t[s]), e), {})
   },
-  "./src/util/hrtime.js": function(e, t, r) {
-    "use strict"
-    Object.defineProperty(t, "__esModule", { value: !0 }),
-      (t.add = n),
-      (t.sub = o),
-      (t.sum = a),
-      (t.throttle = function(e, t) {
-        const r = [0, t * s]
-        let i,
-          c = process.hrtime()
-        return (...t) => {
-          const s = process.hrtime(c),
-            u = o(s, r),
-            d = a(u)
-          return (
-            d >= 0 && ((c = n(process.hrtime(), u)), (i = e(...t))), i
-          )
-        }
-      }),
-      (t.NS_PER_SEC = void 0)
-    const s = 1e9
-    function n(e, t) {
-      return [e[0] + t[0], e[1] + t[1]]
-    }
-    function o(e, t) {
-      return [e[0] - t[0], e[1] - t[1]]
-    }
-    function a(e) {
-      return e[0] * s + e[1]
-    }
-    t.NS_PER_SEC = s
-  },
   "@babel/runtime/helpers/interopRequireDefault": function(e, t) {
     e.exports = require("@babel/runtime/helpers/interopRequireDefault")
   },
@@ -1037,6 +1138,12 @@
   },
   "@subspace/core": function(e, t) {
     e.exports = require("@subspace/core")
+  },
+  "@subspace/redimension": function(e, t) {
+    e.exports = require("@subspace/redimension")
+  },
+  "@subspace/redux-module": function(e, t) {
+    e.exports = require("@subspace/redux-module")
   },
   "@web-udp/server": function(e, t) {
     e.exports = require("@web-udp/server")
@@ -1055,6 +1162,9 @@
   },
   http: function(e, t) {
     e.exports = require("http")
+  },
+  joi: function(e, t) {
+    e.exports = require("joi")
   },
   jsonwebtoken: function(e, t) {
     e.exports = require("jsonwebtoken")
@@ -1077,11 +1187,29 @@
   redux: function(e, t) {
     e.exports = require("redux")
   },
+  "redux-observable": function(e, t) {
+    e.exports = require("redux-observable")
+  },
   "remote-redux-devtools": function(e, t) {
     e.exports = require("remote-redux-devtools")
   },
   "remotedev-server": function(e, t) {
     e.exports = require("remotedev-server")
+  },
+  "rxjs/observable/from": function(e, t) {
+    e.exports = require("rxjs/observable/from")
+  },
+  "rxjs/observable/fromPromise": function(e, t) {
+    e.exports = require("rxjs/observable/fromPromise")
+  },
+  "rxjs/observable/interval": function(e, t) {
+    e.exports = require("rxjs/observable/interval")
+  },
+  "rxjs/observable/of": function(e, t) {
+    e.exports = require("rxjs/observable/of")
+  },
+  "rxjs/operators": function(e, t) {
+    e.exports = require("rxjs/operators")
   },
   sequelize: function(e, t) {
     e.exports = require("sequelize")

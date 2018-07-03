@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack"
+    "build": "webpack --mode=production"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +22,7 @@
     "@subspace/redux-module": "^0.1.0",
     "p2": "^0.7.1",
     "redux": "^3.7.2",
-    "redux-observable": "^0.18.0",
-    "rxjs": "^6.0.0"
+    "redux-observable": "^1.0.0",
+    "rxjs": "^6.2.1"
   }
 }

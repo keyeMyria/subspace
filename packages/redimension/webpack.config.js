@@ -8,7 +8,7 @@ module.exports = {
   output: {
     path: path.resolve("lib"),
     filename: "index.js",
-    library: "ReduxModule",
+    library: "Redimension",
     libraryTarget: "umd",
   },
   module: {

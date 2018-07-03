@@ -4,7 +4,6 @@ import * as Protocol from "./protocol"
 
 // Modules
 export * from "./state/modules"
-export * as reduxModules from "./state/modules"
 export { default as epics } from "./state/epics"
 
 export type * from "./types/actions"

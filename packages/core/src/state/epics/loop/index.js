@@ -1,7 +1,8 @@
 // @flow
 
 import type { ActionObservable } from "redux-observable"
-import { interval } from "rxjs/observable/interval"
+// $FlowFixMe
+import { interval } from "rxjs"
 
 import type { Action } from "../../../types"
 import { Loop } from "../../modules"

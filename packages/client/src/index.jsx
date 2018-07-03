@@ -6,7 +6,6 @@ import { configureStore } from "./state"
 import routes from "./routes"
 import history from "./history"
 
-import "./vendor"
 import "./css/global.css"
 
 const root = document.createElement("div")

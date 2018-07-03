@@ -76,7 +76,7 @@ function encode(
     .padStart(precision * dimensions / 4, "0")
 }
 
-export function redimension(
+export function make(
   client: RedisClientPromisified,
   key: string,
   hashkey: string,

@@ -1,4 +1,4 @@
-import { toAsync } from "../async"
+import { toAsync } from "@subspace/core"
 
 export const [
   AUTHENTICATE,

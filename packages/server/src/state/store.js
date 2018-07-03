@@ -4,7 +4,6 @@ import {
   Loop,
   Physics,
   Ships as CoreShips,
-  reduxModules as coreReduxModules,
   epics as coreEpics,
 } from "@subspace/core"
 import { createStore, combineReducers, applyMiddleware } from "redux"
@@ -16,8 +15,8 @@ import type { AuthClient } from "../auth"
 import type { Db } from "../data"
 import redisConfig from "../../cfg/redis.config"
 import { SpatialIndex } from "../cache"
-import * as reduxModules from "./modules"
 import reducers from "../reducers"
+import AdjacentBodies from "./modules/adjacent-bodies"
 import createClientsEpics from "./epics/clients"
 import createAdjacentBodiesEpics from "./epics/adjacent-bodies"
 import createShipsEpics from "./epics/ships"
@@ -33,7 +32,7 @@ type ConfigureStoreOptions = {
   udp: UdpServer,
 }
 
-const spatialIndex = SpatialIndex.create({
+const spatialIndex = SpatialIndex.make({
   redis: redisConfig,
   key: "ss-body",
   dimensions: 2,
@@ -44,7 +43,7 @@ const composeEnhancers = composeWithDevTools({
   actionsBlacklist: [
     Loop.TICK,
     Physics.UPDATE_BODY,
-    reduxModules.AdjacentBodies.UPDATE,
+    AdjacentBodies.UPDATE,
   ],
 })
 

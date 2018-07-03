@@ -1,6 +1,5 @@
 import { Client as UdpClient } from "@web-udp/client"
-import { Observable } from "rxjs/Observable"
-import { ReplaySubject } from "rxjs/ReplaySubject"
+import { Observable, ReplaySubject } from "rxjs"
 
 import { Auth, Udp } from "../../modules"
 

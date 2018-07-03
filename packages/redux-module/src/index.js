@@ -112,7 +112,7 @@ export function composeReduxModules<
     ...reduxModuleB,
     reducer(state: S & S2, action: A & A2) {
       return reduxModuleB.reducer(
-        (reduxModuleA.reducer(state, action): any),
+        (reduxModuleA.reducer(state, action): $Supertype<S2>),
         action,
       )
     },

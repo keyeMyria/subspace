@@ -8,6 +8,7 @@ import type {
 
 import type { Reducers } from "../reducers"
 
+// $FlowFixMe
 import type { Action as AuthAction } from "../state/modules/auth/action-types"
 import type { Action as CounterAction } from "../state/modules/counter/action-types"
 import type { Action as UdpAction } from "../state/modules/udp/action-types"

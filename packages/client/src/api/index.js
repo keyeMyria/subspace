@@ -1,7 +1,8 @@
 // @flow
 
-import { Observable } from "rxjs/Observable"
+import { Observable } from "rxjs"
 import { map } from "rxjs/operators"
+// $FlowFixMe
 import { ajax } from "rxjs/ajax"
 
 const Resources = {

@@ -1,5 +1,5 @@
-// flow-typed signature: 719b210af83276ea2bbc0e9d0a84f2de
-// flow-typed version: 8c6a31ea97/pg_v7.x.x/flow_>=v0.28.x
+// flow-typed signature: bce25cf9995831e2ac1ebae0b4169cfc
+// flow-typed version: a175a2307f/pg_v7.x.x/flow_>=v0.28.x
 
 declare module pg {
   // Note: Currently There are some issues in Function overloading.
@@ -52,6 +52,8 @@ declare module pg {
     log: Function,
 
     // node-postgres Client ------
+    //database connection string to define some other config parameters
+    connectionString: string,
     //database user's name
     user: string,
     //name of database to connect
@@ -250,13 +252,13 @@ declare module pg {
   */
   declare class Query extends Promise<ResultSet> {
     then<U>(
-      onFulfill?: (value: ResultSet) => Promise<U> | U,
-      onReject?: (error: PG_ERROR) => Promise<U> | U,
+      onFulfill?: ?(value: ResultSet) => Promise<U> | U,
+      onReject?: ?(error: PG_ERROR) => Promise<U> | U,
     ): Promise<U>;
     // Because then and catch return a Promise,
     // .then.catch will lose catch's type information PG_ERROR.
     catch<U>(
-      onReject?: (error: PG_ERROR) => ?Promise<U> | U,
+      onReject?: ?(error: PG_ERROR) => Promise<U> | U,
     ): Promise<U>;
 
     on: ((

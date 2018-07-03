@@ -1,6 +1,4 @@
-import { Observable, Subscribable } from "rxjs/Observable"
-import { AnonymousSubscription } from "rxjs/Subscription"
-import { BehaviorSubject } from "rxjs/BehaviorSubject"
+import { Observable, BehaviorSubject } from "rxjs"
 
 export const UdpConnectionSubjectStatus = {
   CONNECTING: 0,
