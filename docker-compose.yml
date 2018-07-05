@@ -1,14 +1,23 @@
 version: "3.3"
 services:
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    command: --no-auth
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data_portainer:/data
+    networks:
+      - net_tools
   db-1:
     image: cockroachdb/cockroach
     command: start --advertise-host=db-1 --insecure
     expose:
-      - 8080
       - 26257
     ports:
-      - 26257:26257
-      - 8080:8080
+      - 8080:9001
     networks:
       - net_roach
     volumes:
@@ -53,8 +62,6 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     expose:
       - 6379
-    ports:
-      - 6379:6379
     sysctls:
       - net.core.somaxconn=1024
     volumes:
@@ -68,14 +75,11 @@ services:
     image: subspace/server
     container_name: subspace-server
     ports:
-      - 8081:8081
-      - 9001:9001
-    expose:
-      - 8081
-      - 9001
+      - 8000:8000
+      - 9000:9002
     environment:
       NODE_ENV: development
-      PORT: 8081
+      PORT: 8000
       DB_USERNAME: cockroach
       DB_PASSWORD:
       DB_NAME: ss_test
@@ -101,12 +105,10 @@ services:
     image: subspace/client
     container_name: subspace-client
     ports:
-      - 8082:8082
-    expose:
-      - 8082
+      - 8000:8001
     environment:
-      SERVER_URL: http://subspace-server:8081
-      PORT: 8082
+      SERVER_URL: http://subspace-server:8000
+      PORT: 8000
       HOST: 0.0.0.0
     volumes:
       - .:/opt/subspace/
@@ -117,17 +119,6 @@ services:
     networks:
       - net_frontend
       - net_backend
-  portainer:
-    image: portainer/portainer
-    container_name: portainer
-    command: --no-auth
-    ports:
-      - 9000:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - data_portainer:/data
-    networks:
-      - net_tools
 volumes:
   data_db-1:
   data_db-2:

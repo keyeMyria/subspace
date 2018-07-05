@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "prepare": "npm run build"
   },
   "author": "",
   "license": "ISC",

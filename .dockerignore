@@ -8,3 +8,4 @@ node_modules
 Dockerfile
 npm-debug.log
 cockroach-data
+*.lerna_backup
