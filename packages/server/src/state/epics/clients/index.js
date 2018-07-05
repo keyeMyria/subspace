@@ -88,9 +88,15 @@ export default function(udp: UdpServer, auth: AuthClient) {
       withLatestFrom(state$),
       tap(([action, state]) => {
         const { clientId, message } = action.payload
-        const { connectionId } = Clients.getClient(state, clientId)
+        const client = Clients.getClient(state, clientId)
 
-        connections[connectionId].send(Protocol.serialize(message))
+        if (!client) {
+          return
+        }
+
+        connections[client.connectionId].send(
+          Protocol.serialize(message),
+        )
       }),
       ignoreElements(),
     )
@@ -105,10 +111,14 @@ export default function(udp: UdpServer, auth: AuthClient) {
       withLatestFrom(state$),
       tap(([action, state]) => {
         const { clientId } = action.payload
-        const { connectionId } = Clients.getClient(state, clientId)
+        const client = Clients.getClient(state, clientId)
 
-        connections[connectionId].close()
-        delete connections[connectionId]
+        if (!client) {
+          return
+        }
+
+        connections[client.connectionId].close()
+        delete connections[client.connectionId]
       }),
       ignoreElements(),
     )

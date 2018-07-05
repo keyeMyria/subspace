@@ -17,7 +17,7 @@ services:
     expose:
       - 26257
     ports:
-      - 8080:9001
+      - 9001:8080
     networks:
       - net_roach
     volumes:
@@ -74,9 +74,10 @@ services:
       dockerfile: ./docker/Dockerfile-server
     image: subspace/server
     container_name: subspace-server
+    expose:
+      - 8000
     ports:
-      - 8000:8000
-      - 9000:9002
+      - 9002:9000
     environment:
       NODE_ENV: development
       PORT: 8000
@@ -86,8 +87,11 @@ services:
       DB_HOST: db-1
       DB_PORT: 26257
       JWT_SECRET: yolo
+      JWT_EXPIRE: 36000
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      TICK_RATE: 60
+      SEND_RATE: 20
     volumes:
       - .:/opt/subspace/
       - /opt/subspace/node_modules
@@ -97,7 +101,6 @@ services:
     networks:
       - net_roach
       - net_backend
-      - net_frontend
   client:
     build:
       context: .
@@ -105,11 +108,11 @@ services:
     image: subspace/client
     container_name: subspace-client
     ports:
-      - 8000:8001
+      - 8000:8000
     environment:
-      SERVER_URL: http://subspace-server:8000
       PORT: 8000
       HOST: 0.0.0.0
+      SERVER_URL: http://subspace-server:8000
     volumes:
       - .:/opt/subspace/
       - /opt/subspace/node_modules
@@ -117,7 +120,6 @@ services:
     depends_on:
       - server
     networks:
-      - net_frontend
       - net_backend
 volumes:
   data_db-1:
@@ -127,7 +129,6 @@ volumes:
   data_redis:
   data_portainer:
 networks:
-  net_frontend:
   net_backend:
   net_roach:
   net_tools:

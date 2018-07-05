@@ -20,9 +20,9 @@ docker-compose up
 
 Ports exposed to the host machine for each service are listed below:
 
-| Port | Service               |
-|------|-----------------------|
-| 9000 | Portainer             |
-| 9001 | CockroachDB dashboard |
-| 8000 | Game server           |
-| 8001 | Game client           |
+| Port | Service                |
+|------|------------------------|
+| 9000 | Portainer              |
+| 9001 | CockroachDB dashboard  |
+| 9002 | Redux remote dev tools |
+| 8000 | Game client            |

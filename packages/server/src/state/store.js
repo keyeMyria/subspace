@@ -35,24 +35,13 @@ const spatialIndex = SpatialIndex.make({
 })
 
 const composeEnhancers = composeWithDevTools({
-  port: 9001,
+  port: 9000,
   actionsBlacklist: [
     Loop.TICK,
     Physics.UPDATE_BODY,
     AdjacentBodies.UPDATE,
   ],
 })
-
-const debugMiddleware = store => next => action => {
-  if (!action.type) {
-    try {
-      throw new Error()
-    } catch (err) {
-      console.log(action, err.stack)
-    }
-  }
-  return next(action)
-}
 
 export function configureStore(
   options: ConfigureStoreOptions,
@@ -67,7 +56,7 @@ export function configureStore(
     ...createUsersEpics(db, sendRate),
     ...coreEpics,
   )
-  const enhancers = [applyMiddleware(epicMiddleware, debugMiddleware)]
+  const enhancers = [applyMiddleware(epicMiddleware)]
   const store = createStore(
     rootReducer,
     composeEnhancers(...enhancers),
