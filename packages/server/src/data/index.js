@@ -16,7 +16,7 @@ import type {
 } from "@subspace/core"
 
 import { EnvConfig } from "../../cfg"
-import configs from "../../cfg/db.config"
+import config from "../../cfg/db.config"
 import type { User as UserModel } from "../model/user"
 
 async function encryptPassword(password: String) {
@@ -25,8 +25,6 @@ async function encryptPassword(password: String) {
 
   return hash
 }
-
-const config = configs[EnvConfig.node]
 
 export const sequelize = new Sequelize(config)
 

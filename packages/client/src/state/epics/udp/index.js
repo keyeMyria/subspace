@@ -6,6 +6,7 @@ import {
   takeUntil,
   ignoreElements,
   tap,
+  withLatestFrom,
 } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
@@ -27,12 +28,13 @@ const client = new UdpClient({
 // Observable that provides the UDP connection with local messages
 const input = ReplaySubject.create()
 
-export function connect(action$, store) {
+export function connect(action$, state$) {
   return action$.pipe(
     ofType(Udp.CONNECT),
-    mergeMap(action => {
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
       // Create a UDP connection and exchange auth info during handshake
-      const metadata = { token: Auth.getToken(store.getState()) }
+      const metadata = { token: Auth.getToken(state) }
       const { messages, status } = udpConnection(
         input,
         client,

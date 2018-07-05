@@ -1,11 +1,6 @@
 // @flow
 
-import {
-  Loop,
-  Physics,
-  Ships as CoreShips,
-  epics as coreEpics,
-} from "@subspace/core"
+import { Loop, Physics, epics as coreEpics } from "@subspace/core"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { composeWithDevTools } from "remote-redux-devtools"
 import { createEpicMiddleware, combineEpics } from "redux-observable"
@@ -22,6 +17,7 @@ import createAdjacentBodiesEpics from "./epics/adjacent-bodies"
 import createShipsEpics from "./epics/ships"
 import createUsersEpics from "./epics/users"
 
+import { tap, ignoreElements } from "rxjs/operators"
 import type { Store } from "../types"
 
 type ConfigureStoreOptions = {
@@ -47,26 +43,37 @@ const composeEnhancers = composeWithDevTools({
   ],
 })
 
+const debugMiddleware = store => next => action => {
+  if (!action.type) {
+    try {
+      throw new Error()
+    } catch (err) {
+      console.log(action, err.stack)
+    }
+  }
+  return next(action)
+}
+
 export function configureStore(
   options: ConfigureStoreOptions,
 ): Store {
   const { db, auth, tickRate, sendRate, udp } = options
-
-  const epicMiddleware = createEpicMiddleware(
-    combineEpics(
-      ...[
-        createAdjacentBodiesEpics(spatialIndex),
-        createClientsEpics(udp, auth),
-        createShipsEpics(db),
-        createUsersEpics(db, sendRate),
-      ],
-      ...coreEpics,
-    ),
+  const epicMiddleware = createEpicMiddleware()
+  const rootReducer = combineReducers(reducers)
+  const rootEpic = combineEpics(
+    ...createAdjacentBodiesEpics(spatialIndex),
+    ...createClientsEpics(udp, auth),
+    ...createShipsEpics(db),
+    ...createUsersEpics(db, sendRate),
+    ...coreEpics,
+  )
+  const enhancers = [applyMiddleware(epicMiddleware, debugMiddleware)]
+  const store = createStore(
+    rootReducer,
+    composeEnhancers(...enhancers),
   )
 
-  const enhancers = [applyMiddleware(epicMiddleware)]
+  epicMiddleware.run(rootEpic)
 
-  const rootReducer = combineReducers(reducers)
-
-  return createStore(rootReducer, composeEnhancers(...enhancers))
+  return store
 }

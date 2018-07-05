@@ -6,3 +6,4 @@ cockroach-data
 .env
 dump.rdb
 dist
+lib

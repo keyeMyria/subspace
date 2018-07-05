@@ -1,13 +1,22 @@
 // @flow
 
+import type { Observable } from "rxjs"
 import type { ActionsObservable } from "redux-observable"
 import type { Redimension } from "@subspace/redimension"
 
+import { ofType } from "redux-observable"
+import {
+  map,
+  tap,
+  ignoreElements,
+  withLatestFrom,
+  switchMap,
+} from "rxjs/operators"
 import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
-import * as Async from "../../../util/async"
+import * as AsyncUtil from "../../../util/async"
 
-import type { Action, Store, State } from "../../../types"
+import type { Action, State } from "../../../types"
 import { AdjacentBodies } from "../../modules"
 
 const UPDATE_AREA = 1000
@@ -31,38 +40,49 @@ async function queryAdjacentBodies(state: State, index: Redimension) {
 
     results[userId] = index
       .query(range)
-      .then(res => res.map(([, bodyId]) => bodyId))
+      .then(values => values.map(([, bodyId]) => bodyId))
 
     return results
   }, {})
 
-  return await Async.object(query)
+  return await AsyncUtil.object(query)
 }
 
 export default function(index: Redimension) {
-  function query($action: ActionsObservable<Action>, store: Store) {
-    return $action
-      .ofType(Loop.TICK)
-      .map(() => queryAdjacentBodies(store.getState(), index))
-      .mapTo(result => AdjacentBodies.update(result))
+  function query(
+    $action: ActionsObservable<Action>,
+    state$: Observable<State>,
+  ) {
+    return $action.pipe(
+      ofType(Loop.TICK),
+      withLatestFrom(state$),
+      switchMap(([, state]) => queryAdjacentBodies(state, index)),
+      map(result => AdjacentBodies.update(result)),
+    )
   }
 
-  function insert($action: ActionsObservable<Action>, store: Store) {
-    return $action
-      .ofType(Physics.ADD_BODY)
-      .do(({ payload: { body: { position, id } } }) =>
-        index.insert(position, id),
-      )
-      .ignoreElements()
+  function insert($action: ActionsObservable<Action>) {
+    return $action.pipe(
+      ofType(Physics.ADD_BODY),
+      tap(action => {
+        const { position, id } = action.body.payload
+
+        index.insert(position, id)
+      }),
+      ignoreElements(),
+    )
   }
 
-  function update($action: ActionsObservable<Action>, store: Store) {
-    return $action
-      .ofType(Physics.UPDATE_BODY)
-      .do(({ payload: { body: { position, id } } }) =>
-        index.update(position, id),
-      )
-      .ignoreElements()
+  function update($action: ActionsObservable<Action>) {
+    return $action.pipe(
+      ofType(Physics.UPDATE_BODY),
+      tap(action => {
+        const { position, id } = action.body.payload
+
+        index.update(position, id)
+      }),
+      ignoreElements(),
+    )
   }
 
   return [query, insert, update]

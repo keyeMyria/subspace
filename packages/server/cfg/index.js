@@ -35,7 +35,7 @@ const schema = joi
     DB_PORT: alpha,
     DB_NAME: joi.string().required(),
     DB_USERNAME: alpha,
-    DB_PASSWORD: alpha,
+    DB_PASSWORD: joi.string().allow(""),
     NODE_ENV: joi
       .string()
       .valid("production", "development")

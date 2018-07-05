@@ -31,35 +31,33 @@ const register = asyncMiddleware(async (req, res) => {
   const user = model.toJSON()
 
   res.status(201).json({
-    token: token(user),
+    token: await token(user),
     user,
   })
 })
 
-function login(req, res, next: Function) {
+const login = asyncMiddleware(async (req, res, next: Function) => {
   const { user: { id, username } } = req
   const user = { id, username }
 
   res.status(200).json({
-    token: token(user),
+    token: await token(user),
     user,
   })
-}
+})
 
-function verify(req, res, next: Function) {
+const verify = asyncMiddleware(async (req, res, next: Function) => {
   const { user: { id, username } } = req
   const user = { id, username }
 
   res.status(200).json({
-    token: token(user),
+    token: await token(user),
     user,
   })
-}
+})
 
 router.route("/register").post(register)
-
 router.route("/login").post(loginMiddleware, login)
-
 router.route("/verify").post(authMiddleware, verify)
 
 export default router

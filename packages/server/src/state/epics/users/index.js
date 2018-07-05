@@ -1,40 +1,43 @@
 // @flow
 
+import type { Observable } from "rxjs"
+import type { ActionsObservable } from "redux-observable"
+
 import { Loop, Physics, Protocol } from "@subspace/core"
 import { ofType } from "redux-observable"
-import type { ActionsObservable } from "redux-observable"
 // $FlowFixMe
 import { from, of, interval, fromPromise } from "rxjs"
 import {
   throttleTime,
-  mapTo,
-  tap,
   map,
+  tap,
   switchMap,
   catchError,
+  withLatestFrom,
 } from "rxjs/operators"
 
-import type { Action, State, Store } from "../../../types"
+import type { Action, State } from "../../../types"
 import type { Db } from "../../../data"
+
 import { AdjacentBodies, Clients, Ships, Users } from "../../modules"
 
 export default function(db: Db, sendRate: number) {
   function getSnapshots(state: State) {
-    const { adjacentBodies, clients, users, physics, loop } = state
-
     const adjacentBodiesByUserId = AdjacentBodies.getAdjacentBodies(
       state,
     )
-
-    const userIds = Object.keys(Users.getUsers(users))
+    const userIds = Object.keys(Users.getUsers(state))
 
     return userIds.map(userId => {
       const id = Number(userId)
       const client = Clients.getClientByUserId(state, id)
       const bodies = adjacentBodiesByUserId[id].map(bodyId =>
-        Physics.getBody(physics, bodyId),
+        Physics.getBody(state, bodyId),
       )
-      const message = Protocol.snapshotMessage(loop.frame, bodies)
+      const message = Protocol.snapshotMessage(
+        Loop.getFrame(state),
+        bodies,
+      )
 
       return Clients.send(client.id, message)
     })
@@ -42,23 +45,17 @@ export default function(db: Db, sendRate: number) {
 
   function snapshots(
     action$: ActionsObservable<Action>,
-    store: Store,
+    state$: Observable<State>,
   ) {
     return action$.pipe(
       ofType(Loop.TICK),
       throttleTime(sendRate),
-      switchMap(() => {
-        const snapshots = getSnapshots(store.getState())
-
-        return from(snapshots)
-      }),
+      withLatestFrom(state$),
+      switchMap(([, state]) => from(getSnapshots(state))),
     )
   }
 
-  function loadUser(
-    action$: ActionsObservable<Action>,
-    store: Store,
-  ) {
+  function loadUser(action$: ActionsObservable<Action>) {
     return action$.pipe(
       ofType(Users.LOAD),
       switchMap(({ payload: { userId } }) =>
@@ -86,16 +83,14 @@ export default function(db: Db, sendRate: number) {
 
   function sendUser(
     action$: ActionsObservable<Action>,
-    store: Store,
+    state$: Observable<State>,
   ) {
     return action$.pipe(
       ofType(Users.ADD, Users.UPDATE),
-      mapTo(action => {
+      withLatestFrom(state$),
+      map(([action, state]) => {
         const { payload: { user } } = action
-        const client = Clients.getClientByUserId(
-          store.getState(),
-          user.id,
-        )
+        const client = Clients.getClientByUserId(state, user.id)
 
         return Clients.send(client.id, action)
       }),

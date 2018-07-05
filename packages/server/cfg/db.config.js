@@ -1,16 +1,17 @@
 // @flow
 
-import Sequelize from "sequelize"
-
 import { DbConfig } from "."
 
 const { username, password, database, host, port } = DbConfig
 
 const retry = {
   match: [
-    Sequelize.ConnectionError,
-    Sequelize.ConnectionRefusedError,
-    Sequelize.ConnectionTimedOutError,
+    "SequelizeConnectionError",
+    "SequelizeConnectionRefusedError",
+    "SequelizeHostNotFoundError",
+    "SequelizeHostNotReachableError",
+    "SequelizeInvalidConnectionError",
+    "SequelizeConnectionTimedOutError",
   ],
 }
 

@@ -11,11 +11,9 @@
     "@babel/preset-react": "^7.0.0-beta.45",
     "@babel/runtime": "^7.0.0-beta.45",
     "babel-eslint": "^8.2.2",
-    "babel-loader": "next",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-loader": "^2.0.0",
     "eslint-plugin-flowtype": "^2.46.1",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
@@ -25,7 +23,6 @@
     "flow-mono-cli": "^1.3.0",
     "flow-webpack-plugin": "^1.2.0",
     "husky": "^0.15.0-rc.13",
-    "lerna": "^2.9.0",
     "lint-staged": "^7.0.0",
     "prettier": "^1.11.1"
   },
@@ -41,6 +38,7 @@
     }
   },
   "scripts": {
+    "bootstrap": "lerna bootstrap --ignore-scripts",
     "test": "npm run flow && jest --forceExit",
     "dev": "docker-compose down && docker-compose up",
     "dev:client":

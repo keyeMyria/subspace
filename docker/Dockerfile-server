@@ -2,6 +2,7 @@ FROM node:9.8.0
 
 WORKDIR /opt/subspace
 
+RUN npm config set unsafe-perm true
 RUN npm i lerna -g --unsafe-perm --loglevel notice
 
 RUN chown -R node:node /opt/subspace/
@@ -16,14 +17,14 @@ COPY packages/server/package*.json ./packages/server/
 
 # install dependencies and build
 RUN npm i --loglevel notice
-RUN lerna bootstrap --ignore-scripts
+RUN npm run bootstrap
 
 # rebuild binaries on container architecture
 RUN npm --prefix packages/server rebuild wrtc bcrypt --update-binary
 
 RUN npm cache clean --force
 
-USER node
+# USER node
 
 # serve
 CMD bash -c "while ping -c1 db-init &>/dev/null; do :; done;" && \

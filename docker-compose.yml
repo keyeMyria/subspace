@@ -74,7 +74,7 @@ services:
       - 8081
       - 9001
     environment:
-      NODE_ENV: test
+      NODE_ENV: development
       PORT: 8081
       DB_USERNAME: cockroach
       DB_PASSWORD:
@@ -82,6 +82,8 @@ services:
       DB_HOST: db-1
       DB_PORT: 26257
       JWT_SECRET: yolo
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     volumes:
       - .:/opt/subspace/
       - /opt/subspace/node_modules
