@@ -6,7 +6,7 @@ import type {
   Middleware as ReduxMiddleware,
 } from "redux"
 
-import type { Reducers } from "../reducers"
+import type { Reducers } from "../state/reducers"
 import type { Action } from "./actions"
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V

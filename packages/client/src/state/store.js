@@ -13,7 +13,7 @@ import { composeWithDevTools } from "redux-devtools-extension"
 
 import epics from "./epics"
 import * as reduxModules from "./modules"
-import reducers from "../reducers"
+import reducers from "./reducers"
 
 export function configureStore(options) {
   const { history } = options

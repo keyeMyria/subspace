@@ -6,8 +6,7 @@ import type {
   Middleware as ReduxMiddleware,
 } from "redux"
 
-import type { Reducers } from "../reducers"
-
+import type { Reducers } from "../state/reducers"
 import type { Action as AdjacentBodiesAction } from "../state/modules/adjacent-bodies/action-types"
 import type { Action as ClientsAction } from "../state/modules/clients/action-types"
 import type { Action as UsersAction } from "../state/modules/users/action-types"

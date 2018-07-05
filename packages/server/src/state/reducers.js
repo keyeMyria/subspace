@@ -3,7 +3,7 @@
 import { Async, Loop, Physics, Ships, Users } from "@subspace/core"
 import { extractReducers } from "@subspace/redux-module"
 
-import * as reduxModules from "./state/modules"
+import * as reduxModules from "./modules"
 
 const coreReducers = extractReducers({
   Async,

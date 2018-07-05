@@ -6,8 +6,7 @@ import type {
   Middleware as ReduxMiddleware,
 } from "redux"
 
-import type { Reducers } from "../reducers"
-
+import type { Reducers } from "../state/reducers"
 // $FlowFixMe
 import type { Action as AuthAction } from "../state/modules/auth/action-types"
 import type { Action as CounterAction } from "../state/modules/counter/action-types"
