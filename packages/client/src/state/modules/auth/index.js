@@ -1,13 +1,19 @@
-import { createReduxModule } from "@subspace/redux-module"
+import {
+  createReduxModule,
+  composeReduxModules,
+} from "@subspace/redux-module"
+import { Auth } from "@subspace/core"
 
 import * as actionCreators from "./action-creators"
 import * as actionTypes from "./action-types"
 import * as selectors from "./selectors"
 import reducer from "./reducer"
 
-export default createReduxModule("Auth", {
+const auth = createReduxModule("Auth", {
   reducer,
   actionCreators,
   actionTypes,
   selectors,
 })
+
+export default composeReduxModules(Auth, auth)

@@ -12,6 +12,15 @@ export function addShip(ship: Ship): ActionTypes.Add {
   }
 }
 
+export function update(ship: Ship): ActionTypes.Update {
+  return {
+    type: ActionTypes.UPDATE,
+    payload: {
+      ship,
+    },
+  }
+}
+
 export function turnShip(
   shipId: number,
   direction: TurnDirection,
@@ -25,4 +34,4 @@ export function turnShip(
   }
 }
 
-export default { addShip, turnShip }
+export default { addShip, turnShip, update }

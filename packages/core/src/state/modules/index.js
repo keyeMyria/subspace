@@ -1,11 +1,15 @@
 // @flow
 
-export { default as Async } from "./async"
-export { default as Loop } from "./loop"
-export { default as Physics } from "./physics"
-export { default as Ships } from "./ships"
-export { default as Users } from "./users"
+import Auth from "./auth"
+import Async from "./async"
+import Loop from "./loop"
+import Physics from "./physics"
+import Ships from "./ships"
+import Users from "./users"
 
+export { Auth, Async, Loop, Physics, Ships, Users }
+
+export type * from "./auth"
 export type * from "./async"
 export type * from "./loop"
 export type * from "./physics"

@@ -5,7 +5,7 @@ services:
     container_name: portainer
     command: --no-auth
     ports:
-      - 9000:9000
+      - 3000:3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data_portainer:/data
@@ -17,7 +17,7 @@ services:
     expose:
       - 26257
     ports:
-      - 9001:8080
+      - 3001:8080
     networks:
       - net_roach
     volumes:
@@ -75,12 +75,12 @@ services:
     image: subspace/server
     container_name: subspace-server
     expose:
-      - 8000
+      - 8080
     ports:
-      - 9002:9000
+      - 3002:3000
     environment:
       NODE_ENV: development
-      PORT: 8000
+      PORT: 8080
       DB_USERNAME: cockroach
       DB_PASSWORD:
       DB_NAME: ss_test
@@ -108,11 +108,11 @@ services:
     image: subspace/client
     container_name: subspace-client
     ports:
-      - 8000:8000
+      - 8080:8080
     environment:
-      PORT: 8000
+      PORT: 8080
       HOST: 0.0.0.0
-      SERVER_URL: http://subspace-server:8000
+      SERVER_URL: http://subspace-server:8080
     volumes:
       - .:/opt/subspace/
       - /opt/subspace/node_modules

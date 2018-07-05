@@ -1,42 +1,54 @@
 // @flow
 
-import type { Observable } from "rxjs"
 import type { ActionObservable } from "redux-observable"
 import type { Connection, UdpServer } from "@web-udp/server"
 
 import shortid from "shortid"
 import { Protocol } from "@subspace/core"
-import { ReplaySubject } from "rxjs"
-import { tap, ignoreElements, withLatestFrom } from "rxjs/operators"
+// $FlowFixMe
+import { Observable, ReplaySubject, empty } from "rxjs"
+import {
+  map,
+  tap,
+  ignoreElements,
+  withLatestFrom,
+  catchError,
+} from "rxjs/operators"
 import { ofType } from "redux-observable"
+import { Auth, WebUdpConnectionSubject } from "@subspace/core"
 
 import type { Action, State } from "../../../types"
 import type { AuthClient } from "../../../auth"
 
-import { Clients } from "../../modules"
+import { Clients, Users } from "../../modules"
 
 export default function(udp: UdpServer, auth: AuthClient) {
   const connections = {}
 
-  function connect(action$: ActionObservable<Action>) {
+  function connect(
+    action$: ActionObservable<Action>,
+    state$: Observable<State>,
+  ) {
     const out$ = new ReplaySubject()
+    const clientMessage$ = new ReplaySubject()
 
-    function listen(connection: Connection, clientId: string) {
-      // Remove client from store on connection close
-      connection.closed.subscribe(() =>
-        out$.next(Clients.remove(clientId)),
+    clientMessage$
+      .pipe(
+        withLatestFrom(state$),
+        map(([[clientId, action], state]) => {
+          const { type } = action
+          const { userId } = Clients.getClient(state, clientId)
+
+          switch (type) {
+            case Users.JOIN:
+              return Users.loadUser(userId)
+            default:
+              throw new Error(`Action type ${type} not recognized`)
+          }
+        }),
+        catchError(() => empty()),
       )
-      // Subscribe to client messages
-      connection.messages.subscribe(data => {
-        const message = Protocol.deserialize(data)
-        const [type] = message
-
-        switch (type) {
-          default:
-            return console.error(`Unrecognized message type ${type}`)
-        }
-      })
-    }
+      .subscribe(out$)
 
     async function onConnection(connection: Connection) {
       let user
@@ -48,9 +60,7 @@ export default function(udp: UdpServer, auth: AuthClient) {
         console.error(
           `Invalid credentials for connection ${connection.id}`,
         )
-        connection.send(
-          Protocol.serialize(Protocol.authTokenInvalidMessage()),
-        )
+        connection.send(Protocol.serialize(Auth.tokenInvalid()))
         connection.close()
         return
       }
@@ -71,7 +81,13 @@ export default function(udp: UdpServer, auth: AuthClient) {
         }),
       )
 
-      listen(connection, clientId)
+      const { messages, status } = WebUdpConnectionSubject.make(
+        connection,
+      )
+
+      messages
+        .pipe(map(action => [clientId, action]))
+        .subscribe(clientMessage$)
     }
 
     udp.connections.subscribe(onConnection)
@@ -87,7 +103,7 @@ export default function(udp: UdpServer, auth: AuthClient) {
       ofType(Clients.SEND),
       withLatestFrom(state$),
       tap(([action, state]) => {
-        const { clientId, message } = action.payload
+        const { clientId, action: actionToSend } = action.payload
         const client = Clients.getClient(state, clientId)
 
         if (!client) {
@@ -95,7 +111,7 @@ export default function(udp: UdpServer, auth: AuthClient) {
         }
 
         connections[client.connectionId].send(
-          Protocol.serialize(message),
+          Protocol.serialize(actionToSend),
         )
       }),
       ignoreElements(),

@@ -39,9 +39,3 @@ export function close() {
     type: CLOSE,
   }
 }
-
-export function receive() {
-  return {
-    type: RECEIVE,
-  }
-}

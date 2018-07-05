@@ -12,7 +12,9 @@ module.exports = {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
   },
-  resolve: { extensions: [".js", ".jsx"] },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
   module: {
     rules: [
       {
@@ -64,7 +66,11 @@ module.exports = {
       {
         exclude: /node_modules/,
         test: /\.jsx?$/,
-        use: "babel-loader",
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
       },
     ],
   },

@@ -45,7 +45,7 @@ export default function(db: Db) {
         const { ship } = action.payload
         const user = Users.getUserByActiveShipId(state, ship.id)
         const client = Clients.getClientByUserId(state, user.id)
-        const message = Protocol.shipUpdateMessage(ship)
+        const message = Ships.update(ship)
 
         // Send updated user state to client
         return Clients.send(client.id, message)

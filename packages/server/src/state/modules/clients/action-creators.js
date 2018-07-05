@@ -1,6 +1,6 @@
 // @flow
 
-import type { ServerMessage } from "@subspace/core"
+import type { Action } from "@subspace/core"
 
 import type { Client } from "../../../model/client"
 import { ADD, SEND, REMOVE } from "./action-types"
@@ -14,12 +14,12 @@ export function add(client: Client) {
   }
 }
 
-export function send(clientId: string, message: ServerMessage) {
+export function send(clientId: string, action: Action) {
   return {
     type: SEND,
     payload: {
       clientId,
-      message,
+      action,
     },
   }
 }

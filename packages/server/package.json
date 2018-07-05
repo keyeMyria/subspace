@@ -7,7 +7,8 @@
     "build": "webpack --mode=production",
     "start": "npm run serve",
     "serve": "node lib/index.js",
-    "start:dev": "nodemon --watch src --exec babel-node src/index.js",
+    "start:dev":
+      "nodemon --watch index.js --watch src --watch ../core/lib --exec babel-node index.js",
     "prepare": "npm run build"
   },
   "author": "",
@@ -38,8 +39,7 @@
     "sequelize-cockroachdb": "^1.0.3",
     "shortid": "^2.2.8",
     "source-map-support": "^0.5.4",
-    "util-promisifyall": "^1.0.3",
-    "webpack-cli": "^2.0.13"
+    "util-promisifyall": "^1.0.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",

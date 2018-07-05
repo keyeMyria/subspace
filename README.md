@@ -13,16 +13,24 @@ The game uses:
 
 ## Setup
 
-Install Docker and Docker Compose, then run:
+Install Docker and Docker Compose, then run the following command to start a containerized app with all the required services for development (Redis, CockroachDb, etc.):
+
 ```sh
-docker-compose up
+npm run dev
 ```
 
 Ports exposed to the host machine for each service are listed below:
 
 | Port | Service                |
 |------|------------------------|
-| 9000 | Portainer              |
-| 9001 | CockroachDB dashboard  |
-| 9002 | Redux remote dev tools |
-| 8000 | Game client            |
+| 3000 | Portainer              |
+| 3001 | CockroachDB dashboard  |
+| 3002 | Redux remote dev tools |
+| 8080 | Game client            |
+
+If you want to develop locally, install and start CockroachDB and Redis, then run the following command:
+
+```sh
+npm run dev:local
+```
+

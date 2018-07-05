@@ -8,7 +8,8 @@
     "@babel/plugin-transform-modules-commonjs": "^7.0.0-beta.45",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.45",
     "@babel/preset-env": "^7.0.0-beta.45",
-    "@babel/preset-react": "^7.0.0-beta.45",
+    "@babel/preset-react": "^7.0.0-beta.51",
+    "@babel/register": "^7.0.0-beta.51",
     "@babel/runtime": "^7.0.0-beta.45",
     "babel-eslint": "^8.2.2",
     "eslint": "^4.19.1",
@@ -41,10 +42,7 @@
     "bootstrap": "lerna bootstrap --ignore-scripts",
     "test": "npm run flow && jest --forceExit",
     "dev": "docker-compose down && docker-compose up",
-    "dev:client":
-      "lerna run --parallel --scope=@subspace/client start:dev",
-    "dev:server":
-      "lerna run --parallel --scope=@subspace/server start:dev",
+    "dev:local": "lerna run --parallel start:dev",
     "build": "lerna run build",
     "flow": "killall flow || true && flow"
   }

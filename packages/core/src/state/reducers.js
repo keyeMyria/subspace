@@ -2,9 +2,10 @@
 
 import { extractReducers } from "@subspace/redux-module"
 
-import { Async, Loop, Physics, Ships, Users } from "./modules"
+import { Auth, Async, Loop, Physics, Ships, Users } from "./modules"
 
 const reducers = extractReducers({
+  Auth,
   Async,
   Loop,
   Physics,

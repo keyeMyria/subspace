@@ -35,4 +35,14 @@ export function updateBody(body: Body): ActionTypes.UpdateBody {
   }
 }
 
-export default { addBody, rotateBody, updateBody }
+export function applySnapshot(frame: number, bodies: Body[]) {
+  return {
+    type: ActionTypes.APPLY_SNAPSHOT,
+    payload: {
+      frame,
+      bodies,
+    },
+  }
+}
+
+export default { addBody, rotateBody, updateBody, applySnapshot }

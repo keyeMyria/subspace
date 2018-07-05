@@ -14,7 +14,7 @@ export function loop(action$: ActionObservable<Action>) {
     ofType(Loop.START),
     switchMap(() => interval(1 / 60)),
     map(Loop.tick),
-    takeUntil(action$.pipe(ofType(Loop.PAUSE))),
+    // takeUntil(action$.pipe(ofType(Loop.PAUSE))),
   )
 }
 

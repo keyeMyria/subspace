@@ -20,7 +20,12 @@ export function configureStore(options) {
   const routerMiddleware = createRouterMiddleware(history)
 
   const epicMiddleware = createEpicMiddleware()
-  const middleware = [epicMiddleware, routerMiddleware]
+  const middleware = [
+    epicMiddleware,
+    routerMiddleware,
+    store => next => action =>
+      action.type ? next(action) : console.error(action),
+  ]
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(...coreEpics, ...epics)
 

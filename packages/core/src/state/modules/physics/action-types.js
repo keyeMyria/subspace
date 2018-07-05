@@ -27,5 +27,14 @@ export type RotateBody = {
   },
 }
 
-export default { ADD_BODY, UPDATE_BODY, ROTATE_BODY }
-export type Action = AddBody | UpdateBody | RotateBody
+export const APPLY_SNAPSHOT = "APPLY_SNAPSHOT"
+export type ApplySnapshot = {
+  type: "APPLY_SNAPSHOT",
+  payload: {
+    frame: number,
+    bodies: Body[],
+  },
+}
+
+export default { ADD_BODY, UPDATE_BODY, ROTATE_BODY, APPLY_SNAPSHOT }
+export type Action = AddBody | UpdateBody | RotateBody | ApplySnapshot

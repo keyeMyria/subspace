@@ -10,7 +10,6 @@ import { from, of, interval, fromPromise } from "rxjs"
 import {
   throttleTime,
   map,
-  tap,
   switchMap,
   catchError,
   withLatestFrom,
@@ -34,7 +33,7 @@ export default function(db: Db, sendRate: number) {
       const bodies = adjacentBodiesByUserId[id].map(bodyId =>
         Physics.getBody(state, bodyId),
       )
-      const message = Protocol.snapshotMessage(
+      const message = Physics.applySnapshot(
         Loop.getFrame(state),
         bodies,
       )

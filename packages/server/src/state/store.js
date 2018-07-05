@@ -35,7 +35,7 @@ const spatialIndex = SpatialIndex.make({
 })
 
 const composeEnhancers = composeWithDevTools({
-  port: 9000,
+  port: 3000,
   actionsBlacklist: [
     Loop.TICK,
     Physics.UPDATE_BODY,

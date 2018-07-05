@@ -1,6 +1,7 @@
 // @flow
 
-import type { ServerMessage } from "@subspace/core"
+import type { Action as CoreAction } from "@subspace/core"
+
 import type { Client } from "../../../model/client"
 
 export const ADD = "ADD"
@@ -16,7 +17,7 @@ export type Send = {
   type: "SEND",
   payload: {
     clientId: string,
-    message: ServerMessage,
+    action: CoreAction,
   },
 }
 
