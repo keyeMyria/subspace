@@ -15,8 +15,8 @@ import type {
   ItemType as ItemTypeModel,
 } from "@subspace/core"
 
-import { EnvConfig } from "../../cfg"
-import config from "../../cfg/db.config"
+import { EnvConfig } from "../cfg"
+import config from "../cfg/db.config"
 import type { User as UserModel } from "../model/user"
 
 async function encryptPassword(password: String) {

@@ -3,6 +3,6 @@
 import type { Hangar } from "./hangar"
 
 export type Station = {
-  id: number,
+  id: string,
   hangars: Hangar[],
 }

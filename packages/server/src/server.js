@@ -9,7 +9,7 @@ import { Loop } from "@subspace/core"
 import type { Connection } from "@web-udp/server"
 
 import * as db from "./data"
-import { AppConfig, GameConfig } from "../cfg"
+import { AppConfig, GameConfig } from "./cfg"
 import { configureStore } from "./state/store"
 import * as auth from "./auth"
 import { jwt, local } from "./auth/strategy"
@@ -41,10 +41,6 @@ async function main() {
   store.dispatch(Loop.start())
 
   await db.sequelize.sync()
-
-  console.log(
-    `server listening at //localhost:${String(AppConfig.port)}`,
-  )
 
   server.listen(Number(AppConfig.port))
 }

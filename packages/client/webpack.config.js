@@ -7,6 +7,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const { SERVER_URL, HOST, PORT } = process.env
 
 module.exports = {
+  devtool: "cheap-source-map",
   entry: ["./src/index.jsx"],
   output: {
     path: path.join(__dirname, "dist"),

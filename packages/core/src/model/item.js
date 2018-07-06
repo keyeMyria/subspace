@@ -3,6 +3,6 @@
 import type { ItemType } from "./item-type"
 
 export type Item = {
-  id: number,
+  id: string,
   itemType: ItemType,
 }

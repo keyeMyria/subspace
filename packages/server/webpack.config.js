@@ -3,7 +3,7 @@ const webpack = require("webpack")
 const externals = require("webpack-node-externals")
 
 module.exports = {
-  devtool: "sourcemap",
+  devtool: "source-map",
   target: "node",
   node: {
     __dirname: false,
@@ -14,6 +14,7 @@ module.exports = {
   output: {
     path: path.resolve("lib"),
     filename: "index.js",
+    devtoolModuleFilenameTemplate: "[absolute-resource-path]",
   },
   module: {
     rules: [
@@ -27,11 +28,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: "babel-loader",
+        options: {
+          cacheDirectory: true,
+        },
       },
     ],
   },
   plugins: [new webpack.NamedModulesPlugin()],
-  resolve: {
-    symlinks: false,
-  },
 }

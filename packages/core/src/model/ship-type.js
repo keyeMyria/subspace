@@ -1,6 +1,6 @@
 // @flow
 
 export type ShipType = {
-  id: number,
+  id: string,
   name: string,
 }

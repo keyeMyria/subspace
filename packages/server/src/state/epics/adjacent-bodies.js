@@ -11,6 +11,7 @@ import {
   ignoreElements,
   withLatestFrom,
   switchMap,
+  throttleTime,
 } from "rxjs/operators"
 import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
@@ -22,11 +23,11 @@ import { SpatialIndex } from "../modules"
 const UPDATE_AREA = 1000
 const halfUpdateArea = 0.5 * UPDATE_AREA
 
-async function querySpatialIndex(state: State, index: Redimension) {
+async function queryRedimension(state: State, index: Redimension) {
   const users = Users.getUsers(state)
   const userIds = Object.keys(users)
   const query = userIds.reduce((results, userId) => {
-    const body = getUserBody(state, Number(userId))
+    const body = getUserBody(state, userId)
 
     if (body === null) {
       return results
@@ -49,19 +50,22 @@ async function querySpatialIndex(state: State, index: Redimension) {
 }
 
 export default function(index: Redimension) {
-  function query(
+  // Update spatial index with state of bodies in Redimension
+  function applyIndexUpdates(
     $action: ActionsObservable<Action>,
     state$: Observable<State>,
   ) {
     return $action.pipe(
       ofType(Loop.TICK),
       withLatestFrom(state$),
-      switchMap(([, state]) => querySpatialIndex(state, index)),
+      throttleTime(1 / 10),
+      switchMap(([, state]) => queryRedimension(state, index)),
       map(result => SpatialIndex.update(result)),
     )
   }
 
-  function insert($action: ActionsObservable<Action>) {
+  // Insert new bodies in Redimension
+  function insertAddedBodies($action: ActionsObservable<Action>) {
     return $action.pipe(
       ofType(Physics.ADD_BODY),
       tap(action => {
@@ -73,7 +77,8 @@ export default function(index: Redimension) {
     )
   }
 
-  function update($action: ActionsObservable<Action>) {
+  // Update changed bodies in Redimension
+  function applyBodyUpdates($action: ActionsObservable<Action>) {
     return $action.pipe(
       ofType(Physics.UPDATE_BODY),
       tap(action => {
@@ -85,5 +90,5 @@ export default function(index: Redimension) {
     )
   }
 
-  return [query, insert, update]
+  return [applyIndexUpdates, insertAddedBodies, applyBodyUpdates]
 }

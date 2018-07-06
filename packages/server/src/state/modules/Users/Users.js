@@ -1,6 +1,6 @@
 // @flow
 
-import type { UserAction, UserState } from "@subspace/core"
+import type { UsersAction, UsersState } from "@subspace/core"
 import type { Action as ServerAction } from "../../../types"
 
 import { Users, toAsync } from "@subspace/core"
@@ -9,12 +9,11 @@ import {
   composeReduxModules,
 } from "@subspace/redux-module"
 
-export type State = UserState & {}
+export type State = UsersState & {}
 
 export type Register = {
   type: "REGISTER",
   payload: {
-    user: string,
     username: string,
     password: string,
   },
@@ -23,29 +22,29 @@ export type Register = {
 export type Load = {
   type: "LOAD",
   payload: {
-    userId: number,
+    userId: string,
   },
 }
 
 export type LoadFulfilled = {
   type: "LOAD-",
   payload: {
-    userId: number,
-    err: Error,
+    userId: string,
   },
 }
 
 export type LoadRejected = {
   type: "LOAD+",
   payload: {
-    userId: number,
+    userId: string,
   },
+  error: Error,
 }
 
 export type Send = {
   type: "SEND",
   payload: {
-    user: string,
+    userId: string,
     action: ServerAction,
   },
 }
@@ -53,12 +52,12 @@ export type Send = {
 export type Remove = {
   type: "REMOVE",
   payload: {
-    userId: number,
+    userId: string,
   },
 }
 
 export type Action =
-  | UserAction
+  | UsersAction
   | Register
   | Load
   | LoadFulfilled
@@ -78,42 +77,41 @@ const actionTypes = {
 }
 
 const actionCreators = {
-  registerUser(username: string, password: string, userId: number) {
+  registerUser(username: string, password: string): Register {
     return {
       type: actionTypes.REGISTER,
       payload: {
         username,
         password,
-        userId,
       },
     }
   },
-  loadUser(userId: number) {
+  loadUser(userId: string): Load {
     return {
-      type: actionTypes.LOAD,
+      type: (actionTypes.LOAD: any),
       payload: {
         userId,
       },
     }
   },
-  fulfillLoad(userId: number) {
+  fulfillLoad(userId: string): LoadFulfilled {
     return {
-      type: actionTypes.LOAD_FULFILLED,
+      type: (actionTypes.LOAD_FULFILLED: any),
       payload: {
         userId,
       },
     }
   },
-  rejectLoad(userId: number, err: Error) {
+  rejectLoad(userId: string, error: Error): LoadRejected {
     return {
-      type: actionTypes.LOAD_REJECTED,
+      type: (actionTypes.LOAD_REJECTED: any),
       payload: {
         userId,
-        err,
       },
+      error,
     }
   },
-  send(userId: number, action: ServerAction) {
+  send(userId: string, action: ServerAction): Send {
     return {
       type: actionTypes.SEND,
       payload: {
@@ -122,7 +120,7 @@ const actionCreators = {
       },
     }
   },
-  remove(userId: number) {
+  remove(userId: string): Remove {
     return {
       type: actionTypes.REMOVE,
       payload: {

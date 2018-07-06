@@ -8,7 +8,7 @@ import type { Connection, Server as UdpServer } from "@web-udp/server"
 
 import type { AuthClient } from "../auth"
 import type { Db } from "../data"
-import redisConfig from "../../cfg/redis.config"
+import redisConfig from "../cfg/redis.config"
 import { Redimension } from "../cache"
 import reducers from "./reducers"
 import { SpatialIndex } from "./modules"

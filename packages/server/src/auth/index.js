@@ -5,7 +5,7 @@ import type { User, UserData } from "../model/user"
 import * as Util from "./util"
 import { generateToken, verifyToken } from "./jwt"
 
-import { JwtConfig } from "../../cfg"
+import { JwtConfig } from "../cfg"
 
 const { secret, expire } = JwtConfig
 

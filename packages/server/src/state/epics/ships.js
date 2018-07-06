@@ -1,55 +1,37 @@
 // @flow
 
-import type { Observable } from "rxjs"
 import type { ActionObservable } from "redux-observable"
 
 // $FlowFixMe
-import { fromPromise } from "rxjs"
-import { map, withLatestFrom } from "rxjs/operators"
+import { from } from "rxjs"
+import { switchMap } from "rxjs/operators"
 import { ofType } from "redux-observable"
-import { Protocol } from "@subspace/core"
 
 import type { Db } from "../../data"
-import type { Action, State } from "../../types"
-import { Users, Ships } from "../modules"
+import type { Action } from "../../types"
+import { Ships } from "../modules"
 
 export default function(db: Db) {
   function load(action$: ActionObservable<Action>) {
     return action$.pipe(
       ofType(Ships.LOAD),
-      map(action => {
+      switchMap(async action => {
         const { shipId } = action.payload
-        const request = db.Ship.findById(shipId)
-          .then(model => {
-            if (!model) {
-              throw new Error(`Ship ${shipId} not found`)
-            }
+        const model = await db.Ship.findById(shipId)
 
-            return Ships.fulfillLoad(model.toJSON())
-          })
-          .catch(error => Ships.rejectLoad(shipId, error))
+        if (!model) {
+          return Ships.rejectLoad(
+            shipId,
+            new Error(`Ship ${shipId} not found`),
+          )
+        }
 
-        return fromPromise(request)
+        const ship = model.toJSON()
+
+        return from([Ships.fulfillLoad(ship), Ships.addShip(ship)])
       }),
     )
   }
 
-  function addOrUpdate(
-    action$: ActionObservable<Action>,
-    state$: Observable<State>,
-  ) {
-    return action$.pipe(
-      ofType(Ships.ADD, Ships.UPDATE),
-      withLatestFrom(state$),
-      map(([action, state]) => {
-        const { ship } = action.payload
-        const user = Users.getUserByActiveShipId(state, ship.id)
-
-        // Send updated user state to client
-        return Users.send(user.id, Ships.update(ship))
-      }),
-    )
-  }
-
-  return [load, addOrUpdate]
+  return [load]
 }

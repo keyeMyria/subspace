@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
     "start": "npm run serve",
     "serve": "node lib/index.js",
     "start:dev":

@@ -4,7 +4,7 @@ import P2 from "p2"
 
 import type { Body } from "../../model"
 
-const serializeBody = (id: number, body: P2.Body) => {
+const serializeBody = (id: string, body: P2.Body) => {
   const {
     angle,
     angularVelocity,
@@ -33,16 +33,16 @@ type PhysicsDriverOptions = {
 
 export default function(options: PhysicsDriverOptions) {
   const { gravity } = options
-  const bodies: { [number]: P2.Body } = {}
+  const bodies: { [string]: P2.Body } = {}
   const world = new P2.World({
     gravity,
     sleepMode: P2.World.BODY_SLEEPING,
   })
 
-  const addBody = async (id: number, model: Body) => {
-    if (bodies[id]) {
+  const addBody = async (bodyId: string, model: Body) => {
+    if (bodies[bodyId]) {
       throw new Error(
-        `Cannot add body with id ${id}: id already exists.`,
+        `Cannot add body with id ${bodyId}: id already exists.`,
       )
     }
 
@@ -67,23 +67,23 @@ export default function(options: PhysicsDriverOptions) {
     body.addShape(box)
     world.addBody(body)
 
-    bodies[id] = body
+    bodies[bodyId] = body
 
-    return serializeBody(id, body)
+    return serializeBody(bodyId, body)
   }
 
-  const rotateBody = async (id: number, angle: number) => {
-    const body = bodies[id]
+  const rotateBody = async (bodyId: string, angle: number) => {
+    const body = bodies[bodyId]
 
     if (!body) {
       throw new Error(
-        `Cannot update body with id ${id}: body does not exist.`,
+        `Cannot update body with id ${bodyId}: body does not exist.`,
       )
     }
 
     body.angle = angle
 
-    return serializeBody(id, body)
+    return serializeBody(bodyId, body)
   }
 
   return {

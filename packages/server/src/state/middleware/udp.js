@@ -9,8 +9,8 @@ import type { AuthClient } from "../../auth"
 
 import { Users } from "../modules"
 
-function handleIncoming(
-  userId: number,
+function applyUserAction(
+  userId: string,
   action: Action,
   state: State,
 ) {
@@ -37,9 +37,6 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
       try {
         user = await auth.verify(connection.metadata.token)
       } catch (err) {
-        console.error(
-          `Invalid credentials for connection ${connection.id}`,
-        )
         connection.send(Protocol.serialize(Auth.tokenInvalid()))
         connection.close()
         return
@@ -55,16 +52,22 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
 
       dispatch(Users.addUser(user))
 
+      // Route user actions to store
       connection.messages.subscribe(message => {
         const state = store.getState()
         const actionToReceive = Protocol.deserialize(message)
 
         try {
-          dispatch(handleIncoming(userId, actionToReceive, state))
+          dispatch(applyUserAction(userId, actionToReceive, state))
         } catch (err) {
-          console.error(err)
+          // console.error(err)
         }
       })
+
+      // Remove users on disconnect
+      connection.closed.subscribe(() =>
+        dispatch(Users.remove(user.id)),
+      )
     })
 
     return next => action => {

@@ -3,6 +3,6 @@
 import type { Body } from "../model"
 
 export type PhysicsDriver = {
-  addBody(id: number, Body: Body): Promise<Body>,
-  rotateBody(id: number, radians: number): Promise<Body>,
+  addBody(id: string, Body: Body): Promise<Body>,
+  rotateBody(id: string, radians: number): Promise<Body>,
 }

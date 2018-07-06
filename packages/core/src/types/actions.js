@@ -1,23 +1,15 @@
 // @flow
 
-import type { Action as AuthAction } from "../state/modules/auth/action-types"
-import type { Action as LoopAction } from "../state/modules/loop/action-types"
-import type { Action as UserAction } from "../state/modules/users/action-types"
-import type { Action as PhysicsAction } from "../state/modules/physics/action-types"
-import type { Action as ShipAction } from "../state/modules/ships/action-types"
-
-export type {
-  AuthAction,
-  ShipAction,
-  UserAction,
-  LoopAction,
-  PhysicsAction,
-}
+import type { AuthAction } from "../state/modules/auth"
+import type { LoopAction } from "../state/modules/loop"
+import type { UsersAction } from "../state/modules/users"
+import type { PhysicsAction } from "../state/modules/physics"
+import type { ShipsAction } from "../state/modules/ships"
 
 export type Action =
   | AuthAction
   | LoopAction
-  | UserAction
+  | UsersAction
   | PhysicsAction
-  | ShipAction
+  | ShipsAction
   | { type: $Subtype<string> }

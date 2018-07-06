@@ -6,13 +6,14 @@ import type { ActionsObservable } from "redux-observable"
 import { Loop, Physics } from "@subspace/core"
 import { ofType } from "redux-observable"
 // $FlowFixMe
-import { from, of, fromPromise } from "rxjs"
+import { from, of, fromPromise, empty } from "rxjs"
 import {
   throttleTime,
   map,
   switchMap,
   catchError,
   withLatestFrom,
+  filter,
 } from "rxjs/operators"
 
 import type { Action, State } from "../../types"
@@ -29,8 +30,8 @@ export default function(db: Db, sendRate: number) {
     const userIds = Object.keys(Users.getUsers(state))
 
     return userIds.map(userId => {
-      const id = Number(userId)
-      const bodies = adjacentBodiesByUserId[id].map(bodyId =>
+      const adjacentBodies = adjacentBodiesByUserId[userId] || []
+      const bodies = adjacentBodies.map(bodyId =>
         Physics.getBody(state, bodyId),
       )
       const message = Physics.applySnapshot(
@@ -38,11 +39,11 @@ export default function(db: Db, sendRate: number) {
         bodies,
       )
 
-      return Users.send(id, message)
+      return Users.send(userId, message)
     })
   }
 
-  function snapshots(
+  function sendSnapshots(
     action$: ActionsObservable<Action>,
     state$: Observable<State>,
   ) {
@@ -54,33 +55,7 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  function loadUser(action$: ActionsObservable<Action>) {
-    return action$.pipe(
-      ofType(Users.LOAD),
-      switchMap(({ payload: { userId } }) =>
-        fromPromise(db.User.findById(userId)).pipe(
-          map(model => {
-            if (!model) {
-              throw new Error(`User ${userId} not found`)
-            }
-            return model.toJSON()
-          }),
-          catchError(error => of(Users.rejectLoad(userId, error))),
-        ),
-      ),
-      switchMap(user => {
-        const next = [Users.fulfillLoad(user)]
-
-        if (user.activeShip) {
-          next.push(Ships.addShip(user.activeShip))
-        }
-
-        return from(next)
-      }),
-    )
-  }
-
-  function updateUser(
+  function sendUserUpdates(
     action$: ActionsObservable<Action>,
     state$: Observable<State>,
   ) {
@@ -95,5 +70,32 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  return [snapshots, loadUser, updateUser]
+  function loadUserShips(
+    action$: ActionsObservable<Action>,
+    state$: Observable<State>,
+  ) {
+    return action$.pipe(
+      ofType(Users.ADD),
+      map(action => {
+        const { activeShipId } = action.payload
+        return Ships.load(activeShipId)
+      }),
+    )
+  }
+
+  function sendUserShips(
+    action$: ActionsObservable<Action>,
+    state$: Observable<State>,
+  ) {
+    return action$.pipe(
+      ofType(Ships.LOAD_FULFILLED),
+      filter(action => action.payload.ship.userId),
+      map(action => {
+        const { ship } = action.payload
+        return Users.send(ship.userId, Ships.addShip(ship))
+      }),
+    )
+  }
+
+  return [sendSnapshots, sendUserUpdates, sendUserShips]
 }

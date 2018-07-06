@@ -2,7 +2,7 @@ const path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-  devtool: "sourcemap",
+  devtool: "source-map",
   target: "node",
   entry: "./src/index",
   output: {

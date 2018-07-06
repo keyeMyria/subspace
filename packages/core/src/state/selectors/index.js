@@ -5,8 +5,8 @@
 
 import { Users, Ships, Physics } from "../modules"
 
-export const getShipBody = (state: any, id: number) => {
-  const ship = Ships.getShip(state, id)
+export const getShipBody = (state: any, shipId: string) => {
+  const ship = Ships.getShip(state, shipId)
 
   if (!ship.bodyId) {
     return null
@@ -17,8 +17,8 @@ export const getShipBody = (state: any, id: number) => {
   return body
 }
 
-export const getUserShip = (state: any, id: number) => {
-  const { activeShipId } = Users.getUser(state, id)
+export const getUserShip = (state: any, userId: string) => {
+  const { activeShipId } = Users.getUser(state, userId)
 
   if (!activeShipId) {
     return null
@@ -27,8 +27,8 @@ export const getUserShip = (state: any, id: number) => {
   return Ships.getShip(state, activeShipId)
 }
 
-export const getUserBody = (state: any, id: number) => {
-  const { activeShipId } = Users.getUser(state, id)
+export const getUserBody = (state: any, userId: string) => {
+  const { activeShipId } = Users.getUser(state, userId)
 
   if (!activeShipId) {
     return null

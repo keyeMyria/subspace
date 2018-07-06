@@ -3,7 +3,7 @@
 import type { ShipType } from "./ship-type"
 
 export type Ship = {
-  id: number,
-  bodyId?: number,
+  id: string,
+  bodyId?: string,
   shipType: ShipType,
 }

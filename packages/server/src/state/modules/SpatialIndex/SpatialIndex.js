@@ -3,13 +3,13 @@
 import { createReduxModule } from "@subspace/redux-module"
 
 export type State = {
-  byUserId: { [number]: number[] },
+  byUserId: { [string]: string[] },
 }
 
 export type Update = {
   type: "UPDATE",
   payload: {
-    adjacentBodies: { [number]: number[] },
+    adjacentBodies: { [string]: string[] },
   },
 }
 
@@ -20,7 +20,7 @@ const actionTypes = {
 }
 
 const actionCreators = {
-  update(adjacentBodies: { [number]: number[] }) {
+  update(adjacentBodies: { [string]: string[] }): Update {
     return {
       type: actionTypes.UPDATE,
       payload: {
@@ -56,7 +56,7 @@ const selectors = {
   },
 }
 
-export default createReduxModule("AdjacentBodies", {
+export default createReduxModule("SpatialIndex", {
   actionTypes,
   actionCreators,
   reducer,
