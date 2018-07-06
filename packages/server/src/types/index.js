@@ -8,15 +8,15 @@ import type {
 import type { Action as CoreAction } from "@subspace/core"
 
 import type { Reducers } from "../state/reducers"
-import type { Action as AdjacentBodiesAction } from "../state/modules/SpatialIndex"
-import type { Action as UsersAction } from "../state/modules/Users"
-import type { Action as ShipAction } from "../state/modules/Ships"
+import type { SpatialIndexAction } from "../state/modules/SpatialIndex"
+import type { UsersAction } from "../state/modules/Users"
+import type { ShipsAction } from "../state/modules/Ships"
 
 export type Action =
   | CoreAction
-  | AdjacentBodiesAction
+  | SpatialIndexAction
   | UsersAction
-  | ShipAction
+  | ShipsAction
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V
 

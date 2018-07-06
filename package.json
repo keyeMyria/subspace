@@ -29,10 +29,7 @@
     "prettier": "^1.11.1"
   },
   "lint-staged": {
-    "*.{js,jsx,json,css}": [
-      "prettier --trailing-comma=all --print-width=70 --no-semi --write",
-      "git add"
-    ]
+    "*.{js,jsx,json,css}": ["prettier", "git add"]
   },
   "husky": {
     "hooks": {

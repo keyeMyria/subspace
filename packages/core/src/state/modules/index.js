@@ -1,11 +1,11 @@
 // @flow
 
-import Auth from "./auth"
-import Async from "./async"
-import Loop from "./loop"
-import Physics from "./physics"
-import Ships from "./ships"
-import Users from "./users"
+import Auth from "./Auth"
+import Async from "./Async"
+import Loop from "./Loop"
+import Physics from "./Physics"
+import Ships from "./Ships"
+import Users from "./Users"
 
 export { Auth, Async, Loop, Physics, Ships, Users }
 

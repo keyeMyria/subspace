@@ -8,23 +8,23 @@ import {
   composeReduxModules,
 } from "@subspace/redux-module"
 
-export type State = ShipsState & {}
+type State = ShipsState & {}
 
-export type Load = {
+type Load = {
   type: "LOAD!",
   payload: {
     shipId: string,
   },
 }
 
-export type LoadFulfilled = {
+type LoadFulfilled = {
   type: "LOAD-",
   payload: {
     ship: Ship,
   },
 }
 
-export type LoadRejected = {
+type LoadRejected = {
   type: "LOAD+",
   payload: {
     shipId: string,
@@ -32,7 +32,9 @@ export type LoadRejected = {
   error: Error,
 }
 
-export type Action = ShipsAction | Load | LoadFulfilled | LoadRejected
+type Action = | ShipsAction | Load | LoadFulfilled | LoadRejected
+
+export type { State as ShipsState, Action as ShipsAction }
 
 const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
 

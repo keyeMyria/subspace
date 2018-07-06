@@ -2,18 +2,20 @@
 
 import { createReduxModule } from "@subspace/redux-module"
 
-export type State = {
+type State = {
   byUserId: { [string]: string[] },
 }
 
-export type Update = {
+type Update = {
   type: "UPDATE",
   payload: {
     adjacentBodies: { [string]: string[] },
   },
 }
 
-export type Action = Update
+type Action = | Update
+
+export type { State as SpatialIndexState, Action as SpatialIndexAction }
 
 const actionTypes = {
   UPDATE: "UPDATE",

@@ -9,9 +9,9 @@ import {
   composeReduxModules,
 } from "@subspace/redux-module"
 
-export type State = UsersState & {}
+type State = UsersState & {}
 
-export type Register = {
+type Register = {
   type: "REGISTER",
   payload: {
     username: string,
@@ -19,21 +19,21 @@ export type Register = {
   },
 }
 
-export type Load = {
+type Load = {
   type: "LOAD",
   payload: {
     userId: string,
   },
 }
 
-export type LoadFulfilled = {
+type LoadFulfilled = {
   type: "LOAD-",
   payload: {
     userId: string,
   },
 }
 
-export type LoadRejected = {
+type LoadRejected = {
   type: "LOAD+",
   payload: {
     userId: string,
@@ -41,7 +41,7 @@ export type LoadRejected = {
   error: Error,
 }
 
-export type Send = {
+type Send = {
   type: "SEND",
   payload: {
     userId: string,
@@ -49,14 +49,14 @@ export type Send = {
   },
 }
 
-export type Remove = {
+type Remove = {
   type: "REMOVE",
   payload: {
     userId: string,
   },
 }
 
-export type Action =
+type Action =
   | UsersAction
   | Register
   | Load
@@ -64,6 +64,8 @@ export type Action =
   | LoadRejected
   | Send
   | Remove
+
+export type { State as UsersState, Action as UsersAction }
 
 const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
 
