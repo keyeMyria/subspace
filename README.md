@@ -23,9 +23,9 @@ Ports exposed to the host machine for each service are listed below:
 
 | Port | Service                |
 |------|------------------------|
-| 3000 | Portainer              |
+| 3000 | Redux remote dev tools |
 | 3001 | CockroachDB dashboard  |
-| 3002 | Redux remote dev tools |
+| 3002 | Portainer              |
 | 8080 | Game client            |
 
 If you want to develop locally, install and start CockroachDB and Redis, then run the following command:

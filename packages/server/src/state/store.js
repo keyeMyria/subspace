@@ -9,10 +9,10 @@ import type { Connection, Server as UdpServer } from "@web-udp/server"
 import type { AuthClient } from "../auth"
 import type { Db } from "../data"
 import redisConfig from "../../cfg/redis.config"
-import { SpatialIndex } from "../cache"
+import { Redimension } from "../cache"
 import reducers from "./reducers"
-import AdjacentBodies from "./modules/adjacent-bodies"
-import createClientsEpics from "./epics/clients"
+import { SpatialIndex } from "./modules"
+import * as UdpMiddleware from "./middleware/udp"
 import createAdjacentBodiesEpics from "./epics/adjacent-bodies"
 import createShipsEpics from "./epics/ships"
 import createUsersEpics from "./epics/users"
@@ -28,7 +28,7 @@ type ConfigureStoreOptions = {
   udp: UdpServer,
 }
 
-const spatialIndex = SpatialIndex.make({
+const spatialIndex = Redimension.make({
   redis: redisConfig,
   key: "ss-body",
   dimensions: 2,
@@ -39,7 +39,7 @@ const composeEnhancers = composeWithDevTools({
   actionsBlacklist: [
     Loop.TICK,
     Physics.UPDATE_BODY,
-    AdjacentBodies.UPDATE,
+    SpatialIndex.UPDATE,
   ],
 })
 
@@ -51,12 +51,13 @@ export function configureStore(
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(
     ...createAdjacentBodiesEpics(spatialIndex),
-    ...createClientsEpics(udp, auth),
     ...createShipsEpics(db),
     ...createUsersEpics(db, sendRate),
     ...coreEpics,
   )
-  const enhancers = [applyMiddleware(epicMiddleware)]
+  const enhancers = [
+    applyMiddleware(epicMiddleware, UdpMiddleware.make(udp, auth)),
+  ]
   const store = createStore(
     rootReducer,
     composeEnhancers(...enhancers),

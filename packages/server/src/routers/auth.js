@@ -20,9 +20,10 @@ const register = asyncMiddleware(async (req, res) => {
   }
 
   let model
+  const spec: any = { username, password }
 
   try {
-    model = await User.create({ username, password })
+    model = await User.create(spec)
   } catch (error) {
     res.status(400).json({ error })
     return

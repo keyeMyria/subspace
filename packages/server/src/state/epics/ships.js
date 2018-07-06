@@ -9,9 +9,9 @@ import { map, withLatestFrom } from "rxjs/operators"
 import { ofType } from "redux-observable"
 import { Protocol } from "@subspace/core"
 
-import type { Db } from "../../../data"
-import type { Action, State } from "../../../types"
-import { Clients, Users, Ships } from "../../modules"
+import type { Db } from "../../data"
+import type { Action, State } from "../../types"
+import { Users, Ships } from "../modules"
 
 export default function(db: Db) {
   function load(action$: ActionObservable<Action>) {
@@ -44,11 +44,9 @@ export default function(db: Db) {
       map(([action, state]) => {
         const { ship } = action.payload
         const user = Users.getUserByActiveShipId(state, ship.id)
-        const client = Clients.getClientByUserId(state, user.id)
-        const message = Ships.update(ship)
 
         // Send updated user state to client
-        return Clients.send(client.id, message)
+        return Users.send(user.id, Ships.update(ship))
       }),
     )
   }

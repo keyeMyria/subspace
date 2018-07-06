@@ -22,6 +22,7 @@ const host = joi
   .string()
   .hostname()
   .required()
+
 const alpha = joi
   .string()
   .alphanum()

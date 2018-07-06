@@ -1,7 +1,7 @@
 // @flow
 
 export type User = {
-  id?: number,
+  id: number,
   activeShipId?: number,
   username: string,
 }

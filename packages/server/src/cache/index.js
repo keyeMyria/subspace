@@ -1,5 +1,5 @@
 // @flow
 
-import * as SpatialIndex from "./spatial-index"
+import * as Redimension from "./redimension"
 
-export { SpatialIndex }
+export { Redimension }

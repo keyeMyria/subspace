@@ -14,15 +14,15 @@ import {
 } from "rxjs/operators"
 import { Loop, Users, Physics, getUserBody } from "@subspace/core"
 
-import * as AsyncUtil from "../../../util/async"
+import * as AsyncUtil from "../../util/async"
 
-import type { Action, State } from "../../../types"
-import { AdjacentBodies } from "../../modules"
+import type { Action, State } from "../../types"
+import { SpatialIndex } from "../modules"
 
 const UPDATE_AREA = 1000
 const halfUpdateArea = 0.5 * UPDATE_AREA
 
-async function queryAdjacentBodies(state: State, index: Redimension) {
+async function querySpatialIndex(state: State, index: Redimension) {
   const users = Users.getUsers(state)
   const userIds = Object.keys(users)
   const query = userIds.reduce((results, userId) => {
@@ -56,8 +56,8 @@ export default function(index: Redimension) {
     return $action.pipe(
       ofType(Loop.TICK),
       withLatestFrom(state$),
-      switchMap(([, state]) => queryAdjacentBodies(state, index)),
-      map(result => AdjacentBodies.update(result)),
+      switchMap(([, state]) => querySpatialIndex(state, index)),
+      map(result => SpatialIndex.update(result)),
     )
   }
 

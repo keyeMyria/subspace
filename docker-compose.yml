@@ -5,7 +5,7 @@ services:
     container_name: portainer
     command: --no-auth
     ports:
-      - 3000:3000
+      - 3002:3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data_portainer:/data
@@ -77,7 +77,7 @@ services:
     expose:
       - 8080
     ports:
-      - 3002:3000
+      - 3000:3000
     environment:
       NODE_ENV: development
       PORT: 8080

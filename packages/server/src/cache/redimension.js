@@ -10,14 +10,14 @@ import type { CreateOptions } from "redis"
 promisifyAll(redis.RedisClient.prototype)
 promisifyAll(redis.Multi.prototype)
 
-type CreateIndexOptions = {
+type MakeOptions = {
   redis: CreateOptions,
   key: string,
   dimensions: number,
   precision?: number,
 }
 
-export const make = (config: CreateIndexOptions) => {
+export const make = (config: MakeOptions) => {
   const client = redis.createClient(config.redis)
   const { key, dimensions, precision = 64 } = config
 

@@ -5,16 +5,16 @@ import type {
   Dispatch as ReduxDispatch,
   Middleware as ReduxMiddleware,
 } from "redux"
+import type { Action as CoreAction } from "@subspace/core"
 
 import type { Reducers } from "../state/reducers"
-import type { Action as AdjacentBodiesAction } from "../state/modules/adjacent-bodies/action-types"
-import type { Action as ClientsAction } from "../state/modules/clients/action-types"
-import type { Action as UsersAction } from "../state/modules/users/action-types"
-import type { Action as ShipAction } from "../state/modules/ships/action-types"
+import type { Action as AdjacentBodiesAction } from "../state/modules/SpatialIndex"
+import type { Action as UsersAction } from "../state/modules/Users"
+import type { Action as ShipAction } from "../state/modules/Ships"
 
 export type Action =
+  | CoreAction
   | AdjacentBodiesAction
-  | ClientsAction
   | UsersAction
   | ShipAction
 
