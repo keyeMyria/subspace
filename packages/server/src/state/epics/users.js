@@ -6,19 +6,17 @@ import type { ActionsObservable } from "redux-observable"
 import { Loop, Physics } from "@subspace/core"
 import { ofType } from "redux-observable"
 // $FlowFixMe
-import { from, of, fromPromise, empty } from "rxjs"
+import { from } from "rxjs"
 import {
   throttleTime,
   map,
   switchMap,
-  catchError,
   withLatestFrom,
   filter,
 } from "rxjs/operators"
 
 import type { Action, State } from "../../types"
 import type { Db } from "../../data"
-import type { User } from "../../model/user"
 
 import { SpatialIndex, Ships, Users } from "../modules"
 
@@ -55,14 +53,10 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  function sendUserUpdates(
-    action$: ActionsObservable<Action>,
-    state$: Observable<State>,
-  ) {
+  function sendUserUpdates(action$: ActionsObservable<Action>) {
     return action$.pipe(
       ofType(Users.ADD, Users.UPDATE),
-      withLatestFrom(state$),
-      map(([action, state]) => {
+      map(([action]) => {
         const { payload: { user } } = action
 
         return Users.send(user.id, action)
@@ -70,10 +64,7 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  function loadUserShips(
-    action$: ActionsObservable<Action>,
-    state$: Observable<State>,
-  ) {
+  function loadUserShips(action$: ActionsObservable<Action>) {
     return action$.pipe(
       ofType(Users.ADD),
       map(action => {
@@ -83,10 +74,7 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  function sendUserShips(
-    action$: ActionsObservable<Action>,
-    state$: Observable<State>,
-  ) {
+  function sendUserShips(action$: ActionsObservable<Action>) {
     return action$.pipe(
       ofType(Ships.LOAD_FULFILLED),
       filter(action => action.payload.ship.userId),
@@ -97,5 +85,10 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  return [sendSnapshots, sendUserUpdates, sendUserShips]
+  return [
+    loadUserShips,
+    sendSnapshots,
+    sendUserUpdates,
+    sendUserShips,
+  ]
 }

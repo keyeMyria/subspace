@@ -2,7 +2,6 @@
 
 import redis from "redis"
 import promisifyAll from "util-promisifyall"
-import { Physics } from "@subspace/core"
 import * as Redimension from "@subspace/redimension"
 
 import type { CreateOptions } from "redis"

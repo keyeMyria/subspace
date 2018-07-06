@@ -1,5 +1,5 @@
 import { Client as UdpClient } from "@web-udp/client"
-import { Observable, ReplaySubject, merge } from "rxjs"
+import { ReplaySubject, merge } from "rxjs"
 import {
   map,
   switchMap,
@@ -28,7 +28,7 @@ export function connect(action$, state$) {
   return action$.pipe(
     ofType(Udp.CONNECT),
     withLatestFrom(state$),
-    switchMap(([action, state]) =>
+    switchMap(([, state]) =>
       // Create a UDP connection and exchange auth info during handshake
       client.connect("__MASTER__", {
         metadata: {

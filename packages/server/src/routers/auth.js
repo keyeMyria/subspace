@@ -37,7 +37,7 @@ const register = asyncMiddleware(async (req, res) => {
   })
 })
 
-const login = asyncMiddleware(async (req, res, next: Function) => {
+const login = asyncMiddleware(async (req, res) => {
   const { user: { id, username } } = req
   const user = { id, username }
 
@@ -47,7 +47,7 @@ const login = asyncMiddleware(async (req, res, next: Function) => {
   })
 })
 
-const verify = asyncMiddleware(async (req, res, next: Function) => {
+const verify = asyncMiddleware(async (req, res) => {
   const { user: { id, username } } = req
   const user = { id, username }
 

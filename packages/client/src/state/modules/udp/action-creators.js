@@ -4,7 +4,6 @@ import {
   CONNECT_FULFILLED,
   CONNECT_REJECTED,
   CLOSE,
-  RECEIVE,
 } from "./action-types"
 
 export function connect(token) {

@@ -4,7 +4,7 @@ import { Loop, Physics, epics as coreEpics } from "@subspace/core"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { composeWithDevTools } from "remote-redux-devtools"
 import { createEpicMiddleware, combineEpics } from "redux-observable"
-import type { Connection, Server as UdpServer } from "@web-udp/server"
+import type { Server as UdpServer } from "@web-udp/server"
 
 import type { AuthClient } from "../auth"
 import type { Db } from "../data"
@@ -17,7 +17,6 @@ import createAdjacentBodiesEpics from "./epics/adjacent-bodies"
 import createShipsEpics from "./epics/ships"
 import createUsersEpics from "./epics/users"
 
-import { tap, ignoreElements } from "rxjs/operators"
 import type { Store } from "../types"
 
 type ConfigureStoreOptions = {
@@ -46,7 +45,7 @@ const composeEnhancers = composeWithDevTools({
 export function configureStore(
   options: ConfigureStoreOptions,
 ): Store {
-  const { db, auth, tickRate, sendRate, udp } = options
+  const { db, auth, sendRate, udp } = options
   const epicMiddleware = createEpicMiddleware()
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(

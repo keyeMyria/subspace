@@ -2,7 +2,6 @@
 
 import type {
   Store as ReduxStore,
-  Dispatch as ReduxDispatch,
   Middleware as ReduxMiddleware,
 } from "redux"
 

@@ -38,7 +38,7 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --ignore-scripts",
-    "test": "npm run flow && jest --forceExit",
+    "test": "eslint . && npm run flow && jest --forceExit",
     "dev": "docker-compose down && docker-compose up",
     "dev:local": "lerna run --parallel start:dev",
     "build": "lerna run build",

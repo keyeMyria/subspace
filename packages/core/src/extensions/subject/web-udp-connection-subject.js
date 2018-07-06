@@ -12,7 +12,6 @@ export function make(input: Observable<any>, connection: Connection) {
 
   // $FlowFixMe
   const messages = new Observable(observer => {
-    const { close } = connection
     const inputSubscription = input.subscribe(data =>
       connection.send(data),
     )
@@ -33,7 +32,7 @@ export function make(input: Observable<any>, connection: Connection) {
       observer.error(error)
     })
 
-    connection.closed.subscribe(data => {
+    connection.closed.subscribe(() => {
       closed()
       observer.complete()
     })

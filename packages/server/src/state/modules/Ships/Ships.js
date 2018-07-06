@@ -32,7 +32,7 @@ type LoadRejected = {
   error: Error,
 }
 
-type Action = | ShipsAction | Load | LoadFulfilled | LoadRejected
+type Action = ShipsAction | Load | LoadFulfilled | LoadRejected
 
 export type { State as ShipsState, Action as ShipsAction }
 
@@ -72,7 +72,7 @@ const actionCreators = {
   },
 }
 
-function reducer(state: State, action: Action) {
+function reducer(state: State) {
   return state
 }
 

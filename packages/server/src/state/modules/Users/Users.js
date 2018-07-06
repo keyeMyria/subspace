@@ -132,7 +132,7 @@ const actionCreators = {
   },
 }
 
-function reducer(state: State, action: Action) {
+function reducer(state: State) {
   return state
 }
 

@@ -1,7 +1,4 @@
-import {
-  reduxModules as coreReduxModules,
-  epics as coreEpics,
-} from "@subspace/core"
+import { epics as coreEpics } from "@subspace/core"
 
 import {
   connectRouter,
@@ -12,7 +9,6 @@ import { createEpicMiddleware, combineEpics } from "redux-observable"
 import { composeWithDevTools } from "redux-devtools-extension"
 
 import epics from "./epics"
-import * as reduxModules from "./modules"
 import reducers from "./reducers"
 
 export function configureStore(options) {
@@ -20,12 +16,7 @@ export function configureStore(options) {
   const routerMiddleware = createRouterMiddleware(history)
 
   const epicMiddleware = createEpicMiddleware()
-  const middleware = [
-    epicMiddleware,
-    routerMiddleware,
-    store => next => action =>
-      action.type ? next(action) : console.error(action),
-  ]
+  const middleware = [epicMiddleware, routerMiddleware]
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(...coreEpics, ...epics)
 

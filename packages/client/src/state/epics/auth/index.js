@@ -1,4 +1,4 @@
-import { Observable, of } from "rxjs"
+import { of } from "rxjs"
 import { map, tap, switchMap, catchError } from "rxjs/operators"
 import { ofType } from "redux-observable"
 

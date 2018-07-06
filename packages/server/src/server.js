@@ -6,7 +6,6 @@ import passport from "passport"
 import { json } from "body-parser"
 import * as Udp from "@web-udp/server"
 import { Loop } from "@subspace/core"
-import type { Connection } from "@web-udp/server"
 
 import * as db from "./data"
 import { AppConfig, GameConfig } from "./cfg"

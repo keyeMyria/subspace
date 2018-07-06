@@ -3,7 +3,7 @@
 import type { ActionObservable } from "redux-observable"
 // $FlowFixMe
 import { interval } from "rxjs"
-import { switchMap, map, takeUntil } from "rxjs/operators"
+import { switchMap, map } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
 import type { Action } from "../../../types"

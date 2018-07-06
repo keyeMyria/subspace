@@ -4,16 +4,12 @@ import type { Connection, UdpServer } from "@web-udp/server"
 
 import { Auth, Protocol } from "@subspace/core"
 
-import type { Action, Middleware, State } from "../../types"
+import type { Action, Middleware } from "../../types"
 import type { AuthClient } from "../../auth"
 
 import { Users } from "../modules"
 
-function applyUserAction(
-  userId: string,
-  action: Action,
-  state: State,
-) {
+function applyUserAction(userId: string, action: Action) {
   const { type } = action
 
   switch (type) {
@@ -32,7 +28,6 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
 
     udp.connections.subscribe(async (connection: Connection) => {
       let user
-      const { id } = connection
 
       try {
         user = await auth.verify(connection.metadata.token)
@@ -54,11 +49,10 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
 
       // Route user actions to store
       connection.messages.subscribe(message => {
-        const state = store.getState()
         const actionToReceive = Protocol.deserialize(message)
 
         try {
-          dispatch(applyUserAction(userId, actionToReceive, state))
+          dispatch(applyUserAction(userId, actionToReceive))
         } catch (err) {
           // console.error(err)
         }
