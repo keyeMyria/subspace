@@ -9,7 +9,7 @@
     "start": "npm run serve",
     "serve": "node lib/index.js",
     "start:dev":
-      "nodemon --watch index.js --watch src --watch ../core/lib --exec babel-node index.js",
+      "nodemon --watch src --watch ../core/lib --exec babel-node src/index.js",
     "prepare": "npm run build"
   },
   "author": "",

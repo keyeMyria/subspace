@@ -28,8 +28,8 @@
     "no-plusplus": 0,
     "no-bitwise": 0,
     "no-restricted-syntax": 0,
-    "no-unused-vars": 2,
-    "no-unused-expressions": 2
+    "no-unused-vars": 1,
+    "no-unused-expressions": 1
   },
   "overrides": [
     {

@@ -2,6 +2,7 @@
 
 import type { UsersAction, UsersState } from "@subspace/core"
 import type { Action as ServerAction } from "../../../types"
+import type { User } from "../../../model"
 
 import { Users, toAsync } from "@subspace/core"
 import {
@@ -29,7 +30,7 @@ type Load = {
 type LoadFulfilled = {
   type: "LOAD-",
   payload: {
-    userId: string,
+    user: User,
   },
 }
 
@@ -96,11 +97,11 @@ const actionCreators = {
       },
     }
   },
-  fulfillLoad(userId: string): LoadFulfilled {
+  fulfillLoad(user: User): LoadFulfilled {
     return {
       type: (actionTypes.LOAD_FULFILLED: any),
       payload: {
-        userId,
+        user,
       },
     }
   },
@@ -132,8 +133,21 @@ const actionCreators = {
   },
 }
 
-function reducer(state: State) {
-  return state
+function reducer(state: State, action: Action) {
+  switch (action.type) {
+    case actionTypes.LOAD_FULFILLED: {
+      const { user } = ((action: any): LoadFulfilled).payload
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [user.id]: user,
+        },
+      }
+    }
+    default:
+      return state
+  }
 }
 
 const selectors = {}

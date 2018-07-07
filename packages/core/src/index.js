@@ -28,4 +28,4 @@ export * from "./state/selectors"
 export * from "./extensions"
 
 // etc
-export * from "./state/modules/async/util"
+export * from "./state/modules/Async/util"

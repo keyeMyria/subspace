@@ -4,21 +4,11 @@ import type { Connection, UdpServer } from "@web-udp/server"
 
 import { Auth, Protocol } from "@subspace/core"
 
-import type { Action, Middleware } from "../../types"
-import type { AuthClient } from "../../auth"
+import type { Middleware } from "../../../types"
+import type { AuthClient } from "../../../auth"
 
-import { Users } from "../modules"
-
-function applyUserAction(userId: string, action: Action) {
-  const { type } = action
-
-  switch (type) {
-    case Users.JOIN:
-      return Users.loadUser(userId)
-    default:
-      throw new Error(`Action type ${type} not recognized`)
-  }
-}
+import { Users } from "../../modules"
+import { handleUserAction } from "./handlers"
 
 export function make(udp: UdpServer, auth: AuthClient): Middleware {
   const connectionsByUserId = {}
@@ -52,7 +42,7 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
         const actionToReceive = Protocol.deserialize(message)
 
         try {
-          dispatch(applyUserAction(userId, actionToReceive))
+          dispatch(handleUserAction(userId, actionToReceive))
         } catch (err) {
           // console.error(err)
         }

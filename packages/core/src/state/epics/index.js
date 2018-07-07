@@ -1,5 +1,17 @@
 // @flow
 
-import loop from "./loop"
+import createLoopEpics from "./loop"
+import createPhysicsEpics from "./physics"
+import createShipEpics from "./ship"
 
-export default [...loop]
+import { createP2Driver } from "../../physics"
+
+export default [
+  ...createLoopEpics(),
+  ...createPhysicsEpics(
+    createP2Driver({
+      gravity: [0, 0],
+    }),
+  ),
+  ...createShipEpics(),
+]

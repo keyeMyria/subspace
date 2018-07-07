@@ -1,30 +1,40 @@
 // @flow
 
-import { ofType } from "redux-observable"
+// $FlowFixMe
+import { of } from "rxjs"
 import { map } from "rxjs/operators"
-import type { ActionsObservable } from "redux-observable"
+import { ofType } from "redux-observable"
+import type { ActionsObservable, Observable } from "redux-observable"
 
-import type { Store } from "../../../types"
+import type { Action, State } from "../../../types"
 import { TURN_DIRECTION } from "../../../model"
 import { Ships, Physics } from "../../modules"
 import { getShipBody } from "../../selectors"
 
-export function turnShip(action$: ActionsObservable, store: Store) {
-  return action$.pipe(
-    ofType(Ships.TURN),
-    map(({ payload: { shipId, direction } }) => {
-      const body = getShipBody(store.getState(), shipId)
+export default function() {
+  function turnShips(
+    action$: ActionsObservable<Action>,
+    state$: Observable<State>,
+  ) {
+    return action$.pipe(
+      ofType(Ships.TURN),
+      map(action => {
+        const { payload: { shipId, direction } } = action
+        const body = getShipBody(state$.value, shipId)
 
-      if (!body) {
-        throw new Error(`Ship ${shipId} does not have a body`)
-      }
+        if (!body) {
+          throw new Error(`Ship ${shipId} does not have a body`)
+        }
 
-      return Physics.rotateBody(
-        body.id,
-        direction === TURN_DIRECTION.left ? 0.05 : -0.05,
-      )
-    }),
-  )
+        return of(
+          Physics.rotateBody(
+            body.id,
+            direction === TURN_DIRECTION.left ? 0.05 : -0.05,
+          ),
+        )
+      }),
+    )
+  }
+
+  return [turnShips]
 }
-
-export default [turnShip]

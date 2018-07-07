@@ -72,8 +72,21 @@ const actionCreators = {
   },
 }
 
-function reducer(state: State) {
-  return state
+function reducer(state: State, action: Action) {
+  switch (action.type) {
+    case actionTypes.LOAD_FULFILLED: {
+      const { ship } = ((action: any): LoadFulfilled).payload
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [ship.id]: ship,
+        },
+      }
+    }
+    default:
+      return state
+  }
 }
 
 const selectors = {}

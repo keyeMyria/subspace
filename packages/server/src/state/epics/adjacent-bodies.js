@@ -46,16 +46,16 @@ async function queryRedimension(state: State, index: Redimension) {
     return results
   }, {})
 
-  return await AsyncUtil.object(query)
+  return AsyncUtil.object(query)
 }
 
 export default function(index: Redimension) {
   // Update spatial index with state of bodies in Redimension
   function applyIndexUpdates(
-    $action: ActionsObservable<Action>,
+    action$: ActionsObservable<Action>,
     state$: Observable<State>,
   ) {
-    return $action.pipe(
+    return action$.pipe(
       ofType(Loop.TICK),
       withLatestFrom(state$),
       throttleTime(1 / 10),
@@ -65,8 +65,8 @@ export default function(index: Redimension) {
   }
 
   // Insert new bodies in Redimension
-  function insertAddedBodies($action: ActionsObservable<Action>) {
-    return $action.pipe(
+  function insertAddedBodies(action$: ActionsObservable<Action>) {
+    return action$.pipe(
       ofType(Physics.ADD_BODY),
       tap(action => {
         const { position, id } = action.body.payload
@@ -78,8 +78,8 @@ export default function(index: Redimension) {
   }
 
   // Update changed bodies in Redimension
-  function applyBodyUpdates($action: ActionsObservable<Action>) {
-    return $action.pipe(
+  function applyBodyUpdates(action$: ActionsObservable<Action>) {
+    return action$.pipe(
       ofType(Physics.UPDATE_BODY),
       tap(action => {
         const { position, id } = action.body.payload
