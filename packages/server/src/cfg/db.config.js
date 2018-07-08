@@ -1,8 +1,8 @@
 // @flow
 
-import { DbConfig } from "."
+import * as Env from "../env"
 
-const { username, password, database, host, port } = DbConfig
+const { username, password, database, host, port } = Env.DB
 
 const retry = {
   match: [
@@ -16,11 +16,13 @@ const retry = {
 }
 
 export default {
-  username,
-  password,
-  database,
-  host,
-  port,
-  dialect: "postgres",
-  retry,
+  sequelize: {
+    username,
+    password,
+    database,
+    host,
+    port,
+    dialect: "postgres",
+    retry,
+  },
 }

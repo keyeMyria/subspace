@@ -6,7 +6,7 @@ import type { Body } from "../../../model"
 
 type State = {
   byId: {
-    [number]: Body,
+    [string]: Body,
   },
 }
 
@@ -40,7 +40,19 @@ type ApplySnapshot = {
   },
 }
 
-type Action = AddBody | UpdateBody | RotateBody | ApplySnapshot
+type RemoveBody = {
+  type: "REMOVE_BODY",
+  payload: {
+    bodyId: string,
+  },
+}
+
+type Action =
+  | AddBody
+  | UpdateBody
+  | RotateBody
+  | ApplySnapshot
+  | RemoveBody
 
 export type { State as PhysicsState, Action as PhysicsAction }
 
@@ -49,6 +61,7 @@ const actionTypes = {
   UPDATE_BODY: "UPDATE_BODY",
   ROTATE_BODY: "ROTATE_BODY",
   APPLY_SNAPSHOT: "APPLY_SNAPSHOT",
+  REMOVE_BODY: "REMOVE_BODY",
 }
 
 const actionCreators = {
@@ -86,6 +99,14 @@ const actionCreators = {
       },
     }
   },
+  removeBody(bodyId: string): RemoveBody {
+    return {
+      type: actionTypes.REMOVE_BODY,
+      payload: {
+        bodyId,
+      },
+    }
+  },
 }
 
 function reducer(
@@ -103,25 +124,44 @@ function reducer(
           [action.payload.body.id]: action.payload.body,
         },
       }
-    case actionTypes.UPDATE_BODY:
+    case actionTypes.UPDATE_BODY: {
+      const { body } = action.payload
+      const { id } = body
+
+      if (!id) {
+        return state
+      }
+
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.body.id]: {
-            ...selectors.getBody(state, action.payload.body.id),
-            ...action.payload.body,
+          [id]: {
+            ...selectors.getBody(state, id),
+            ...body,
           },
         },
       }
+    }
+    case actionTypes.REMOVE_BODY: {
+      const { bodyId } = action.payload
+      const nextState = { ...state }
+
+      delete nextState.byId[bodyId]
+
+      return nextState
+    }
     default:
       return state
   }
 }
 
 const selectors = {
+  getBodies(state: State) {
+    return state.byId
+  },
   getBody(state: State, id: string) {
-    return state[id]
+    return state.byId[id]
   },
 }
 

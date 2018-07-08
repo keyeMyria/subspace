@@ -42,6 +42,7 @@
     "dev": "docker-compose down && docker-compose up",
     "dev:local": "lerna run --parallel start:dev",
     "build": "lerna run build",
-    "flow": "killall flow || true && flow"
+    "flow": "killall flow || true && flow",
+    "db:init": "DB_USERNAME=cockroach ./bin/init_db.sh"
   }
 }

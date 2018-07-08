@@ -27,7 +27,7 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
         return
       }
 
-      const { id: userId } = user
+      const userId = user.id
 
       if (!userId) {
         return
@@ -50,21 +50,25 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
 
       // Remove users on disconnect
       connection.closed.subscribe(() =>
-        dispatch(Users.remove(user.id)),
+        dispatch(Users.removeUser(userId)),
       )
     })
 
     return next => action => {
       switch (action.type) {
         case Users.SEND:
-          const { userId, action: actionToSend } = action.payload
+          const { userId, actions } = action.payload
+          const connection = connectionsByUserId[userId]
 
-          connectionsByUserId[userId].send(
-            Protocol.serialize(actionToSend),
-          )
+          if (!connection) {
+            break
+          }
+
+          connection.send(Protocol.serialize(actions))
         default:
-          return next(action)
+          break
       }
+      return next(action)
     }
   }
 }

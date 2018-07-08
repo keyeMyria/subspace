@@ -58,7 +58,7 @@ export default function(index: Redimension) {
     return action$.pipe(
       ofType(Loop.TICK),
       withLatestFrom(state$),
-      throttleTime(1 / 10),
+      throttleTime(1 / 10 * 1000),
       switchMap(([, state]) => queryRedimension(state, index)),
       map(result => SpatialIndex.update(result)),
     )
@@ -69,9 +69,22 @@ export default function(index: Redimension) {
     return action$.pipe(
       ofType(Physics.ADD_BODY),
       tap(action => {
-        const { position, id } = action.body.payload
+        const { position, id } = action.payload.body
 
         index.insert(position, id)
+      }),
+      ignoreElements(),
+    )
+  }
+
+  // Insert new bodies in Redimension
+  function removeRemovedBodies(action$: ActionsObservable<Action>) {
+    return action$.pipe(
+      ofType(Physics.REMOVE_BODY),
+      tap(action => {
+        const { bodyId } = action.payload
+
+        index.removeById(bodyId)
       }),
       ignoreElements(),
     )
@@ -82,7 +95,7 @@ export default function(index: Redimension) {
     return action$.pipe(
       ofType(Physics.UPDATE_BODY),
       tap(action => {
-        const { position, id } = action.body.payload
+        const { position, id } = action.payload.body
 
         index.update(position, id)
       }),
@@ -90,5 +103,10 @@ export default function(index: Redimension) {
     )
   }
 
-  return [applyIndexUpdates, insertAddedBodies, applyBodyUpdates]
+  return [
+    applyIndexUpdates,
+    insertAddedBodies,
+    removeRemovedBodies,
+    applyBodyUpdates,
+  ]
 }

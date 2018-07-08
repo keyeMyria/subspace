@@ -1,15 +1,18 @@
 #!/bin/bash
 
 HOSTPARAMS="--host $DB_HOST --insecure"
-SQL="/cockroach/cockroach.sh sql $HOSTPARAMS"
+# Docker
+# SQL="/cockroach/cockroach.sh sql $HOSTPARAMS"
+# Local
+SQL="cockroach sql --insecure"
 
 # down
-# $SQL -e "REVOKE ALL ON TABLE ss_dev.*, ss_test.*, ss.* FROM $DB_USERNAME"
-# $SQL -e "REVOKE ALL ON DATABASE ss_dev, ss_test, ss FROM $DB_USERNAME"
-# $SQL -e "DROP USER IF EXISTS $DB_USERNAME"
-# $SQL -e "DROP DATABASE IF EXISTS ss_dev"
-# $SQL -e "DROP DATABASE IF EXISTS ss_test"
-# $SQL -e "DROP DATABASE IF EXISTS ss"
+$SQL -e "REVOKE ALL ON TABLE ss_dev.*, ss_test.*, ss.* FROM $DB_USERNAME"
+$SQL -e "REVOKE ALL ON DATABASE ss_dev, ss_test, ss FROM $DB_USERNAME"
+$SQL -e "DROP USER IF EXISTS $DB_USERNAME"
+$SQL -e "DROP DATABASE IF EXISTS ss_dev"
+$SQL -e "DROP DATABASE IF EXISTS ss_test"
+$SQL -e "DROP DATABASE IF EXISTS ss"
 
 # up
 $SQL -e "CREATE USER IF NOT EXISTS $DB_USERNAME"

@@ -1,9 +1,9 @@
-import { of } from "rxjs"
+import { of, from } from "rxjs"
 import { map, tap, switchMap, catchError } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
 import * as API from "../../../api"
-import { Auth } from "../../modules"
+import { Auth, Udp } from "../../modules"
 
 const { JWT_STORAGE_KEY } = process.env
 
@@ -53,7 +53,7 @@ export function logout(action$) {
   return action$.pipe(
     ofType(Auth.LOGOUT),
     tap(() => localStorage.removeItem(JWT_STORAGE_KEY)),
-    map(Auth.removeToken),
+    switchMap(() => from([Auth.removeToken()])),
   )
 }
 

@@ -1,7 +1,7 @@
 // @flow
 
 export type Body = {
-  id: string,
+  id?: string,
   angle: number,
   angularVelocity: number,
   mass: number,

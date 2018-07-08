@@ -8,17 +8,33 @@ import { Users, Ships, Physics } from "../modules"
 export const getShipBody = (state: any, shipId: string) => {
   const ship = Ships.getShip(state, shipId)
 
-  if (!ship.bodyId) {
+  if (!ship) {
     return null
   }
 
-  const body = Physics.getBody(state, ship.bodyId)
+  const { bodyId } = ship
+
+  if (!bodyId) {
+    return null
+  }
+
+  const body = Physics.getBody(state, bodyId)
+
+  if (!body) {
+    return null
+  }
 
   return body
 }
 
 export const getUserShip = (state: any, userId: string) => {
-  const { activeShipId } = Users.getUser(state, userId)
+  const user = Users.getUser(state, userId)
+
+  if (!user) {
+    return null
+  }
+
+  const { activeShipId } = user
 
   if (!activeShipId) {
     return null
@@ -28,7 +44,13 @@ export const getUserShip = (state: any, userId: string) => {
 }
 
 export const getUserBody = (state: any, userId: string) => {
-  const { activeShipId } = Users.getUser(state, userId)
+  const user = Users.getUser(state, userId)
+
+  if (!user) {
+    return null
+  }
+
+  const { activeShipId } = user
 
   if (!activeShipId) {
     return null

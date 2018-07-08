@@ -1,64 +1,68 @@
 // @flow
 
 import express from "express"
-import { User } from "../data"
-import { token } from "../auth"
+
+import type { Db } from "../data"
+
+import type { AuthClient } from "../auth"
 import {
   auth as authMiddleware,
   login as loginMiddleware,
 } from "../auth/middleware"
 import asyncMiddleware from "./async"
 
-const router = express.Router()
+export function make(db: Db, auth: AuthClient) {
+  const router = express.Router()
 
-const register = asyncMiddleware(async (req, res) => {
-  let { username, password } = req.body
+  const register = asyncMiddleware(async (req, res) => {
+    let { username, password } = req.body
 
-  if (await User.findOne({ where: { username } })) {
-    res.status(409).json({ error: "Username already taken" })
-    return
-  }
+    if (await db.User.findOne({ where: { username } })) {
+      res.status(409).json({ error: "Username already taken" })
+      return
+    }
 
-  let model
-  const spec: any = { username, password }
+    let model
+    const spec = { username, password }
 
-  try {
-    model = await User.create(spec)
-  } catch (error) {
-    res.status(400).json({ error })
-    return
-  }
+    try {
+      model = await db.User.create(spec)
+    } catch (error) {
+      res.status(400).json({ error })
+      return
+    }
 
-  const user = model.toJSON()
+    const user = model.toJSON()
 
-  res.status(201).json({
-    token: await token(user),
-    user,
+    res.status(201).json({
+      token: await auth.token(user),
+      user,
+    })
   })
-})
 
-const login = asyncMiddleware(async (req, res) => {
-  const { user: { id, username } } = req
-  const user = { id, username }
+  const login = asyncMiddleware(async (req, res) => {
+    const { user: { id, username } } = req
+    const user = { id, username }
 
-  res.status(200).json({
-    token: await token(user),
-    user,
+    res.status(200).json({
+      token: await auth.token(user),
+      user,
+    })
   })
-})
 
-const verify = asyncMiddleware(async (req, res) => {
-  const { user: { id, username } } = req
-  const user = { id, username }
+  const verify = asyncMiddleware(async (req, res) => {
+    const { user: { id, username } } = req
+    const user = { id, username }
 
-  res.status(200).json({
-    token: await token(user),
-    user,
+    res.status(200).json({
+      token: await auth.token(user),
+      user,
+    })
   })
-})
 
-router.route("/register").post(register)
-router.route("/login").post(loginMiddleware, login)
-router.route("/verify").post(authMiddleware, verify)
+  router.route("/register").post(register)
+  router.route("/login").post(loginMiddleware, login)
+  router.route("/verify").post(authMiddleware, verify)
 
-export default router
+  return router
+}

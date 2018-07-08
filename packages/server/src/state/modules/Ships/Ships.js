@@ -47,7 +47,7 @@ const actionTypes = {
 const actionCreators = {
   load(shipId: string): Load {
     return {
-      type: (LOAD: any),
+      type: (actionTypes.LOAD: any),
       payload: {
         shipId,
       },
@@ -55,7 +55,7 @@ const actionCreators = {
   },
   fulfillLoad(ship: Ship): LoadFulfilled {
     return {
-      type: (LOAD_FULFILLED: any),
+      type: (actionTypes.LOAD_FULFILLED: any),
       payload: {
         ship,
       },
@@ -63,7 +63,7 @@ const actionCreators = {
   },
   rejectLoad(shipId: string, error: Error): LoadRejected {
     return {
-      type: (LOAD_REJECTED: any),
+      type: (actionTypes.LOAD_REJECTED: any),
       payload: {
         shipId,
       },

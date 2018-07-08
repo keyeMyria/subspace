@@ -1,29 +1,49 @@
 // @flow
 
 import bcrypt from "bcrypt"
-import type { User as UserModel } from "../model/user"
 
-import { User } from "../data"
+import type { Db } from "../data"
+import type { User, UserData } from "../model/user"
 
-export function comparePassword(password: string, user: UserModel) {
-  return bcrypt.compare(password, user.password)
+export function comparePassword(a: string, b: string) {
+  return bcrypt.compare(a, b)
 }
 
-export async function authenticate(
-  username: string,
-  password: string,
-) {
-  let model = await User.findOne({ where: { username } })
+export type AuthUtil = {
+  authenticate: (
+    username: string,
+    password: string,
+  ) => Promise<UserData>,
+  getUserById: string => Promise<User>,
+}
 
-  if (!model) {
-    throw new Error("Invalid username or password")
+export function make(db: Db): AuthUtil {
+  async function authenticate(username, password) {
+    let model = await db.User.findOne({ where: { username } })
+
+    if (!model) {
+      throw new Error("Invalid username or password")
+    }
+
+    if (!await bcrypt.compare(password, model.get("password"))) {
+      throw new Error("Invalid username or password")
+    }
+
+    return (model.toJSON(): any)
   }
 
-  let user = model.toJSON()
+  async function getUserById(userId: string) {
+    const model = await db.User.findById(userId)
 
-  if (!await comparePassword(password, user)) {
-    throw new Error("Invalid username or password")
+    if (!model) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+
+    return model.toJSON()
   }
 
-  return user
+  return {
+    authenticate,
+    getUserById,
+  }
 }

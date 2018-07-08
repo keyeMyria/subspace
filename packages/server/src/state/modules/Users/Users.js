@@ -1,6 +1,6 @@
 // @flow
 
-import type { UsersAction, UsersState } from "@subspace/core"
+import type { UsersAction, UsersState, Ship } from "@subspace/core"
 import type { Action as ServerAction } from "../../../types"
 import type { User } from "../../../model"
 
@@ -46,14 +46,15 @@ type Send = {
   type: "SEND",
   payload: {
     userId: string,
-    action: ServerAction,
+    actions: ServerAction[],
   },
 }
 
-type Remove = {
-  type: "REMOVE",
+type MakeUserShip = {
+  type: "MAKE_USER_SHIP",
   payload: {
     userId: string,
+    ship: Ship,
   },
 }
 
@@ -64,7 +65,7 @@ type Action =
   | LoadFulfilled
   | LoadRejected
   | Send
-  | Remove
+  | MakeUserShip
 
 export type { State as UsersState, Action as UsersAction }
 
@@ -73,10 +74,10 @@ const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
 const actionTypes = {
   REGISTER: "REGISTER",
   SEND: "SEND",
-  REMOVE: "REMOVE",
   LOAD,
   LOAD_FULFILLED,
   LOAD_REJECTED,
+  MAKE_USER_SHIP: "MAKE_USER_SHIP",
 }
 
 const actionCreators = {
@@ -114,20 +115,21 @@ const actionCreators = {
       error,
     }
   },
-  send(userId: string, action: ServerAction): Send {
+  send(userId: string, ...actions: ServerAction[]): Send {
     return {
       type: actionTypes.SEND,
       payload: {
         userId,
-        action,
+        actions,
       },
     }
   },
-  remove(userId: string): Remove {
+  makeUserShip(userId: string, ship: Ship): MakeUserShip {
     return {
-      type: actionTypes.REMOVE,
+      type: actionTypes.MAKE_USER_SHIP,
       payload: {
         userId,
+        ship,
       },
     }
   },

@@ -27,13 +27,21 @@ type Update = {
   },
 }
 
-type Action = Add | Update
+type Remove = {
+  type: "REMOVE",
+  payload: {
+    userId: string,
+  },
+}
+
+type Action = Add | Update | Remove
 
 export type { State as UsersState, Action as UsersAction }
 
 const actionTypes = {
   ADD: "ADD",
   UPDATE: "UPDATE",
+  REMOVE: "REMOVE",
 }
 
 const actionCreators = {
@@ -50,6 +58,14 @@ const actionCreators = {
       type: actionTypes.UPDATE,
       payload: {
         user,
+      },
+    }
+  },
+  removeUser(userId: string): Remove {
+    return {
+      type: actionTypes.REMOVE,
+      payload: {
+        userId,
       },
     }
   },
@@ -114,6 +130,19 @@ function reducer(
         byActiveShipId,
       }
     }
+    case actionTypes.REMOVE: {
+      const { userId } = action.payload
+      const { activeShipId } = selectors.getUser(state, userId)
+      const nextState = { ...state }
+
+      delete nextState.byId[userId]
+
+      if (activeShipId) {
+        delete nextState.byActiveShipId[activeShipId]
+      }
+
+      return nextState
+    }
     default:
       return state
   }
@@ -128,6 +157,9 @@ const selectors = {
   },
   getUserByActiveShipId(state: State, userId: string) {
     return state.byActiveShipId[userId]
+  },
+  getUserIds(state: State) {
+    return Object.keys(state.byId)
   },
 }
 

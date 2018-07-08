@@ -1,13 +1,20 @@
+// @flow
+
+import type { State, Dispatch } from "../../types"
+
+import { getUserShip } from "@subspace/core"
 import { connect } from "react-redux"
 
-import { Udp } from "../../state"
+import { Auth, Udp } from "../../state"
 import Game from "../../components/game"
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: State) => ({
   isConnected: Udp.isConnected(state),
+  user: Auth.getUser(state),
+  ship: getUserShip(state, Auth.getUser(state).id),
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   connect: () => dispatch(Udp.connect()),
 })
 

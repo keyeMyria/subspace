@@ -1,5 +1,5 @@
 import { Client as UdpClient } from "@web-udp/client"
-import { ReplaySubject, merge } from "rxjs"
+import { ReplaySubject, merge, from } from "rxjs"
 import {
   map,
   switchMap,
@@ -24,6 +24,8 @@ const client = new UdpClient({
 // Observable that provides the UDP connection with local messages
 const outgoing$ = ReplaySubject.create()
 
+let activeConnection
+
 export function connect(action$, state$) {
   return action$.pipe(
     ofType(Udp.CONNECT),
@@ -42,13 +44,15 @@ export function connect(action$, state$) {
         connection,
       )
 
+      activeConnection = connection
+
       return merge(
         // Emit actions when the connection state changes
         status.pipe(map(state => stateHandlers[state]())),
         // Handle messages until connection closes
         messages.pipe(
           // Apply mutations from server
-          map(Protocol.deserialize),
+          switchMap(actions => from(Protocol.deserialize(actions))),
           takeUntil(action$.pipe(ofType(Udp.CLOSE))),
         ),
       )
@@ -68,4 +72,16 @@ export function send(action$) {
   )
 }
 
-export default [connect, send]
+export function close(action$) {
+  return action$.pipe(
+    ofType(Udp.CLOSE),
+    tap(() => activeConnection.close()),
+    ignoreElements(),
+  )
+}
+
+export function closeOnLogout(action$) {
+  return action$.pipe(ofType(Auth.LOGOUT), map(Udp.close))
+}
+
+export default [connect, send, close, closeOnLogout]

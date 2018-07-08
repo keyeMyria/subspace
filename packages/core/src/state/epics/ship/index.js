@@ -22,7 +22,7 @@ export default function() {
         const { payload: { shipId, direction } } = action
         const body = getShipBody(state$.value, shipId)
 
-        if (!body) {
+        if (!body || !body.id) {
           throw new Error(`Ship ${shipId} does not have a body`)
         }
 

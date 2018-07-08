@@ -1,9 +1,8 @@
 // @flow
 
-import type { ShipType } from "./ship-type"
+import type { Entity } from "./entity"
 
-export type Ship = {
-  id: string,
+export type Ship = Entity & {
   bodyId?: string,
-  shipType: ShipType,
+  shipTypeId: string,
 }

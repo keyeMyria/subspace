@@ -8,8 +8,15 @@ class Game extends React.Component {
   }
 
   render() {
-    return this.props.isConnected ? (
-      <div>Connected</div>
+    const { isConnected, ship, user } = this.props
+
+    return isConnected ? (
+      <dl>
+        <dt>Username</dt>
+        <dd>{user.username}</dd>
+        <dt>Ship</dt>
+        <dd>{ship ? ship.id : "N/A"}</dd>
+      </dl>
     ) : (
       <div>Connecting...</div>
     )

@@ -5,19 +5,19 @@ import { createStore, combineReducers, applyMiddleware } from "redux"
 import { composeWithDevTools } from "remote-redux-devtools"
 import { createEpicMiddleware, combineEpics } from "redux-observable"
 import type { Server as UdpServer } from "@web-udp/server"
+import type { Redimension } from "@subspace/redimension"
 
 import type { AuthClient } from "../auth"
 import type { Db } from "../data"
-import redisConfig from "../cfg/redis.config"
-import { Redimension } from "../cache"
 import reducers from "./reducers"
 import { SpatialIndex } from "./modules"
 import * as UdpMiddleware from "./middleware/udp"
-import createAdjacentBodiesEpics from "./epics/adjacent-bodies"
+import createSpatialIndexEpics from "./epics/spatial-index"
 import createShipsEpics from "./epics/ships"
 import createUsersEpics from "./epics/users"
+import createPhysicsEpics from "./epics/physics"
 
-import type { Store } from "../types"
+import type { Store, State } from "../types"
 
 type ConfigureStoreOptions = {
   db: Db,
@@ -25,13 +25,8 @@ type ConfigureStoreOptions = {
   tickRate: number,
   sendRate: number,
   udp: UdpServer,
+  redimension: Redimension,
 }
-
-const spatialIndex = Redimension.make({
-  redis: redisConfig,
-  key: "ss-body",
-  dimensions: 2,
-})
 
 const composeEnhancers = composeWithDevTools({
   port: 3000,
@@ -42,16 +37,41 @@ const composeEnhancers = composeWithDevTools({
   ],
 })
 
-export function configureStore(
+// async function getPreloadedState(db: Db): State {
+//   const ships = (await db.Ship.findAll()).map(ship => ship.toJSON())
+//   const bodies = (await db.Body.findAll()).map(body => body.toJSON())
+
+//   return {
+//     Ships: {
+//       byId: ships.reduce((a, ship) => {
+//         if (!ship.id) {
+//           return a
+//         }
+//         return { ...a, [ship.id]: ship }
+//       }, {}),
+//     },
+//     Physics: {
+//       byId: bodies.reduce((a, body) => {
+//         if (!body.id) {
+//           return a
+//         }
+//         return { ...a, [body.id]: body }
+//       }, {}),
+//     },
+//   }
+// }
+
+export async function configureStore(
   options: ConfigureStoreOptions,
-): Store {
-  const { db, auth, sendRate, udp } = options
+): Promise<Store> {
+  const { db, auth, sendRate, udp, redimension } = options
   const epicMiddleware = createEpicMiddleware()
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(
-    ...createAdjacentBodiesEpics(spatialIndex),
+    ...createSpatialIndexEpics(redimension),
     ...createShipsEpics(db),
     ...createUsersEpics(db, sendRate),
+    ...createPhysicsEpics(db),
     ...coreEpics,
   )
   const enhancers = [
@@ -59,6 +79,7 @@ export function configureStore(
   ]
   const store = createStore(
     rootReducer,
+    // await getPreloadedState(db),
     composeEnhancers(...enhancers),
   )
 

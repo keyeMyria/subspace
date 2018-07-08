@@ -1,8 +1,8 @@
 // @flow
 
-import { RedisConfig } from "."
+import * as Env from "../env"
 
-const { port, host } = RedisConfig
+const { port, host } = Env.Redis
 
 export default {
   port,

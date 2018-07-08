@@ -5,10 +5,11 @@ import { ConnectedRouter } from "connected-react-router"
 
 import Nav from "../../containers/nav"
 
+import styles from "./app.css"
+
 const App = ({ history, routes }) => (
   <Router history={history}>
-    <div className="App">
-      <h1>Counter app</h1>
+    <div className={styles.app}>
       <Nav />
       {routes}
     </div>

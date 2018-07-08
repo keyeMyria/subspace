@@ -16,7 +16,7 @@ type MakeOptions = {
   precision?: number,
 }
 
-export const make = (config: MakeOptions) => {
+export function make(config: MakeOptions) {
   const client = redis.createClient(config.redis)
   const { key, dimensions, precision = 64 } = config
 

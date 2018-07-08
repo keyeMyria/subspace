@@ -58,15 +58,12 @@ if (result.error) {
   )
 }
 
-export const EnvConfig = {
+export const App = {
   node: String(NODE_ENV),
-}
-
-export const AppConfig = {
   port: Number(PORT),
 }
 
-export const DbConfig = {
+export const DB = {
   host: String(DB_HOST),
   port: Number(DB_PORT),
   database: String(DB_NAME),
@@ -74,17 +71,17 @@ export const DbConfig = {
   password: String(DB_PASSWORD),
 }
 
-export const JwtConfig = {
+export const JWT = {
   secret: String(JWT_SECRET),
   expire: String(JWT_EXPIRE),
 }
 
-export const RedisConfig = {
+export const Redis = {
   host: String(REDIS_HOST),
   port: Number(REDIS_PORT),
 }
 
-export const GameConfig = {
+export const Game = {
   tickRate: Number(TICK_RATE),
   sendRate: Number(SEND_RATE),
 }
