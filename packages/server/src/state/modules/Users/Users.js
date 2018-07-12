@@ -4,7 +4,7 @@ import type { UsersAction, UsersState, Ship } from "@subspace/core"
 import type { Action as ServerAction } from "../../../types"
 import type { User } from "../../../model"
 
-import { Users, toAsync } from "@subspace/core"
+import { Users } from "@subspace/core"
 import {
   createReduxModule,
   composeReduxModules,
@@ -69,14 +69,12 @@ type Action =
 
 export type { State as UsersState, Action as UsersAction }
 
-const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
-
 const actionTypes = {
   REGISTER: "REGISTER",
   SEND: "SEND",
-  LOAD,
-  LOAD_FULFILLED,
-  LOAD_REJECTED,
+  LOAD: "LOAD",
+  LOAD_FULFILLED: "LOAD+",
+  LOAD_REJECTED: "LOAD-",
   MAKE_USER_SHIP: "MAKE_USER_SHIP",
 }
 

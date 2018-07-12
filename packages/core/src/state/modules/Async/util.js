@@ -2,12 +2,6 @@
 
 import { AsyncSuffix, AsyncState } from "./constants"
 
-export function toAsync(actionType: string): string[] {
-  return Object.values(AsyncSuffix).map(
-    asyncPrefix => `${actionType}${String(asyncPrefix)}`,
-  )
-}
-
 export function trimSuffix(actionType: string) {
   return actionType.slice(0, -1)
 }

@@ -2,62 +2,201 @@
 
 import type { User } from "@subspace/core"
 
-import type { Action } from "../../../types"
-
 import {
   createReduxModule,
   composeReduxModules,
 } from "@subspace/redux-module"
 
-import { Auth, toAsync } from "@subspace/core"
+import { Auth } from "@subspace/core"
 
 type State = {
   user: ?User,
   token: ?string,
 }
 
-const [
-  AUTHENTICATE,
-  AUTHENTICATE_FULFILLED,
-  AUTHENTICATE_REJECTED,
-] = toAsync("AUTHENTICATE")
+type Authenticate = {
+  type: "AUTHENTICATE",
+  payload: {
+    token: string,
+  },
+}
 
-const [REGISTER, REGISTER_FULFILLED, REGISTER_REJECTED] = toAsync(
-  "REGISTER",
-)
+type FulfillAuthenticate = {
+  type: "AUTHENTICATE+",
+  payload: {
+    token: string,
+    user: User,
+  },
+}
 
-const [LOGIN, LOGIN_FULFILLED, LOGIN_REJECTED] = toAsync("LOGIN")
+type RejectAuthenticate = {
+  type: "AUTHENTICATE-",
+  payload: {},
+}
+
+type Register = {
+  type: "REGISTER",
+  payload: {
+    username: string,
+    password: string,
+  },
+}
+
+type FulfillRegister = {
+  type: "REGISTER+",
+  payload: {
+    token: string,
+    user: User,
+  },
+}
+
+type RejectRegister = {
+  type: "REGISTER-",
+  payload: {},
+}
+
+type Login = {
+  type: "LOGIN",
+  payload: {
+    username: string,
+    password: string,
+  },
+}
+
+type FulfillLogin = {
+  type: "LOGIN+",
+  payload: {
+    token: string,
+    user: User,
+  },
+}
+
+type RejectLogin = {
+  type: "LOGIN-",
+  payload: {},
+}
+
+type Logout = {
+  type: "LOGOUT",
+  payload: {},
+}
+
+type RemoveToken = {
+  type: "TOKEN_REMOVED",
+  payload: {},
+}
+
+type Action =
+  | Authenticate
+  | FulfillAuthenticate
+  | RejectAuthenticate
+  | Register
+  | FulfillRegister
+  | RejectRegister
+  | Login
+  | FulfillLogin
+  | RejectLogin
+  | Logout
+  | RemoveToken
+
+export type { State as AuthState, Action as AuthAction }
 
 const actionTypes = {
-  AUTHENTICATE,
-  AUTHENTICATE_FULFILLED,
-  AUTHENTICATE_REJECTED,
-  REGISTER,
-  REGISTER_FULFILLED,
-  REGISTER_REJECTED,
-  LOGIN,
-  LOGIN_FULFILLED,
-  LOGIN_REJECTED,
+  AUTHENTICATE: "AUTHENTICATE",
+  AUTHENTICATE_FULFILLED: "AUTHENTICATE+",
+  AUTHENTICATE_REJECTED: "AUTHENTICATE-",
+  REGISTER: "REGISTER",
+  REGISTER_FULFILLED: "REGISTER+",
+  REGISTER_REJECTED: "REGISTER-",
+  LOGIN: "LOGIN",
+  LOGIN_FULFILLED: "LOGIN+",
+  LOGIN_REJECTED: "LOGIN-",
   LOGOUT: "LOGOUT",
   TOKEN_REMOVED: "TOKEN_REMOVED",
 }
 
 const actionCreators = {
-  authenticate(token) {
+  authenticate(token): Authenticate {
     return {
-      type: AUTHENTICATE,
+      type: actionTypes.AUTHENTICATE,
       payload: {
         token,
       },
     }
   },
-  fulfillAuthenticate(user, token) {
+  fulfillAuthenticate(user, token): FulfillAuthenticate {
     return {
-      type: AUTHENTICATE_FULFILLED,
+      type: actionTypes.AUTHENTICATE_FULFILLED,
       payload: {
         token,
         user,
       },
+    }
+  },
+  rejectAuthenticate(): RejectAuthenticate {
+    return {
+      type: actionTypes.AUTHENTICATE_REJECTED,
+      payload: {},
+    }
+  },
+  register(username, password): Register {
+    return {
+      type: actionTypes.REGISTER,
+      payload: {
+        username,
+        password,
+      },
+    }
+  },
+  fulfillRegister(user, token): FulfillRegister {
+    return {
+      type: actionTypes.REGISTER_FULFILLED,
+      payload: {
+        token,
+        user,
+      },
+    }
+  },
+  rejectRegister(): RejectRegister {
+    return {
+      type: actionTypes.REGISTER_REJECTED,
+      payload: {},
+    }
+  },
+  login(username, password): Login {
+    return {
+      type: actionTypes.LOGIN,
+      payload: {
+        username,
+        password,
+      },
+    }
+  },
+  fulfillLogin(user, token): FulfillLogin {
+    return {
+      type: actionTypes.LOGIN_FULFILLED,
+      payload: {
+        token,
+        user,
+      },
+    }
+  },
+  rejectLogin(): RejectLogin {
+    return {
+      type: actionTypes.LOGIN_REJECTED,
+      payload: {},
+    }
+  },
+  logout(): Logout {
+    return {
+      type: actionTypes.LOGOUT,
+      payload: {},
+    }
+  },
+  removeToken(): RemoveToken {
+    return {
+      type: actionTypes.TOKEN_REMOVED,
+      payload: {},
     }
   },
 }

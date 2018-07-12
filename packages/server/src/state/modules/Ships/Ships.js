@@ -2,7 +2,7 @@
 
 import type { Ship, ShipsState, ShipsAction } from "@subspace/core"
 
-import { Ships, toAsync } from "@subspace/core"
+import { Ships } from "@subspace/core"
 import {
   createReduxModule,
   composeReduxModules,
@@ -36,12 +36,10 @@ type Action = ShipsAction | Load | LoadFulfilled | LoadRejected
 
 export type { State as ShipsState, Action as ShipsAction }
 
-const [LOAD, LOAD_FULFILLED, LOAD_REJECTED] = toAsync("LOAD")
-
 const actionTypes = {
-  LOAD,
-  LOAD_FULFILLED,
-  LOAD_REJECTED,
+  LOAD: "LOAD",
+  LOAD_FULFILLED: "LOAD+",
+  LOAD_REJECTED: "LOAD-",
 }
 
 const actionCreators = {
