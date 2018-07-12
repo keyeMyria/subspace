@@ -4,8 +4,8 @@ import { ofType } from "redux-observable"
 import { map, switchMap } from "rxjs/operators"
 import type { ActionsObservable } from "redux-observable"
 
-import type { PhysicsDriver } from "../../../physics"
-import { Physics } from "../../modules"
+import type { PhysicsDriver } from "../../physics"
+import { Physics } from "../modules"
 
 export default function(driver: PhysicsDriver) {
   function rotate(action$: ActionsObservable) {

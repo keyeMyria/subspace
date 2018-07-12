@@ -11,7 +11,7 @@ import {
 import { ofType } from "redux-observable"
 import { Protocol, WebUdpConnectionSubject } from "@subspace/core"
 
-import { Auth, Udp } from "../../modules"
+import { Auth, Udp } from "../modules"
 
 const stateHandlers = {
   [WebUdpConnectionSubject.OPEN]: Udp.fulfillConnect,

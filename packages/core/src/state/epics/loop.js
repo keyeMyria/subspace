@@ -6,8 +6,8 @@ import { interval } from "rxjs"
 import { switchMap, map } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
-import type { Action } from "../../../types"
-import { Loop } from "../../modules"
+import type { Action } from "../../types"
+import { Loop } from "../modules"
 
 export default function() {
   function loop(action$: ActionObservable<Action>) {

@@ -2,8 +2,8 @@ import { of, from } from "rxjs"
 import { map, tap, switchMap, catchError } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
-import * as API from "../../../api"
-import { Auth, Udp } from "../../modules"
+import * as API from "../../api"
+import { Auth } from "../modules"
 
 const { JWT_STORAGE_KEY } = process.env
 

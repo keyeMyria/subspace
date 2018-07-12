@@ -39,7 +39,75 @@ type Remove = {
   },
 }
 
-type Action = Add | Update | Turn | Remove
+type ThrustStart = {
+  type: "THRUST_START",
+  payload: {
+    shipId: string,
+  },
+}
+
+type ThrustEnd = {
+  type: "THRUST_END",
+  payload: {
+    shipId: string,
+  },
+}
+
+type ReverseThrust = {
+  type: "THRUST_REVERSE",
+  payload: {
+    shipId: string,
+  },
+}
+
+type ReverseThrustEnd = {
+  type: "THRUST_REVERSE_END",
+  payload: {
+    shipId: string,
+  },
+}
+
+type LeftThrust = {
+  type: "THRUST_LEFT",
+  payload: {
+    shipId: string,
+  },
+}
+
+type LeftThrustEnd = {
+  type: "THRUST_LEFT_END",
+  payload: {
+    shipId: string,
+  },
+}
+
+type RightThrust = {
+  type: "THRUST_RIGHT",
+  payload: {
+    shipId: string,
+  },
+}
+
+type RightThrustEnd = {
+  type: "THRUST_RIGHT_END",
+  payload: {
+    shipId: string,
+  },
+}
+
+type Action =
+  | Add
+  | Update
+  | Turn
+  | Remove
+  | ThrustStart
+  | ThrustEnd
+  | ReverseThrust
+  | ReverseThrustEnd
+  | LeftThrust
+  | LeftThrustEnd
+  | RightThrust
+  | RightThrustEnd
 
 export type { State as ShipsState, Action as ShipsAction }
 
@@ -48,6 +116,14 @@ const actionTypes = {
   UPDATE: "UPDATE",
   TURN: "TURN",
   REMOVE: "REMOVE",
+  THRUST_START: "THRUST_START",
+  THRUST_END: "THRUST_END",
+  THRUST_REVERSE: "THRUST_REVERSE",
+  THRUST_REVERSE_END: "THRUST_REVERSE_END",
+  THRUST_LEFT: "THRUST_LEFT",
+  THRUST_LEFT_END: "THRUST_LEFT_END",
+  THRUST_RIGHT: "THRUST_RIGHT",
+  THRUST_RIGHT_END: "THRUST_RIGHT_END",
 }
 
 const actionCreators = {

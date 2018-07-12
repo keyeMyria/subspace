@@ -6,10 +6,10 @@ import { map } from "rxjs/operators"
 import { ofType } from "redux-observable"
 import type { ActionsObservable, Observable } from "redux-observable"
 
-import type { Action, State } from "../../../types"
-import { TURN_DIRECTION } from "../../../model"
-import { Ships, Physics } from "../../modules"
-import { getShipBody } from "../../selectors"
+import type { Action, State } from "../../types"
+import { TURN_DIRECTION } from "../../model"
+import { Ships, Physics } from "../modules"
+import { getShipBody } from "../selectors"
 
 export default function() {
   function turnShips(
