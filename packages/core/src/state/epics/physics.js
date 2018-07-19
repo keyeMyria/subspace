@@ -1,22 +1,45 @@
 // @flow
 
-import { ofType } from "redux-observable"
-import { map, switchMap } from "rxjs/operators"
-import type { ActionsObservable } from "redux-observable"
+import type { Observable } from "rxjs"
 
-import type { PhysicsDriver } from "../../physics"
-import { Physics } from "../modules"
+import { ofType } from "redux-observable"
+import { tap, map, ignoreElements } from "rxjs/operators"
+
+import type { PhysicsDriver } from "../../physics/types"
+import { Physics, Loop } from "../modules"
+import type { Action } from "../../types"
 
 export default function(driver: PhysicsDriver) {
-  function rotate(action$: ActionsObservable) {
+  function syncDriverToGameLoop(action$: Observable<Action>) {
     return action$.pipe(
-      ofType(Physics.ROTATE_BODY),
-      switchMap(({ payload: { bodyId, angle } }) =>
-        driver.rotateBody(bodyId, angle),
-      ),
-      map(Physics.updateBody),
+      ofType(Loop.START),
+      map(action => Physics.init(action.payload.rate)),
     )
   }
 
-  return [rotate]
+  function applyPhysicsDriverUpdates(action$: Observable<Action>) {
+    return action$.pipe(
+      ofType(Loop.TICK),
+      map(() => Physics.applySnapshot(0, driver.step())),
+    )
+  }
+
+  function providePhysicsDriverActions(action$: Observable<Action>) {
+    return action$.pipe(
+      ofType(
+        Physics.ADD_BODY,
+        Physics.APPLY_FORCE,
+        Physics.ROTATE_BODY,
+        Physics.INIT,
+      ),
+      tap(driver.handleAction),
+      ignoreElements(),
+    )
+  }
+
+  return [
+    providePhysicsDriverActions,
+    applyPhysicsDriverUpdates,
+    syncDriverToGameLoop,
+  ]
 }

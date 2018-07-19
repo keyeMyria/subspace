@@ -47,7 +47,7 @@ async function main() {
   // routes
   app.use("/auth", AuthRouter.make(db, auth))
 
-  store.dispatch(Loop.start())
+  store.dispatch(Loop.start(Env.Game.tickRate))
 
   server.listen(Number(Env.App.port))
 }

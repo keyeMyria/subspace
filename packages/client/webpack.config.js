@@ -3,11 +3,12 @@ require("dotenv").config()
 const path = require("path")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 const { SERVER_URL, HOST, PORT } = process.env
 
 module.exports = {
-  devtool: "cheap-source-map",
+  devtool: "source-map",
   entry: ["./src/index.jsx"],
   output: {
     path: path.join(__dirname, "dist"),
@@ -81,6 +82,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin(),
     new webpack.NamedModulesPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: "./node_modules/@subspace/core/lib/*.worker.js",
+        flatten: true,
+      },
+    ]),
   ],
   devServer: {
     hot: true,

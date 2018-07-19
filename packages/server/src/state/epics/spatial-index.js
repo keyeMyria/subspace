@@ -1,7 +1,6 @@
 // @flow
 
 import type { Observable } from "rxjs"
-import type { ActionsObservable } from "redux-observable"
 import type { Redimension } from "@subspace/redimension"
 
 import { ofType } from "redux-observable"
@@ -20,31 +19,28 @@ import * as AsyncUtil from "../../util/async"
 import type { Action, State } from "../../types"
 import { SpatialIndex } from "../modules"
 
-const UPDATE_AREA = 1000
-const halfUpdateArea = 0.5 * UPDATE_AREA
+const UPDATE_REGION = 1000
+const extractBodyIds = values => values.map(([, bodyId]) => bodyId)
 
 async function queryRedimension(state: State, index: Redimension) {
   const users = Users.getUsers(state)
-  const userIds = Object.keys(users)
-  const query = userIds.reduce((results, userId) => {
+  const query = {}
+
+  for (let userId in users) {
     const body = getUserBody(state, userId)
 
     if (body === null) {
-      return results
+      continue
     }
 
-    const { position: [x, y] } = body
+    const [x, y] = body.position
     const range = [
-      [x - halfUpdateArea, x + halfUpdateArea],
-      [y - halfUpdateArea, y + halfUpdateArea],
+      [x - UPDATE_REGION, x + UPDATE_REGION],
+      [y - UPDATE_REGION, y + UPDATE_REGION],
     ]
 
-    results[userId] = index
-      .query(range)
-      .then(values => values.map(([, bodyId]) => bodyId))
-
-    return results
-  }, {})
+    query[userId] = index.query(range).then(extractBodyIds)
+  }
 
   return AsyncUtil.object(query)
 }
@@ -52,7 +48,7 @@ async function queryRedimension(state: State, index: Redimension) {
 export default function(index: Redimension) {
   // Update spatial index with state of bodies in Redimension
   function applyIndexUpdates(
-    action$: ActionsObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(
@@ -60,12 +56,12 @@ export default function(index: Redimension) {
       withLatestFrom(state$),
       throttleTime(1 / 10 * 1000),
       switchMap(([, state]) => queryRedimension(state, index)),
-      map(result => SpatialIndex.update(result)),
+      map(SpatialIndex.update),
     )
   }
 
   // Insert new bodies in Redimension
-  function insertAddedBodies(action$: ActionsObservable<Action>) {
+  function insertBodies(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Physics.ADD_BODY),
       tap(action => {
@@ -78,7 +74,7 @@ export default function(index: Redimension) {
   }
 
   // Insert new bodies in Redimension
-  function removeRemovedBodies(action$: ActionsObservable<Action>) {
+  function removeBodies(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Physics.REMOVE_BODY),
       tap(action => {
@@ -91,7 +87,7 @@ export default function(index: Redimension) {
   }
 
   // Update changed bodies in Redimension
-  function applyBodyUpdates(action$: ActionsObservable<Action>) {
+  function updateBodies(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Physics.UPDATE_BODY),
       tap(action => {
@@ -103,10 +99,5 @@ export default function(index: Redimension) {
     )
   }
 
-  return [
-    applyIndexUpdates,
-    insertAddedBodies,
-    removeRemovedBodies,
-    applyBodyUpdates,
-  ]
+  return [applyIndexUpdates, insertBodies, removeBodies, updateBodies]
 }

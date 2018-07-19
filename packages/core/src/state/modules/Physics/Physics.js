@@ -10,6 +10,11 @@ type State = {
   },
 }
 
+type Init = {
+  type: "INIT",
+  payload: {},
+}
+
 type AddBody = {
   type: "ADD_BODY",
   payload: {
@@ -32,11 +37,19 @@ type RotateBody = {
   },
 }
 
+type ApplyForce = {
+  type: "APPLY_FORCE",
+  payload: {
+    bodyId: string,
+    force: [number, number],
+  },
+}
+
 type ApplySnapshot = {
   type: "APPLY_SNAPSHOT",
   payload: {
     frame: number,
-    bodies: Body[],
+    bodies: { [string]: Body },
   },
 }
 
@@ -48,28 +61,49 @@ type RemoveBody = {
 }
 
 type Action =
+  | Init
   | AddBody
   | UpdateBody
   | RotateBody
+  | ApplyForce
   | ApplySnapshot
   | RemoveBody
 
 export type { State as PhysicsState, Action as PhysicsAction }
 
 const actionTypes = {
+  INIT: "INIT",
   ADD_BODY: "ADD_BODY",
   UPDATE_BODY: "UPDATE_BODY",
   ROTATE_BODY: "ROTATE_BODY",
+  APPLY_FORCE: "APPLY_FORCE",
   APPLY_SNAPSHOT: "APPLY_SNAPSHOT",
   REMOVE_BODY: "REMOVE_BODY",
 }
 
 const actionCreators = {
+  init(rate: number): Init {
+    return {
+      type: actionTypes.INIT,
+      payload: {
+        rate,
+      },
+    }
+  },
   addBody(body: Body): AddBody {
     return {
       type: actionTypes.ADD_BODY,
       payload: {
         body,
+      },
+    }
+  },
+  applyForce(bodyId: string, force: [number, number]): ApplyForce {
+    return {
+      type: actionTypes.APPLY_FORCE,
+      payload: {
+        bodyId,
+        force,
       },
     }
   },
@@ -90,7 +124,10 @@ const actionCreators = {
       },
     }
   },
-  applySnapshot(frame: number, bodies: Body[]): ApplySnapshot {
+  applySnapshot(
+    frame: number,
+    bodies: { [string]: Body },
+  ): ApplySnapshot {
     return {
       type: actionTypes.APPLY_SNAPSHOT,
       payload: {
@@ -148,6 +185,19 @@ function reducer(
       const nextState = { ...state }
 
       delete nextState.byId[bodyId]
+
+      return nextState
+    }
+    case actionTypes.APPLY_SNAPSHOT: {
+      const { bodies } = action.payload
+      const nextState = { ...state }
+
+      for (const bodyId in bodies) {
+        nextState.byId[bodyId] = {
+          ...nextState.byId[bodyId],
+          ...bodies[bodyId],
+        }
+      }
 
       return nextState
     }

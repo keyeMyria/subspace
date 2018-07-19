@@ -17,7 +17,7 @@ import createShipsEpics from "./epics/ships"
 import createUsersEpics from "./epics/users"
 import createPhysicsEpics from "./epics/physics"
 
-import type { Store, State } from "../types"
+import type { Store } from "../types"
 
 type ConfigureStoreOptions = {
   db: Db,
@@ -37,30 +37,6 @@ const composeEnhancers = composeWithDevTools({
   ],
 })
 
-// async function getPreloadedState(db: Db): State {
-//   const ships = (await db.Ship.findAll()).map(ship => ship.toJSON())
-//   const bodies = (await db.Body.findAll()).map(body => body.toJSON())
-
-//   return {
-//     Ships: {
-//       byId: ships.reduce((a, ship) => {
-//         if (!ship.id) {
-//           return a
-//         }
-//         return { ...a, [ship.id]: ship }
-//       }, {}),
-//     },
-//     Physics: {
-//       byId: bodies.reduce((a, body) => {
-//         if (!body.id) {
-//           return a
-//         }
-//         return { ...a, [body.id]: body }
-//       }, {}),
-//     },
-//   }
-// }
-
 export async function configureStore(
   options: ConfigureStoreOptions,
 ): Promise<Store> {
@@ -79,7 +55,6 @@ export async function configureStore(
   ]
   const store = createStore(
     rootReducer,
-    // await getPreloadedState(db),
     composeEnhancers(...enhancers),
   )
 

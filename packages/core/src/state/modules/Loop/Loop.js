@@ -9,6 +9,9 @@ type State = {
 
 type Start = {
   type: "START",
+  payload: {
+    rate: number,
+  },
 }
 
 type Tick = {
@@ -30,9 +33,12 @@ const actionTypes = {
 }
 
 const actionCreators = {
-  start(): Start {
+  start(rate: number): Start {
     return {
       type: actionTypes.START,
+      payload: {
+        rate,
+      },
     }
   },
   tick(dt: number): Tick {

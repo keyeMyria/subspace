@@ -1,9 +1,7 @@
 // @flow
 
-import type { ActionObservable } from "redux-observable"
-
 // $FlowFixMe
-import { Observable, from, empty } from "rxjs"
+import { Observable, from } from "rxjs"
 import {
   switchMap,
   tap,
@@ -20,7 +18,7 @@ import { Users } from "../modules"
 
 export default function(db: Db) {
   // Persist new bodies to database
-  function persistBodies(action$: ActionObservable<Action>) {
+  function persistBodies(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Physics.ADD_BODY),
       tap(async action => {
@@ -38,10 +36,10 @@ export default function(db: Db) {
   }
 
   // Persist body updates to database
-  function persistBodyUpdates(action$: ActionObservable<Action>) {
+  function persistBodyUpdates(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Physics.UPDATE_BODY),
-      throttleTime(1 / 10 * 1000),
+      throttleTime(2000),
       tap(async action => {
         const { body } = action.payload
         const model = await db.Body.findById(body.id)
@@ -58,7 +56,7 @@ export default function(db: Db) {
 
   // Send new and updated bodies to clients
   function sendBodyUpdates(
-    action$: ActionObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(

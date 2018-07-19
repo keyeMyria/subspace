@@ -9,9 +9,9 @@ import Users from "./Users"
 
 export { Auth, Async, Loop, Physics, Ships, Users }
 
-export type * from "./auth"
-export type * from "./async"
-export type * from "./loop"
-export type * from "./physics"
-export type * from "./ships"
-export type * from "./users"
+export type * from "./Auth"
+export type * from "./Async"
+export type * from "./Loop"
+export type * from "./Physics"
+export type * from "./Ships"
+export type * from "./Users"

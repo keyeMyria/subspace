@@ -10,12 +10,14 @@ const InnerForm = props => (
       name="email"
       value={props.email}
       onChange={props.handleChange}
+      autoComplete="email"
     />
     <input
       type="password"
       name="password"
       value={props.password}
       onChange={props.handleChange}
+      autoComplete="current-password"
     />
     <button onClick={props.submit}>Login</button>
   </form>

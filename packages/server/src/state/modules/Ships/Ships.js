@@ -11,21 +11,21 @@ import {
 type State = ShipsState & {}
 
 type Load = {
-  type: "LOAD!",
+  type: "LOAD",
   payload: {
     shipId: string,
   },
 }
 
 type LoadFulfilled = {
-  type: "LOAD-",
+  type: "LOAD+",
   payload: {
     ship: Ship,
   },
 }
 
 type LoadRejected = {
-  type: "LOAD+",
+  type: "LOAD-",
   payload: {
     shipId: string,
   },
@@ -45,7 +45,7 @@ const actionTypes = {
 const actionCreators = {
   load(shipId: string): Load {
     return {
-      type: (actionTypes.LOAD: any),
+      type: actionTypes.LOAD,
       payload: {
         shipId,
       },
@@ -53,7 +53,7 @@ const actionCreators = {
   },
   fulfillLoad(ship: Ship): LoadFulfilled {
     return {
-      type: (actionTypes.LOAD_FULFILLED: any),
+      type: actionTypes.LOAD_FULFILLED,
       payload: {
         ship,
       },
@@ -61,7 +61,7 @@ const actionCreators = {
   },
   rejectLoad(shipId: string, error: Error): LoadRejected {
     return {
-      type: (actionTypes.LOAD_REJECTED: any),
+      type: actionTypes.LOAD_REJECTED,
       payload: {
         shipId,
       },
@@ -73,7 +73,7 @@ const actionCreators = {
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case actionTypes.LOAD_FULFILLED: {
-      const { ship } = ((action: any): LoadFulfilled).payload
+      const { ship } = action.payload
       return {
         ...state,
         byId: {

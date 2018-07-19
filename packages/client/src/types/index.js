@@ -4,13 +4,14 @@ import type {
   Store as ReduxStore,
   Middleware as ReduxMiddleware,
 } from "redux"
+import type { Action as CoreAction } from "@subspace/core"
 
 import type { Reducers } from "../state/reducers"
 // $FlowFixMe
 import type { AuthAction } from "../state/modules/Auth"
 import type { UdpAction } from "../state/modules/Udp"
 
-export type Action = AuthAction | UdpAction
+export type Action = CoreAction | AuthAction | UdpAction
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V
 

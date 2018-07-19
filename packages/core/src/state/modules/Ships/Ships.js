@@ -203,6 +203,39 @@ function remove(state: State, action: Remove) {
   return nextState
 }
 
+function startThrust(state: State, action: ThrustStart) {
+  const { shipId } = action.payload
+  const ship = state.byId[shipId]
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [shipId]: {
+        ...ship,
+        thrust: [
+          selectors.getShipThrust(state, shipId),
+          ship.thrust[1],
+        ],
+      },
+    },
+  }
+}
+
+function endThrust(state: State, action: ThrustEnd) {
+  const { shipId } = action.payload
+  const ship = state.byId[shipId]
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [shipId]: {
+        ...ship,
+        thrust: [0, ship.thrust[1]],
+      },
+    },
+  }
+}
+
 function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case actionTypes.ADD:
@@ -211,6 +244,10 @@ function reducer(state: State = initialState, action: Action): State {
       return update(state, action)
     case actionTypes.REMOVE:
       return remove(state, action)
+    case actionTypes.THRUST_START:
+      return startThrust(state, action)
+    case actionTypes.THRUST_END:
+      return endThrust(state, action)
     default:
       return state
   }
@@ -225,6 +262,11 @@ const selectors = {
   },
   getShipIds(state: State) {
     return Object.keys(state.byId)
+  },
+  getShipThrust(state: State, shipId: string) {
+    const ship = state.byId[shipId]
+
+    return 1
   },
 }
 

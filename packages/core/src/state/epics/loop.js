@@ -1,6 +1,6 @@
 // @flow
 
-import type { ActionObservable } from "redux-observable"
+import type { Observable } from "rxjs"
 // $FlowFixMe
 import { interval } from "rxjs"
 import { switchMap, map } from "rxjs/operators"
@@ -10,10 +10,10 @@ import type { Action } from "../../types"
 import { Loop } from "../modules"
 
 export default function() {
-  function loop(action$: ActionObservable<Action>) {
+  function loop(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Loop.START),
-      switchMap(() => interval(1 / 60)),
+      switchMap(action => interval(1 / action.payload.rate * 1000)),
       map(Loop.tick),
     )
   }

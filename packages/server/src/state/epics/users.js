@@ -1,7 +1,6 @@
 // @flow
 
 import type { Observable } from "rxjs"
-import type { ActionObservable } from "redux-observable"
 
 import { Loop, Physics } from "@subspace/core"
 import { ofType } from "redux-observable"
@@ -39,25 +38,31 @@ function getUserInit(state: State) {
 
 function getSnapshots(state: State) {
   const adjacentBodiesByUserId = SpatialIndex.getAdjacentBodies(state)
-  const userIds = Object.keys(Users.getUsers(state))
+  const bodies = Physics.getBodies(state)
+  const frame = Loop.getFrame(state)
+  const actions = []
 
-  return userIds.map(userId => {
-    const adjacentBodies = adjacentBodiesByUserId[userId] || []
-    const bodies = adjacentBodies.map(bodyId =>
-      Physics.getBody(state, bodyId),
+  for (let userId in adjacentBodiesByUserId) {
+    const adjacentBodyIds = adjacentBodiesByUserId[userId]
+    const adjacentBodies = {}
+    for (let i = 0; i < adjacentBodyIds.length; i++) {
+      const bodyId = adjacentBodyIds[i]
+      adjacentBodies[bodyId] = bodies[bodyId]
+    }
+    actions.push(
+      Users.send(
+        userId,
+        Physics.applySnapshot(frame, adjacentBodies),
+      ),
     )
-    const message = Physics.applySnapshot(
-      Loop.getFrame(state),
-      bodies,
-    )
+  }
 
-    return Users.send(userId, message)
-  })
+  return actions
 }
 
 export default function(db: Db, sendRate: number) {
   // Persist users to database
-  function persistUsers(action$: ActionObservable<Action>) {
+  function persistUsers(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Users.ADD, Users.UPDATE),
       tap(async action => {
@@ -76,7 +81,7 @@ export default function(db: Db, sendRate: number) {
 
   // Send new and updated users to clients
   function sendUserUpdates(
-    action$: ActionObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(
@@ -94,7 +99,7 @@ export default function(db: Db, sendRate: number) {
 
   // Send snapshots of the game world to each user at the send rate
   function sendSnapshots(
-    action$: ActionObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(
@@ -107,7 +112,7 @@ export default function(db: Db, sendRate: number) {
 
   // Initialize user with current game state
   function initUser(
-    action$: ActionObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(
@@ -120,7 +125,7 @@ export default function(db: Db, sendRate: number) {
   }
 
   // Create a ship for new users
-  function loadUserShips(action$: ActionObservable<Action>) {
+  function loadUserShips(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Users.ADD),
       switchMap(async action => {
@@ -136,12 +141,13 @@ export default function(db: Db, sendRate: number) {
 
         return Users.makeUserShip(id, {
           shipTypeId: "0",
+          thrust: [0, 0],
         })
       }),
     )
   }
 
-  function makeUserShip(action$: ActionObservable<Action>) {
+  function makeUserShip(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Users.MAKE_USER_SHIP),
       switchMap(async action => {
@@ -167,7 +173,7 @@ export default function(db: Db, sendRate: number) {
     )
   }
 
-  function unloadUsers(action$: ActionObservable<Action>) {
+  function unloadUsers(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Users.REMOVE),
       switchMap(async action => {

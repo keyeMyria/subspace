@@ -18,8 +18,7 @@ export default function(
       positionY: dataTypes.FLOAT,
       velocityX: dataTypes.FLOAT,
       velocityY: dataTypes.FLOAT,
-      width: dataTypes.FLOAT,
-      height: dataTypes.FLOAT,
+      mass: dataTypes.FLOAT,
     },
     {
       getterMethods: {

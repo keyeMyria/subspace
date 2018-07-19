@@ -7,7 +7,9 @@
 
 [libs]
 .*/flow-typed/.*
+./flow-typed/global/Worker.js
 
 [options]
+module.name_mapper='.+\(.worker\(.js\)?\)' -> 'Worker'
 module.name_mapper='^@subspace/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 esproposal.export_star_as=enable

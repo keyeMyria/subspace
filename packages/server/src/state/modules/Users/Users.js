@@ -28,14 +28,14 @@ type Load = {
 }
 
 type LoadFulfilled = {
-  type: "LOAD-",
+  type: "LOAD+",
   payload: {
     user: User,
   },
 }
 
 type LoadRejected = {
-  type: "LOAD+",
+  type: "LOAD-",
   payload: {
     userId: string,
   },
@@ -90,7 +90,7 @@ const actionCreators = {
   },
   loadUser(userId: string): Load {
     return {
-      type: (actionTypes.LOAD: any),
+      type: actionTypes.LOAD,
       payload: {
         userId,
       },
@@ -98,7 +98,7 @@ const actionCreators = {
   },
   fulfillLoad(user: User): LoadFulfilled {
     return {
-      type: (actionTypes.LOAD_FULFILLED: any),
+      type: actionTypes.LOAD_FULFILLED,
       payload: {
         user,
       },
@@ -106,7 +106,7 @@ const actionCreators = {
   },
   rejectLoad(userId: string, error: Error): LoadRejected {
     return {
-      type: (actionTypes.LOAD_REJECTED: any),
+      type: actionTypes.LOAD_REJECTED,
       payload: {
         userId,
       },
@@ -136,7 +136,7 @@ const actionCreators = {
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case actionTypes.LOAD_FULFILLED: {
-      const { user } = ((action: any): LoadFulfilled).payload
+      const { user } = action.payload
       return {
         ...state,
         byId: {

@@ -4,14 +4,15 @@ import createLoopEpics from "./loop"
 import createPhysicsEpics from "./physics"
 import createShipEpics from "./ship"
 
-import { createP2Driver } from "../../physics"
+import * as LocalDriver from "../../physics/p2/local"
+import * as WorkerDriver from "../../physics/p2/worker"
 
 export default [
   ...createLoopEpics(),
   ...createPhysicsEpics(
-    createP2Driver({
-      gravity: [0, 0],
-    }),
+    typeof window === "object"
+      ? WorkerDriver.make("p2-world.worker.js")
+      : LocalDriver.make(),
   ),
   ...createShipEpics(),
 ]

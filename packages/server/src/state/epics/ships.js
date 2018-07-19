@@ -1,7 +1,5 @@
 // @flow
 
-import type { ActionObservable } from "redux-observable"
-
 // $FlowFixMe
 import { Observable, from, empty } from "rxjs"
 import {
@@ -19,7 +17,7 @@ import { Ships, Users } from "../modules"
 
 export default function(db: Db) {
   // Persist ships to database
-  function persistShips(action$: ActionObservable<Action>) {
+  function persistShips(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Ships.ADD, Ships.UPDATE),
       tap(async action => {
@@ -37,7 +35,7 @@ export default function(db: Db) {
   }
 
   // Create ship bodies
-  function createShipBodies(action$: ActionObservable<Action>) {
+  function createShipBodies(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Ships.ADD),
       switchMap(async action => {
@@ -78,7 +76,7 @@ export default function(db: Db) {
 
   // Send new and updated ships to clients
   function sendShipUpdates(
-    action$: ActionObservable<Action>,
+    action$: Observable<Action>,
     state$: Observable<State>,
   ) {
     return action$.pipe(
@@ -94,7 +92,7 @@ export default function(db: Db) {
     )
   }
 
-  function unloadShips(action$: ActionObservable<Action>) {
+  function unloadShips(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Ships.REMOVE),
       switchMap(async action => {

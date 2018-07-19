@@ -30,7 +30,7 @@ export function configureStore(options) {
   const middleware = [
     epicMiddleware,
     routerMiddleware,
-    loggerMiddleware,
+    // loggerMiddleware,
   ]
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(...coreEpics, ...epics)

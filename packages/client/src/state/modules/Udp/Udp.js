@@ -1,5 +1,7 @@
 // @flow
 
+import type { Action as ClientAction } from "../../../types"
+
 import { createReduxModule } from "@subspace/redux-module"
 
 type State = { isConnected: boolean }
@@ -11,32 +13,26 @@ type Connect = {
   },
 }
 
-type Connecting = {
-  type: "CONNECTING",
-  payload: {},
-}
-
 type FulfillConnect = {
   type: "CONNECT+",
-  payload: {},
 }
 
 type RejectConnect = {
   type: "CONNECT-",
-  payload: {},
 }
 
 type Close = {
   type: "CLOSE",
-  payload: {},
 }
 
-type Action =
-  | Connect
-  | Connecting
-  | FulfillConnect
-  | RejectConnect
-  | Close
+type Send = {
+  type: "SEND",
+  payload: {
+    action: ClientAction,
+  },
+}
+
+type Action = Connect | FulfillConnect | RejectConnect | Close | Send
 
 export type { State as UdpState, Action as UdpAction }
 
@@ -44,46 +40,49 @@ const actionTypes = {
   CONNECT: "CONNECT",
   CONNECT_FULFILLED: "CONNECT+",
   CONNECT_REJECTED: "CONNECT-",
-  CONNECTING: "CONNECTING",
   CLOSE: "CLOSE",
+  SEND: "SEND",
 }
 
 const actionCreators = {
   connect(token): Connect {
     return {
-      type: (actionTypes.CONNECT: any),
+      type: actionTypes.CONNECT,
       payload: {
         token,
       },
     }
   },
-  connecting(): Connecting {
-    return {
-      type: actionTypes.CONNECTING,
-      payload: {},
-    }
-  },
   fulfillConnect(): FulfillConnect {
     return {
-      type: (actionTypes.CONNECT_FULFILLED: any),
-      payload: {},
+      type: actionTypes.CONNECT_FULFILLED,
     }
   },
   rejectConnect(): RejectConnect {
     return {
-      type: (actionTypes.CONNECT_REJECTED: any),
-      payload: {},
+      type: actionTypes.CONNECT_REJECTED,
     }
   },
   close(): Close {
     return {
       type: actionTypes.CLOSE,
-      payload: {},
+    }
+  },
+  send(action: ClientAction): Send {
+    return {
+      type: actionTypes.SEND,
+      payload: {
+        action,
+      },
     }
   },
 }
 
-const selectors = {}
+const selectors = {
+  isConnected(state) {
+    return state.isConnected
+  },
+}
 
 function reducer(
   state: State = { isConnected: false },

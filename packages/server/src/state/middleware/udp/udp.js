@@ -42,6 +42,7 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
         const actionToReceive = Protocol.deserialize(message)
 
         try {
+          handleUserAction(userId, actionToReceive)
           dispatch(handleUserAction(userId, actionToReceive))
         } catch (err) {
           // console.error(err)
