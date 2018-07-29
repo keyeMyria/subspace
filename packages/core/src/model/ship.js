@@ -6,4 +6,5 @@ export type Ship = Entity & {
   bodyId?: string,
   shipTypeId: string,
   thrust: [number, number],
+  turn: [number, number],
 }

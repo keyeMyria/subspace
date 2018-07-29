@@ -13,9 +13,12 @@ type Update = {
   },
 }
 
-type Action = | Update
+type Action = Update
 
-export type { State as SpatialIndexState, Action as SpatialIndexAction }
+export type {
+  State as SpatialIndexState,
+  Action as SpatialIndexAction,
+}
 
 const actionTypes = {
   UPDATE: "UPDATE",
@@ -42,10 +45,7 @@ function reducer(
     case actionTypes.UPDATE:
       return {
         ...state,
-        byUserId: {
-          ...state.byUserId,
-          ...action.payload.adjacentBodies,
-        },
+        byUserId: action.payload.adjacentBodies,
       }
     default:
       return state

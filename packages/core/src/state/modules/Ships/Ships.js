@@ -24,11 +24,31 @@ type Update = {
   },
 }
 
-type Turn = {
-  type: "TURN",
+type TurnLeft = {
+  type: "TURN_LEFT",
   payload: {
     shipId: string,
-    direction: TurnDirection,
+  },
+}
+
+type TurnRight = {
+  type: "TURN_RIGHT",
+  payload: {
+    shipId: string,
+  },
+}
+
+type TurnLeftEnd = {
+  type: "TURN_LEFT_END",
+  payload: {
+    shipId: string,
+  },
+}
+
+type TurnRightEnd = {
+  type: "TURN_RIGHT_END",
+  payload: {
+    shipId: string,
   },
 }
 
@@ -39,8 +59,8 @@ type Remove = {
   },
 }
 
-type ThrustStart = {
-  type: "THRUST_START",
+type Thrust = {
+  type: "THRUST",
   payload: {
     shipId: string,
   },
@@ -98,9 +118,12 @@ type RightThrustEnd = {
 type Action =
   | Add
   | Update
-  | Turn
+  | TurnLeft
+  | TurnLeftEnd
+  | TurnRight
+  | TurnRightEnd
   | Remove
-  | ThrustStart
+  | Thrust
   | ThrustEnd
   | ReverseThrust
   | ReverseThrustEnd
@@ -114,9 +137,12 @@ export type { State as ShipsState, Action as ShipsAction }
 const actionTypes = {
   ADD: "ADD",
   UPDATE: "UPDATE",
-  TURN: "TURN",
+  TURN_LEFT: "TURN_LEFT",
+  TURN_LEFT_END: "TURN_LEFT_END",
+  TURN_RIGHT: "TURN_RIGHT",
+  TURN_RIGHT_END: "TURN_RIGHT_END",
   REMOVE: "REMOVE",
-  THRUST_START: "THRUST_START",
+  THRUST: "THRUST",
   THRUST_END: "THRUST_END",
   THRUST_REVERSE: "THRUST_REVERSE",
   THRUST_REVERSE_END: "THRUST_REVERSE_END",
@@ -143,15 +169,6 @@ const actionCreators = {
       },
     }
   },
-  turnShip(shipId: string, direction: TurnDirection): Turn {
-    return {
-      type: actionTypes.TURN,
-      payload: {
-        shipId,
-        direction,
-      },
-    }
-  },
   removeShip(shipId: string): Remove {
     return {
       type: actionTypes.REMOVE,
@@ -166,6 +183,11 @@ const initialState: State = {
   byId: {},
 }
 
+const defaultShip = {
+  thrust: [0, 0],
+  turn: [0, 0],
+}
+
 function add(state: State, action: Add) {
   const { ship } = action.payload
 
@@ -174,7 +196,10 @@ function add(state: State, action: Add) {
     byId: ship.id
       ? {
           ...state.byId,
-          [ship.id]: ship,
+          [ship.id]: {
+            ...defaultShip,
+            ...ship,
+          },
         }
       : state.byId,
   }
@@ -203,7 +228,7 @@ function remove(state: State, action: Remove) {
   return nextState
 }
 
-function startThrust(state: State, action: ThrustStart) {
+function startThrust(state: State, action: Thrust | ReverseThrust) {
   const { shipId } = action.payload
   const ship = state.byId[shipId]
   return {
@@ -213,7 +238,8 @@ function startThrust(state: State, action: ThrustStart) {
       [shipId]: {
         ...ship,
         thrust: [
-          selectors.getShipThrust(state, shipId),
+          (action.type === actionTypes.THRUST ? 1 : -1) *
+            selectors.getShipThrust(state, shipId),
           ship.thrust[1],
         ],
       },
@@ -221,7 +247,10 @@ function startThrust(state: State, action: ThrustStart) {
   }
 }
 
-function endThrust(state: State, action: ThrustEnd) {
+function endThrust(
+  state: State,
+  action: ThrustEnd | ReverseThrustEnd,
+) {
   const { shipId } = action.payload
   const ship = state.byId[shipId]
   return {
@@ -236,6 +265,43 @@ function endThrust(state: State, action: ThrustEnd) {
   }
 }
 
+function startTurn(state: State, action: TurnLeft | TurnRight) {
+  const { shipId } = action.payload
+  const ship = state.byId[shipId]
+
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [shipId]: {
+        ...ship,
+        turn:
+          action.type === actionTypes.TURN_LEFT
+            ? [1, ship.turn[1]]
+            : [ship.turn[0], 1],
+      },
+    },
+  }
+}
+
+function endTurn(state: State, action: TurnLeftEnd | TurnRightEnd) {
+  const { shipId } = action.payload
+  const ship = state.byId[shipId]
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [shipId]: {
+        ...ship,
+        turn:
+          action.type === actionTypes.TURN_LEFT_END
+            ? [0, ship.turn[1]]
+            : [ship.turn[0], 0],
+      },
+    },
+  }
+}
+
 function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case actionTypes.ADD:
@@ -244,10 +310,18 @@ function reducer(state: State = initialState, action: Action): State {
       return update(state, action)
     case actionTypes.REMOVE:
       return remove(state, action)
-    case actionTypes.THRUST_START:
+    case actionTypes.THRUST:
+    case actionTypes.THRUST_REVERSE:
       return startThrust(state, action)
     case actionTypes.THRUST_END:
+    case actionTypes.THRUST_REVERSE_END:
       return endThrust(state, action)
+    case actionTypes.TURN_LEFT:
+    case actionTypes.TURN_RIGHT:
+      return startTurn(state, action)
+    case actionTypes.TURN_LEFT_END:
+    case actionTypes.TURN_RIGHT_END:
+      return endTurn(state, action)
     default:
       return state
   }
@@ -265,7 +339,6 @@ const selectors = {
   },
   getShipThrust(state: State, shipId: string) {
     const ship = state.byId[shipId]
-
     return 1
   },
 }

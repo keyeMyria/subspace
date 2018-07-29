@@ -5,6 +5,7 @@ import { createReduxModule } from "@subspace/redux-module"
 import type { Body } from "../../../model"
 
 type State = {
+  frame: number,
   byId: {
     [string]: Body,
   },
@@ -60,6 +61,14 @@ type RemoveBody = {
   },
 }
 
+type DriverUpdate = {
+  type: "DRIVER_UPDATE",
+  payload: {
+    frame: number,
+    bodies: { [string]: Body },
+  },
+}
+
 type Action =
   | Init
   | AddBody
@@ -68,6 +77,7 @@ type Action =
   | ApplyForce
   | ApplySnapshot
   | RemoveBody
+  | DriverUpdate
 
 export type { State as PhysicsState, Action as PhysicsAction }
 
@@ -79,6 +89,7 @@ const actionTypes = {
   APPLY_FORCE: "APPLY_FORCE",
   APPLY_SNAPSHOT: "APPLY_SNAPSHOT",
   REMOVE_BODY: "REMOVE_BODY",
+  DRIVER_UPDATE: "DRIVER_UPDATE",
 }
 
 const actionCreators = {
@@ -144,10 +155,20 @@ const actionCreators = {
       },
     }
   },
+  driverUpdate(update: {
+    frame: number,
+    bodies: { [string]: Body },
+  }) {
+    return {
+      type: actionTypes.DRIVER_UPDATE,
+      payload: update,
+    }
+  },
 }
 
 function reducer(
   state: State = {
+    frame: -1,
     byId: {},
   },
   action: Action,
@@ -188,9 +209,9 @@ function reducer(
 
       return nextState
     }
-    case actionTypes.APPLY_SNAPSHOT: {
-      const { bodies } = action.payload
-      const nextState = { ...state }
+    case actionTypes.DRIVER_UPDATE: {
+      const { frame, bodies } = action.payload
+      const nextState = { ...state, frame }
 
       for (const bodyId in bodies) {
         nextState.byId[bodyId] = {

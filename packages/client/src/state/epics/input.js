@@ -62,7 +62,16 @@ export default function() {
 
   function sendUserInput(action$: Observable<Action>) {
     return action$.pipe(
-      ofType(Ships.THRUST_START, Ships.THRUST_END),
+      ofType(
+        Ships.THRUST,
+        Ships.THRUST_END,
+        Ships.THRUST_REVERSE,
+        Ships.THRUST_REVERSE_END,
+        Ships.TURN_LEFT,
+        Ships.TURN_LEFT_END,
+        Ships.TURN_RIGHT,
+        Ships.TURN_RIGHT_END,
+      ),
       map(Udp.send),
     )
   }

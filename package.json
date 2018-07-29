@@ -35,10 +35,7 @@
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "lint-staged": {
-    "*.{js,jsx,json,css}": [
-      "prettier",
-      "git add"
-    ]
+    "*.{js,jsx,json,css}": ["prettier", "git add"]
   },
   "husky": {
     "hooks": {
@@ -49,7 +46,7 @@
     "bootstrap": "lerna bootstrap --ignore-scripts",
     "test": "eslint . && npm run flow && jest --forceExit",
     "dev": "docker-compose down && docker-compose up",
-    "dev:local": "lerna run --parallel start:dev",
+    "dev:local": "lerna run --parallel dev",
     "build": "lerna run build",
     "flow": "killall flow || true && flow",
     "db:init": "DB_USERNAME=cockroach ./bin/init_db.sh"

@@ -5,7 +5,7 @@ import type { Observable } from "rxjs"
 import { Loop, Physics } from "@subspace/core"
 import { ofType } from "redux-observable"
 // $FlowFixMe
-import { from, empty } from "rxjs"
+import { of, from, empty } from "rxjs"
 import {
   throttleTime,
   map,
@@ -13,6 +13,7 @@ import {
   withLatestFrom,
   tap,
   ignoreElements,
+  concatAll,
 } from "rxjs/operators"
 
 import type { Action, State } from "../../types"
@@ -47,7 +48,13 @@ function getSnapshots(state: State) {
     const adjacentBodies = {}
     for (let i = 0; i < adjacentBodyIds.length; i++) {
       const bodyId = adjacentBodyIds[i]
-      adjacentBodies[bodyId] = bodies[bodyId]
+      const body = bodies[bodyId]
+
+      // Body might not exist after user disconnect
+      if (body) {
+        const { position } = bodies[bodyId]
+        adjacentBodies[bodyId] = { position }
+      }
     }
     actions.push(
       Users.send(
@@ -65,15 +72,14 @@ export default function(db: Db, sendRate: number) {
   function persistUsers(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Users.ADD, Users.UPDATE),
-      tap(async action => {
+      tap(action => {
         const { user } = action.payload
-        const model = await db.User.findById(user.id)
 
-        if (!model) {
-          await db.User.create(user)
-        } else {
-          await model.update(user)
+        if (!user.id) {
+          return db.User.create(user)
         }
+
+        return db.User.update(user, { where: { id: user.id } })
       }),
       ignoreElements(),
     )
@@ -129,35 +135,32 @@ export default function(db: Db, sendRate: number) {
     return action$.pipe(
       ofType(Users.ADD),
       switchMap(async action => {
-        const { user: { id, activeShipId } } = action.payload
+        const { user: { id } } = action.payload
+        const userModel = await db.User.findById(id)
+
+        if (!userModel) {
+          throw new Error(`User ${id} not found`)
+        }
+
+        const { activeShipId } = userModel.toJSON()
 
         if (activeShipId) {
           const shipModel = await db.Ship.findById(activeShipId)
 
-          if (shipModel) {
-            return Ships.addShip(shipModel.toJSON())
+          if (!shipModel) {
+            throw new Error(
+              `Invalid active ship id ${activeShipId} for user ${id}`,
+            )
           }
+
+          return of(Ships.addShip(shipModel.toJSON()))
         }
 
-        return Users.makeUserShip(id, {
+        const spec = {
           shipTypeId: "0",
           thrust: [0, 0],
-        })
-      }),
-    )
-  }
-
-  function makeUserShip(action$: Observable<Action>) {
-    return action$.pipe(
-      ofType(Users.MAKE_USER_SHIP),
-      switchMap(async action => {
-        const { userId, ship: spec } = action.payload
-        const userModel = await db.User.findById(userId)
-
-        if (!userModel) {
-          return empty()
+          turn: [0, 0],
         }
-
         const shipModel = await db.Ship.create(spec)
         const ship = shipModel.toJSON()
 
@@ -167,9 +170,9 @@ export default function(db: Db, sendRate: number) {
 
         const user = userModel.toJSON()
 
-        return [Ships.addShip(ship), Users.updateUser(user)]
+        return from([Ships.addShip(ship), Users.updateUser(user)])
       }),
-      switchMap(actions => from(actions)),
+      concatAll(),
     )
   }
 
@@ -201,7 +204,6 @@ export default function(db: Db, sendRate: number) {
     loadUserShips,
     sendSnapshots,
     sendUserUpdates,
-    makeUserShip,
     unloadUsers,
   ]
 }

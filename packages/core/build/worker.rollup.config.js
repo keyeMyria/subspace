@@ -16,13 +16,7 @@ export default {
     babel({
       exclude: "node_modules/**",
     }),
-    commonjs({
-      include: [
-        "node_modules/**",
-        "src/physics/p2/local.js",
-        "src/physics/p2/worker/p2-world.worker.js",
-      ],
-    }),
+    commonjs(),
     resolve(),
   ],
 }

@@ -37,9 +37,12 @@ function addBody(model, bodies, world) {
     return
   }
 
-  const body = new p2.Body(
-    Object.assign({}, model, { allowSleep: true }),
-  )
+  const body = new p2.Body({
+    ...model,
+    allowSleep: true,
+    sleepSpeedLimit: 1,
+    sleepTimeLimit: 1,
+  })
   const { id, width, height } = model
 
   body.addShape(new p2.Box({ width, height }))
@@ -77,18 +80,39 @@ function applyForce(options, bodies) {
   body.applyForceLocal(force, position)
 }
 
+function rotateBody(options, bodies) {
+  const { bodyId, angle } = options
+  const body = bodies[bodyId]
+
+  if (!body) {
+    return
+  }
+
+  body.angularVelocity = angle
+}
+
+function applySnapshot(
+  snapshot: { [string]: BodyModel },
+  bodies: { [string]: p2.Body },
+) {
+  for (let bodyId in snapshot) {
+    const body = bodies[bodyId]
+    const update = snapshot[bodyId]
+    bodies[bodyId] = Object.assign(body, update)
+  }
+}
+
 export function make(): PhysicsDriver {
   const bodies: { [string]: p2.Body } = {}
   const update: { [string]: BodyModel } = {}
 
   let world: ?p2.World = null
   let previousTime = 0
-  let fixedTimeStep: ?number = 0
   let _maxSubSteps: ?number = 0
+  let frame = -1
 
   function init(options) {
     const {
-      rate,
       friction = 0,
       gravity = [0, 0],
       maxSubsteps = 10,
@@ -97,22 +121,25 @@ export function make(): PhysicsDriver {
     world = createWorld(gravity, friction)
 
     _maxSubSteps = maxSubsteps
-    fixedTimeStep = 1 / rate
   }
 
   function step() {
     if (!world) {
-      return {}
+      return {
+        frame: -1,
+        bodies: {},
+      }
     }
 
     const now = getTime()
     const timeSinceLastStep = (now - previousTime) / 1000
 
-    world.step(fixedTimeStep, timeSinceLastStep, _maxSubSteps)
+    world.step(1 / 60, timeSinceLastStep, _maxSubSteps)
 
     previousTime = now
+    frame = frame + 1
 
-    return serializeBodies(bodies, update)
+    return { frame, bodies: serializeBodies(bodies, update) }
   }
 
   function handleAction(action: PhysicsAction) {
@@ -128,6 +155,12 @@ export function make(): PhysicsDriver {
         break
       case Physics.APPLY_FORCE:
         applyForce(action.payload, bodies)
+        break
+      case Physics.ROTATE_BODY:
+        rotateBody(action.payload, bodies)
+        break
+      case Physics.APPLY_SNAPSHOT:
+        applySnapshot(action.payload.bodies, bodies)
         break
       default:
         throw new Error(`PhysicsDriver: ${action.type} not found.`)

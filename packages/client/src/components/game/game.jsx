@@ -25,6 +25,8 @@ class Game extends React.Component {
               <dd>{ship.id}</dd>
               <dt>Position</dt>
               <dd>{body && body.position}</dd>
+              <dt>Angle</dt>
+              <dd>{body && body.angle}</dd>
             </dl>
           )}
         </dd>

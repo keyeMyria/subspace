@@ -20,7 +20,7 @@ export default function(driver: PhysicsDriver) {
   function applyPhysicsDriverUpdates(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Loop.TICK),
-      map(() => Physics.applySnapshot(0, driver.step())),
+      map(() => Physics.driverUpdate(driver.step())),
     )
   }
 
@@ -30,6 +30,7 @@ export default function(driver: PhysicsDriver) {
         Physics.ADD_BODY,
         Physics.APPLY_FORCE,
         Physics.ROTATE_BODY,
+        Physics.APPLY_SNAPSHOT,
         Physics.INIT,
       ),
       tap(driver.handleAction),

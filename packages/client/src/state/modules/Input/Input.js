@@ -46,7 +46,10 @@ const actionCreators = {
 }
 
 const initialState = {
-  W: [Ships.THRUST_START, Ships.THRUST_END],
+  w: [Ships.THRUST, Ships.THRUST_END],
+  a: [Ships.TURN_LEFT, Ships.TURN_LEFT_END],
+  s: [Ships.THRUST_REVERSE, Ships.THRUST_REVERSE_END],
+  d: [Ships.TURN_RIGHT, Ships.TURN_RIGHT_END],
 }
 
 function reducer(state: State = initialState, action: Action) {

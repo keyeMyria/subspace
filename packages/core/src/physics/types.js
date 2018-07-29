@@ -5,5 +5,5 @@ import type { PhysicsAction } from "../state/modules"
 
 export type PhysicsDriver = {
   handleAction(action: PhysicsAction): void,
-  step(): { [string]: Body },
+  step(): { frame: number, bodies: { [string]: Body } },
 }

@@ -6,7 +6,10 @@ export function make(workerUrl: string): PhysicsDriver {
   // $FlowFixMe
   const worker = new Worker(workerUrl)
 
-  let state = {}
+  let state = {
+    frame: -1,
+    bodies: {},
+  }
 
   worker.addEventListener("message", (e: any) => {
     state = e.data

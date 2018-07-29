@@ -22,4 +22,4 @@ RUN npm cache clean --force
 USER node
 
 # serve
-CMD npm run dev:client
+CMD lerna run dev --scope=@subspace/client

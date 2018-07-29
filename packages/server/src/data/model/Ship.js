@@ -9,29 +9,11 @@ export default function(
   sequelize: Sequelize,
   dataTypes: DataTypes,
 ): Class<Model<Ship>> {
-  const model = sequelize.define(
-    "Ship",
-    {
-      name: dataTypes.STRING,
-      shipTypeId: dataTypes.STRING,
-      bodyId: dataTypes.STRING,
-      thrustX: dataTypes.FLOAT,
-      thrustY: dataTypes.FLOAT,
-    },
-    {
-      getterMethods: {
-        thrust() {
-          return [this.thrustX, this.thrustY]
-        },
-      },
-      setterMethods: {
-        thrust([x: number, y: number]) {
-          this.setDataValue("thrustX", x)
-          this.setDataValue("thrustY", y)
-        },
-      },
-    },
-  )
+  const model = sequelize.define("Ship", {
+    name: dataTypes.STRING,
+    shipTypeId: dataTypes.STRING,
+    bodyId: dataTypes.STRING,
+  })
 
   model.associate = models => {
     model.belongsTo(models.ShipType, { foreignKey: "shipTypeId" })

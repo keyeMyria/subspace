@@ -17,38 +17,25 @@ import type { Action, State } from "../../types"
 import { Users } from "../modules"
 
 export default function(db: Db) {
-  // Persist new bodies to database
-  function persistBodies(action$: Observable<Action>) {
+  function persistSnapshots(action$: Observable<Action>) {
     return action$.pipe(
-      ofType(Physics.ADD_BODY),
-      tap(async action => {
-        const { body } = action.payload
-        const model = await db.Body.findById(body.id)
-
-        if (!model) {
-          await db.Body.create(body)
-        } else {
-          await model.update(body)
-        }
-      }),
-      ignoreElements(),
-    )
-  }
-
-  // Persist body updates to database
-  function persistBodyUpdates(action$: Observable<Action>) {
-    return action$.pipe(
-      ofType(Physics.UPDATE_BODY),
+      ofType(Physics.DRIVER_UPDATE),
       throttleTime(2000),
       tap(async action => {
-        const { body } = action.payload
-        const model = await db.Body.findById(body.id)
+        const { bodies } = action.payload
+        const updates = []
 
-        if (!model) {
-          await db.Body.create(body)
-        } else {
-          await model.update(body)
+        for (const bodyId in bodies) {
+          const { angle, position } = bodies[bodyId]
+          updates.push(
+            db.Body.update(
+              { angle, position },
+              { where: { id: bodyId } },
+            ),
+          )
         }
+
+        return Promise.all(updates)
       }),
       ignoreElements(),
     )
@@ -72,5 +59,5 @@ export default function(db: Db) {
     )
   }
 
-  return [persistBodies, persistBodyUpdates, sendBodyUpdates]
+  return [sendBodyUpdates, persistSnapshots]
 }

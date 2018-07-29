@@ -28,4 +28,4 @@ RUN npm cache clean --force
 
 # serve
 CMD bash -c "while ping -c1 db-init &>/dev/null; do :; done;" && \
-    npm run dev:server
+  lerna run dev --scope=@subspace/server

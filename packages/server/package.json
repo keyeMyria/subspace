@@ -8,7 +8,7 @@
     "build:dev": "webpack --mode=development",
     "start": "npm run serve",
     "serve": "node lib/index.js",
-    "start:dev":
+    "dev":
       "nodemon --watch src --watch ../core/lib --exec node src/index.js",
     "prepare": "npm run build"
   },

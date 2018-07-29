@@ -2,12 +2,7 @@
 
 // $FlowFixMe
 import { Observable, from, empty } from "rxjs"
-import {
-  switchMap,
-  tap,
-  ignoreElements,
-  withLatestFrom,
-} from "rxjs/operators"
+import { switchMap, withLatestFrom } from "rxjs/operators"
 import { ofType } from "redux-observable"
 import { Physics } from "@subspace/core"
 
@@ -16,24 +11,6 @@ import type { Action, State } from "../../types"
 import { Ships, Users } from "../modules"
 
 export default function(db: Db) {
-  // Persist ships to database
-  function persistShips(action$: Observable<Action>) {
-    return action$.pipe(
-      ofType(Ships.ADD, Ships.UPDATE),
-      tap(async action => {
-        const { ship } = action.payload
-        const model = await db.Ship.findById(ship.id)
-
-        if (!model) {
-          await db.Ship.create(ship)
-        } else {
-          await model.update(ship)
-        }
-      }),
-      ignoreElements(),
-    )
-  }
-
   // Create ship bodies
   function createShipBodies(action$: Observable<Action>) {
     return action$.pipe(
@@ -55,9 +32,9 @@ export default function(db: Db) {
           return empty()
         }
 
-        const bodyModel = bodyId
-          ? await db.Body.findById(bodyId)
-          : await db.Body.create(spec)
+        const bodyModel = await (bodyId
+          ? db.Body.findById(bodyId)
+          : db.Body.create(spec))
 
         if (!bodyModel) {
           return empty()
@@ -114,10 +91,5 @@ export default function(db: Db) {
     )
   }
 
-  return [
-    persistShips,
-    sendShipUpdates,
-    createShipBodies,
-    unloadShips,
-  ]
+  return [sendShipUpdates, createShipBodies, unloadShips]
 }
