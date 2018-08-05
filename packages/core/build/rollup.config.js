@@ -11,6 +11,7 @@ export default {
     file: "lib/index.js",
     format: "es",
   },
+  sourceMap: "inline",
   plugins: [
     json(),
     babel({

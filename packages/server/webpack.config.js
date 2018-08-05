@@ -9,7 +9,12 @@ module.exports = {
     __dirname: false,
     __filename: false,
   },
-  externals: [externals()],
+  externals: [
+    externals({
+      // read from package.json to support hoisted dependencies
+      modulesFromFile: true,
+    }),
+  ],
   entry: "./src/index",
   output: {
     path: path.resolve("lib"),

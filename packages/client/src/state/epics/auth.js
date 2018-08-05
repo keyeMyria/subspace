@@ -44,9 +44,7 @@ export default function() {
           registerAction.payload.token,
         )
       }),
-      catchError(error =>
-        of(Auth.rejectRegister(error, action.payload.username)),
-      ),
+      catchError(error => of(Auth.rejectRegister(error))),
     )
   }
 
@@ -63,11 +61,8 @@ export default function() {
       ofType(Auth.AUTHENTICATE),
       switchMap(action => API.authenticate(action.payload.token)),
       map(res => Auth.fulfillAuthenticate(res.user, res.token)),
-      tap(authenticateAction =>
-        localStorage.setItem(
-          JWT_STORAGE_KEY,
-          authenticateAction.payload.token,
-        ),
+      tap(action =>
+        localStorage.setItem(JWT_STORAGE_KEY, action.payload.token),
       ),
       catchError(error => {
         localStorage.removeItem(JWT_STORAGE_KEY)

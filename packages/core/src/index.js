@@ -10,9 +10,8 @@ export type * from "./types/actions"
 export type * from "./state"
 
 // Epics
-import epics from "./state/epics"
-
-export { epics }
+import * as Epics from "./state/epics"
+export { Epics }
 
 // Models
 export type * from "./model"
@@ -28,4 +27,8 @@ export * from "./state/selectors"
 export * from "./extensions"
 
 // etc
+import * as LocalDriver from "./physics/p2/local"
+import * as WorkerDriver from "./physics/p2/worker"
+export { LocalDriver, WorkerDriver }
+export type * from "./physics"
 export * from "./state/modules/Async/util"

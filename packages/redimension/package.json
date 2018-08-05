@@ -16,6 +16,8 @@
     "babel-jest": "^23.2.0",
     "babel-loader": "^7.1.4",
     "eslint-loader": "^2.0.0",
+    "flow-bin": "^0.71.0",
+    "flow-typed": "^2.5.1",
     "jest": "^23.2.0",
     "redis": "^2.8.0",
     "regenerator-runtime": "^0.12.0",

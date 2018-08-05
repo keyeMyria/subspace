@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin")
 const { SERVER_URL, HOST, PORT } = process.env
 
 module.exports = {
-  devtool: "source-map",
+  devtool: "inline-source-map",
   entry: ["./src/index.jsx"],
   output: {
     path: path.join(__dirname, "dist"),

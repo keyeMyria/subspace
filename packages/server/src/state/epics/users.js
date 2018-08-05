@@ -52,8 +52,15 @@ function getSnapshots(state: State) {
 
       // Body might not exist after user disconnect
       if (body) {
-        const { position } = bodies[bodyId]
-        adjacentBodies[bodyId] = { position }
+        const { position, angle, velocity, angularVelocity } = bodies[
+          bodyId
+        ]
+        adjacentBodies[bodyId] = {
+          position,
+          angle,
+          velocity,
+          angularVelocity,
+        }
       }
     }
     actions.push(
@@ -104,17 +111,17 @@ export default function(db: Db, sendRate: number) {
   }
 
   // Send snapshots of the game world to each user at the send rate
-  function sendSnapshots(
-    action$: Observable<Action>,
-    state$: Observable<State>,
-  ) {
-    return action$.pipe(
-      ofType(Loop.TICK),
-      throttleTime(sendRate * 1000),
-      withLatestFrom(state$),
-      switchMap(([, state]) => from(getSnapshots(state))),
-    )
-  }
+  // function sendSnapshots(
+  //   action$: Observable<Action>,
+  //   state$: Observable<State>,
+  // ) {
+  //   return action$.pipe(
+  //     ofType(Loop.TICK),
+  //     throttleTime(sendRate),
+  //     withLatestFrom(state$),
+  //     switchMap(([, state]) => from(getSnapshots(state))),
+  //   )
+  // }
 
   // Initialize user with current game state
   function initUser(
@@ -202,7 +209,7 @@ export default function(db: Db, sendRate: number) {
     initUser,
     persistUsers,
     loadUserShips,
-    sendSnapshots,
+    // sendSnapshots,
     sendUserUpdates,
     unloadUsers,
   ]

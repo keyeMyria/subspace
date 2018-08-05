@@ -8,8 +8,7 @@
     "build:dev": "webpack --mode=development",
     "start": "npm run serve",
     "serve": "node lib/index.js",
-    "dev":
-      "nodemon --watch src --watch ../core/lib --exec node src/index.js",
+    "dev": "nodemon --watch src --watch ../core/lib --exec node src/index.js",
     "prepare": "npm run build"
   },
   "author": "",
@@ -51,6 +50,7 @@
     "babel-loader": "^7.1.4",
     "eslint-loader": "^2.0.0",
     "flow-bin": "^0.71.0",
+    "flow-typed": "^2.5.1",
     "jest": "^22.4.3",
     "nodemon": "<1.17.0",
     "pg": "^7.4.1",

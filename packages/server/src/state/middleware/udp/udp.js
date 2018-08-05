@@ -1,6 +1,6 @@
 // @flow
 
-import type { Connection, UdpServer } from "@web-udp/server"
+import type { UdpServer } from "@web-udp/server"
 
 import { Auth, Protocol } from "@subspace/core"
 
@@ -16,7 +16,7 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
   return store => {
     const { dispatch } = store
 
-    udp.connections.subscribe(async (connection: Connection) => {
+    udp.connections.subscribe(async connection => {
       let user
 
       try {
@@ -39,12 +39,13 @@ export function make(udp: UdpServer, auth: AuthClient): Middleware {
 
       // Route user actions to store
       connection.messages.subscribe(message => {
-        const actionToReceive = Protocol.deserialize(message)
-
         try {
-          dispatch(handleUserAction(userId, actionToReceive))
+          const actions = Protocol.deserialize(message)
+          for (let i = 0; i < actions.length; i++) {
+            dispatch(handleUserAction(userId, actions[i]))
+          }
         } catch (err) {
-          // console.error(err)
+          console.error(`Malformed message sent by user ${userId}`)
         }
       })
 

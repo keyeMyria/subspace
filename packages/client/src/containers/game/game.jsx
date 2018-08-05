@@ -2,22 +2,20 @@
 
 import type { State, Dispatch } from "../../types"
 
-import { getUserShip, getUserBody, Loop } from "@subspace/core"
+import { Physics, Loop } from "@subspace/core"
 import { connect } from "react-redux"
 
-import { Auth, Udp } from "../../state"
+import { Udp } from "../../state"
 import Game from "../../components/game"
+import { Game as GameConfig } from "../../cfg"
 
 const mapStateToProps = (state: State) => ({
   isConnected: Udp.isConnected(state),
-  user: Auth.getUser(state),
-  ship: getUserShip(state, Auth.getUser(state).id),
-  body: getUserBody(state, Auth.getUser(state).id),
-  frame: Loop.getFrame(state),
+  bodies: Physics.getBodies(state),
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  start: () => dispatch(Loop.start(60)),
+  start: () => dispatch(Loop.start(GameConfig.serverTickRate)),
   connect: () => dispatch(Udp.connect()),
 })
 

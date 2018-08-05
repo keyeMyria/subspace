@@ -6,7 +6,7 @@ import type { State, Action } from "../../types"
 
 import { ofType } from "redux-observable"
 // $FlowFixMe
-import { fromEvent, merge, empty, of } from "rxjs"
+import { fromEvent, merge, EMPTY, of, interval, zip } from "rxjs"
 import {
   distinctUntilChanged,
   groupBy,
@@ -14,11 +14,35 @@ import {
   switchMap,
   mergeAll,
   withLatestFrom,
+  bufferTime,
 } from "rxjs/operators"
-import { getUserShip, Ships } from "@subspace/core"
+import { Users } from "@subspace/core"
 
 import { Auth, Input, Udp } from "../modules"
+import { Game } from "../../cfg"
 
+const serverInterval$ = interval(Game.serverTickRate)
+const getCommandApplication = state => {
+  const user = Auth.getUser(state)
+
+  if (!user || !user.id) {
+    return EMPTY
+  }
+
+  const command = Users.getCommandByUserId(state, user.id)
+
+  if (!command) {
+    return EMPTY
+  }
+
+  return of(Users.applyCommand(command, user.id))
+}
+const getCommandApplications = (state$: Observable<State>) =>
+  serverInterval$.pipe(
+    // $FlowFixMe
+    withLatestFrom(state$, (_, state) => state),
+    switchMap(getCommandApplication),
+  )
 const input$ = merge(
   fromEvent(document, "keydown"),
   fromEvent(document, "keyup"),
@@ -41,40 +65,35 @@ export default function() {
         const user = Auth.getUser(state)
 
         if (!user || !user.id || !actionType) {
-          return empty()
-        }
-
-        const ship = getUserShip(state, user.id)
-
-        if (!ship || !ship.id) {
-          return empty()
+          return EMPTY
         }
 
         return of({
           type: actionType,
           payload: {
-            shipId: ship.id,
+            userId: user.id,
           },
         })
       }),
     )
   }
 
-  function sendUserInput(action$: Observable<Action>) {
-    return action$.pipe(
-      ofType(
-        Ships.THRUST,
-        Ships.THRUST_END,
-        Ships.THRUST_REVERSE,
-        Ships.THRUST_REVERSE_END,
-        Ships.TURN_LEFT,
-        Ships.TURN_LEFT_END,
-        Ships.TURN_RIGHT,
-        Ships.TURN_RIGHT_END,
-      ),
-      map(Udp.send),
+  function sendUserInput(
+    action$: Observable<Action>,
+    state$: Observable<State>,
+  ) {
+    return getCommandApplications(state$).pipe(
+      bufferTime(100),
+      map(actions => Udp.send(...actions)),
     )
   }
 
-  return [handleUserInput, sendUserInput]
+  function applyUserCommands(
+    action$: Observable<Action>,
+    state$: Observable<State>,
+  ) {
+    return getCommandApplications(state$)
+  }
+
+  return [handleUserInput, sendUserInput, applyUserCommands]
 }

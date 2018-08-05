@@ -76,7 +76,7 @@ export default function() {
       ofType(Udp.SEND),
       // Send messages to the remote connection using the input subject
       tap(action =>
-        outgoing$.next(Protocol.serialize(action.payload.action)),
+        outgoing$.next(Protocol.serialize(action.payload.actions)),
       ),
       // Stop sending messages once connection closes
       takeUntil(action$.pipe(ofType(Udp.CLOSE))),

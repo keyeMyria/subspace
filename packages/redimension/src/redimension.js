@@ -27,6 +27,7 @@ function multi(
   client: RedisClientPromisified,
   cb: RedisClientPromisified => *,
 ) {
+  // $FlowFixMe
   const m = client.multi()
 
   cb(m)
@@ -38,6 +39,7 @@ function batch(
   client: RedisClientPromisified,
   cb: RedisClientPromisified => *,
 ) {
+  // $FlowFixMe
   const b = client.batch()
 
   cb(b)
@@ -96,6 +98,7 @@ export function make(
     const ele = buildElementString(values, id)
 
     return multi(client, m => {
+      // $FlowFixMe
       m.zadd(key, 0, ele)
       m.hset(hashkey, id, ele)
     })
@@ -103,7 +106,7 @@ export function make(
 
   function remove(values: Values, id: string) {
     const ele = buildElementString(values, id)
-
+    // $FlowFixMe
     return client.zremAsync(key, ele)
   }
 
@@ -115,6 +118,7 @@ export function make(
     }
 
     return multi(client, m => {
+      // $FlowFixMe
       m.zrem(key, ele)
       m.hdel(hashkey, id)
     })
@@ -129,8 +133,10 @@ export function make(
     }
 
     return multi(client, m => {
+      // $FlowFixMe
       m.zrem(key, old)
       m.hdel(hashkey, id)
+      // $FlowFixMe
       m.zadd(key, 0, ele)
       m.hset(hashkey, id, ele)
     })
@@ -180,6 +186,7 @@ export function make(
     const allResults = await batch(client, p => {
       for (let i = 0; i < ranges.length; i++) {
         const r = ranges[i]
+        // $FlowFixMe
         p.zrangebylex(key, r[0], r[1])
       }
     })

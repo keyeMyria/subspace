@@ -54,7 +54,7 @@ export default function(index: Redimension) {
     return action$.pipe(
       ofType(Loop.TICK),
       withLatestFrom(state$),
-      throttleTime(1 / 10 * 1000),
+      throttleTime(1000),
       switchMap(([, state]) => queryRedimension(state, index)),
       map(SpatialIndex.update),
     )

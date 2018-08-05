@@ -20,16 +20,16 @@ function handleMessage(e) {
   const action = e.data
 
   if (action.type === "Physics/INIT") {
-    const { rate } = action.payload
+    const { fixedTimeStep } = action.payload
     const clock = new VirtualClock()
 
     physics = LocalDriver.make()
 
     clock.minimum = 0
-    clock.maximum = 1 / rate * 1000
+    clock.maximum = 1 / fixedTimeStep * 1000
     clock.loop = true
 
-    clock.alwaysAt(1 / rate, step)
+    clock.alwaysAt(0, step)
 
     clock.start()
   }

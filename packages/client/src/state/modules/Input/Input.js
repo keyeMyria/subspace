@@ -1,14 +1,16 @@
 // @flow
 
-import type { ShipsAction } from "@subspace/core"
+import type { UsersAction } from "@subspace/core"
 
 import { createReduxModule } from "@subspace/redux-module"
-import { Ships } from "@subspace/core"
+import { Users } from "@subspace/core"
 
-type KeybindingActionType = $PropertyType<ShipsAction, "type">
+type KeybindingActionType = $PropertyType<UsersAction, "type">
 
 type State = {
-  [key: string]: [KeybindingActionType, KeybindingActionType],
+  bindings: {
+    [key: string]: [KeybindingActionType, KeybindingActionType],
+  },
 }
 
 type UpdateKeybinding = {
@@ -46,10 +48,12 @@ const actionCreators = {
 }
 
 const initialState = {
-  w: [Ships.THRUST, Ships.THRUST_END],
-  a: [Ships.TURN_LEFT, Ships.TURN_LEFT_END],
-  s: [Ships.THRUST_REVERSE, Ships.THRUST_REVERSE_END],
-  d: [Ships.TURN_RIGHT, Ships.TURN_RIGHT_END],
+  bindings: {
+    w: [Users.THRUST, Users.THRUST_END],
+    a: [Users.TURN_LEFT, Users.TURN_LEFT_END],
+    s: [Users.THRUST_REVERSE, Users.THRUST_REVERSE_END],
+    d: [Users.TURN_RIGHT, Users.TURN_RIGHT_END],
+  },
 }
 
 function reducer(state: State = initialState, action: Action) {
@@ -75,7 +79,7 @@ const selectors = {
     key: string,
     type: "keyup" | "keydown",
   ) {
-    const actionTypes = state[key]
+    const actionTypes = state.bindings[key]
 
     if (!actionTypes) {
       return null

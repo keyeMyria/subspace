@@ -17,6 +17,7 @@
     ]
   ],
   "plugins": [
+    "@babel/plugin-syntax-export-namespace-from",
     "@babel/plugin-transform-flow-strip-types",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",

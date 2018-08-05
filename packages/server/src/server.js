@@ -5,7 +5,7 @@ import express from "express"
 import passport from "passport"
 import { json } from "body-parser"
 import * as Udp from "@web-udp/server"
-import { Loop } from "@subspace/core"
+import { Loop, LocalDriver } from "@subspace/core"
 
 import * as Db from "./data"
 import * as Env from "./env"
@@ -31,10 +31,11 @@ async function main() {
   const store = await configureStore({
     auth,
     db,
-    tickRate: 1 / Env.Game.tickRate,
-    sendRate: 1 / Env.Game.sendRate,
+    tickRate: Env.Game.tickRate,
+    sendRate: Env.Game.sendRate,
     udp,
     redimension,
+    physicsDriver: LocalDriver.make(),
   })
 
   // passport

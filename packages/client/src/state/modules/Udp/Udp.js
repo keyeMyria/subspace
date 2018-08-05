@@ -28,7 +28,7 @@ type Close = {
 type Send = {
   type: "SEND",
   payload: {
-    action: ClientAction,
+    actions: ClientAction[],
   },
 }
 
@@ -68,11 +68,11 @@ const actionCreators = {
       type: actionTypes.CLOSE,
     }
   },
-  send(action: ClientAction): Send {
+  send(...actions: ClientAction[]): Send {
     return {
       type: actionTypes.SEND,
       payload: {
-        action,
+        actions,
       },
     }
   },

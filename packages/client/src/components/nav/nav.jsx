@@ -2,7 +2,6 @@
 
 import React from "react"
 import { Link, NavLink } from "react-router-dom"
-import { Menu, Container } from "semantic-ui-react"
 
 import * as Paths from "../../routes/constants/paths"
 
@@ -13,9 +12,9 @@ type Props = {
 
 function Nav(props: Props) {
   return (
-    <Menu fixed="top" inverted style={{ borderRadius: 0 }}>
-      <Container>
-        <Menu.Item
+    <nav>
+      <ul>
+        <li
           as={({ className }) => (
             <NavLink className={className} to={Paths.HOME} exact>
               Home
@@ -23,7 +22,7 @@ function Nav(props: Props) {
           )}
         />
         {!props.isAuthenticated && (
-          <Menu.Item
+          <li
             as={({ className }) => (
               <NavLink className={className} to={Paths.LOGIN}>
                 Login
@@ -32,7 +31,7 @@ function Nav(props: Props) {
           />
         )}
         {!props.isAuthenticated && (
-          <Menu.Item
+          <li
             as={({ className }) => (
               <NavLink className={className} to={Paths.REGISTER}>
                 Register
@@ -41,12 +40,12 @@ function Nav(props: Props) {
           />
         )}
         {props.isAuthenticated && (
-          <Menu.Item as="a" onClick={props.onLogoutClick}>
+          <li as="a" onClick={props.onLogoutClick}>
             Logout
-          </Menu.Item>
+          </li>
         )}
-      </Container>
-    </Menu>
+      </ul>
+    </nav>
   )
 }
 

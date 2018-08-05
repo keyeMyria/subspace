@@ -6,8 +6,11 @@ import type { PhysicsDriver } from "../types"
 
 import p2 from "p2"
 
-import { Physics } from "../../state/modules"
+import Physics from "../../state/modules/Physics"
+import * as SnapshotBuffer from "../snapshot-buffer"
 import { serializeBodies } from "./util"
+
+const MAX_SUB_STEPS = 10
 
 function getTime() {
   if (
@@ -91,36 +94,22 @@ function rotateBody(options, bodies) {
   body.angularVelocity = angle
 }
 
-function applySnapshot(
-  snapshot: { [string]: BodyModel },
-  bodies: { [string]: p2.Body },
-) {
-  for (let bodyId in snapshot) {
-    const body = bodies[bodyId]
-    const update = snapshot[bodyId]
-    bodies[bodyId] = Object.assign(body, update)
-  }
-}
-
 export function make(): PhysicsDriver {
   const bodies: { [string]: p2.Body } = {}
   const update: { [string]: BodyModel } = {}
+  const snapshotBuffer = SnapshotBuffer.make()
 
   let world: ?p2.World = null
   let previousTime = 0
-  let _maxSubSteps: ?number = 0
   let frame = -1
+  let _fixedTimeStep
 
   function init(options) {
-    const {
-      friction = 0,
-      gravity = [0, 0],
-      maxSubsteps = 10,
-    } = options
+    const { friction = 0, gravity = [0, 0], fixedTimeStep } = options
+
+    _fixedTimeStep = fixedTimeStep
 
     world = createWorld(gravity, friction)
-
-    _maxSubSteps = maxSubsteps
   }
 
   function step() {
@@ -134,7 +123,12 @@ export function make(): PhysicsDriver {
     const now = getTime()
     const timeSinceLastStep = (now - previousTime) / 1000
 
-    world.step(1 / 60, timeSinceLastStep, _maxSubSteps)
+    snapshotBuffer.apply(bodies, now)
+    world.step(
+      _fixedTimeStep / 1000,
+      timeSinceLastStep,
+      MAX_SUB_STEPS,
+    )
 
     previousTime = now
     frame = frame + 1
@@ -145,25 +139,21 @@ export function make(): PhysicsDriver {
   function handleAction(action: PhysicsAction) {
     switch (action.type) {
       case Physics.INIT:
-        init(action.payload)
-        break
+        return init(action.payload)
       case Physics.ADD_BODY:
-        addBody(action.payload.body, bodies, world)
-        break
+        return addBody(action.payload.body, bodies, world)
       case Physics.REMOVE_BODY:
-        removeBody(action.payload.body, bodies, world)
-        break
+        return removeBody(action.payload.body, bodies, world)
       case Physics.APPLY_FORCE:
-        applyForce(action.payload, bodies)
-        break
+        return applyForce(action.payload, bodies)
       case Physics.ROTATE_BODY:
-        rotateBody(action.payload, bodies)
-        break
+        return rotateBody(action.payload, bodies)
       case Physics.APPLY_SNAPSHOT:
-        applySnapshot(action.payload.bodies, bodies)
-        break
+        return snapshotBuffer.insert(action.payload.bodies, getTime())
       default:
-        throw new Error(`PhysicsDriver: ${action.type} not found.`)
+        throw new Error(
+          `PhysicsDriver: ${action.type} not recognized.`,
+        )
     }
   }
 

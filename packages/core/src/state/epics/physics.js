@@ -27,11 +27,11 @@ export default function(driver: PhysicsDriver) {
   function providePhysicsDriverActions(action$: Observable<Action>) {
     return action$.pipe(
       ofType(
+        Physics.INIT,
         Physics.ADD_BODY,
         Physics.APPLY_FORCE,
         Physics.ROTATE_BODY,
         Physics.APPLY_SNAPSHOT,
-        Physics.INIT,
       ),
       tap(driver.handleAction),
       ignoreElements(),

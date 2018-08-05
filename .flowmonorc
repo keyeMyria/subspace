@@ -1,0 +1,10 @@
+{
+  "create-stubs": {
+    "dependencies": [
+      "immer",
+      "@web-udp/client",
+      "@web-udp/server",
+      "@babel/register"
+    ]
+  }
+}

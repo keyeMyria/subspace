@@ -1,11 +1,12 @@
 // @flow
 
-import { Loop, Physics, epics as coreEpics } from "@subspace/core"
+import { Loop, Physics, Epics } from "@subspace/core"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { composeWithDevTools } from "remote-redux-devtools"
 import { createEpicMiddleware, combineEpics } from "redux-observable"
 import type { Server as UdpServer } from "@web-udp/server"
 import type { Redimension } from "@subspace/redimension"
+import type { PhysicsDriver } from "@subspace/core"
 
 import type { AuthClient } from "../auth"
 import type { Db } from "../data"
@@ -26,6 +27,7 @@ type ConfigureStoreOptions = {
   sendRate: number,
   udp: UdpServer,
   redimension: Redimension,
+  physicsDriver: PhysicsDriver,
 }
 
 const composeEnhancers = composeWithDevTools({
@@ -40,7 +42,14 @@ const composeEnhancers = composeWithDevTools({
 export async function configureStore(
   options: ConfigureStoreOptions,
 ): Promise<Store> {
-  const { db, auth, sendRate, udp, redimension } = options
+  const {
+    db,
+    auth,
+    sendRate,
+    udp,
+    redimension,
+    physicsDriver,
+  } = options
   const epicMiddleware = createEpicMiddleware()
   const rootReducer = combineReducers(reducers)
   const rootEpic = combineEpics(
@@ -48,7 +57,7 @@ export async function configureStore(
     ...createShipsEpics(db),
     ...createUsersEpics(db, sendRate),
     ...createPhysicsEpics(db),
-    ...coreEpics,
+    ...Epics.make({ physicsDriver }),
   )
   const enhancers = [
     applyMiddleware(epicMiddleware, UdpMiddleware.make(udp, auth)),

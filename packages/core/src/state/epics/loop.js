@@ -2,7 +2,7 @@
 
 import type { Observable } from "rxjs"
 // $FlowFixMe
-import { interval } from "rxjs"
+import { animationFrameScheduler, interval } from "rxjs"
 import { switchMap, map } from "rxjs/operators"
 import { ofType } from "redux-observable"
 
@@ -13,7 +13,12 @@ export default function() {
   function loop(action$: Observable<Action>) {
     return action$.pipe(
       ofType(Loop.START),
-      switchMap(action => interval(1 / action.payload.rate * 1000)),
+      switchMap(
+        action =>
+          typeof requestAnimationFrame === "function"
+            ? interval(0, animationFrameScheduler)
+            : interval(action.payload.rate),
+      ),
       map(Loop.tick),
     )
   }

@@ -6,7 +6,9 @@ import * as Redimension from "@subspace/redimension"
 
 import type { CreateOptions } from "redis"
 
+// $FlowFixMe
 promisifyAll(redis.RedisClient.prototype)
+// $FlowFixMe
 promisifyAll(redis.Multi.prototype)
 
 type MakeOptions = {

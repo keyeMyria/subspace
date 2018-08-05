@@ -1,6 +1,27 @@
-import React from "react"
+// @flow
 
-class Game extends React.Component {
+import React from "react"
+import * as Graphics from "../../graphics"
+import type { Body } from "@subspace/core"
+
+type Props = {
+  isConnected: boolean,
+  connect: Function,
+  start: Function,
+  bodies: { [string]: Body },
+}
+type State = {}
+
+class Game extends React.Component<Props, State> {
+  constructor() {
+    super()
+    this.graphics = Graphics.make()
+  }
+
+  graphics: Graphics.Interface
+  myRef = React.createRef()
+  mounted = false
+
   componentWillMount() {
     if (!this.props.isConnected) {
       this.props.connect()
@@ -8,31 +29,36 @@ class Game extends React.Component {
     this.props.start()
   }
 
-  render() {
-    const { isConnected, ship, user, body, frame } = this.props
+  componentWillReceiveProps(nextProps: Props) {
+    if (
+      nextProps.isConnected &&
+      this.myRef.current &&
+      !this.mounted
+    ) {
+      this.graphics.mount(this.myRef.current)
+      this.mounted = true
+    }
 
-    return isConnected ? (
-      <dl>
-        <dt>Frame</dt>
-        <dd>{frame}</dd>
-        <dt>Username</dt>
-        <dd>{user.username}</dd>
-        <dt>Ship</dt>
-        <dd>
-          {ship && (
-            <dl>
-              <dt>Id</dt>
-              <dd>{ship.id}</dd>
-              <dt>Position</dt>
-              <dd>{body && body.position}</dd>
-              <dt>Angle</dt>
-              <dd>{body && body.angle}</dd>
-            </dl>
-          )}
-        </dd>
-      </dl>
-    ) : (
-      <div>Connecting...</div>
+    if (nextProps.bodies !== this.props.bodies) {
+      this.graphics.render(nextProps.bodies)
+    }
+  }
+
+  shouldComponentUpdate() {
+    if (this.props.isConnected) {
+      return false
+    }
+    return true
+  }
+
+  render() {
+    const { isConnected } = this.props
+
+    return (
+      <div>
+        {!isConnected && <p>Connecting...</p>}
+        <div ref={this.myRef} />
+      </div>
     )
   }
 }

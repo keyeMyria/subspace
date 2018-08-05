@@ -13,7 +13,9 @@ type State = {
 
 type Init = {
   type: "INIT",
-  payload: {},
+  payload: {
+    fixedTimeStep: number,
+  },
 }
 
 type AddBody = {
@@ -93,11 +95,11 @@ const actionTypes = {
 }
 
 const actionCreators = {
-  init(rate: number): Init {
+  init(fixedTimeStep: number): Init {
     return {
       type: actionTypes.INIT,
       payload: {
-        rate,
+        fixedTimeStep,
       },
     }
   },
@@ -174,7 +176,7 @@ function reducer(
   action: Action,
 ): State {
   switch (action.type) {
-    case actionTypes.ADD_BODY:
+    case actionTypes.ADD_BODY: {
       return {
         ...state,
         byId: {
@@ -182,6 +184,7 @@ function reducer(
           [action.payload.body.id]: action.payload.body,
         },
       }
+    }
     case actionTypes.UPDATE_BODY: {
       const { body } = action.payload
       const { id } = body
@@ -190,16 +193,14 @@ function reducer(
         return state
       }
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [id]: {
-            ...selectors.getBody(state, id),
-            ...body,
-          },
-        },
+      const nextState = { ...state }
+
+      nextState.byId[id] = {
+        ...state.byId[id],
+        ...body,
       }
+
+      return state
     }
     case actionTypes.REMOVE_BODY: {
       const { bodyId } = action.payload
@@ -211,7 +212,7 @@ function reducer(
     }
     case actionTypes.DRIVER_UPDATE: {
       const { frame, bodies } = action.payload
-      const nextState = { ...state, frame }
+      const nextState = { ...state, byId: { ...state.byId }, frame }
 
       for (const bodyId in bodies) {
         nextState.byId[bodyId] = {

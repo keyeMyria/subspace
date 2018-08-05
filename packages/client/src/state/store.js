@@ -1,5 +1,8 @@
-import { epics as coreEpics } from "@subspace/core"
-import { createLogger } from "redux-logger"
+// @flow
+
+import type { PhysicsDriver } from "@subspace/core"
+
+import { Epics } from "@subspace/core"
 
 import {
   connectRouter,
@@ -9,31 +12,39 @@ import { applyMiddleware, createStore, combineReducers } from "redux"
 import { createEpicMiddleware, combineEpics } from "redux-observable"
 import { composeWithDevTools } from "redux-devtools-extension"
 
+import { Udp } from "./modules"
 import { Physics, Loop } from "@subspace/core"
 
 import epics from "./epics"
 import reducers from "./reducers"
 
-const loggerMiddleware = createLogger({
-  predicate: (getState, action) =>
-    [Physics.APPLY_SNAPSHOT, Loop.TICK].indexOf(action.type) === -1,
-})
+const actionsBlacklist = [
+  Physics.APPLY_SNAPSHOT,
+  Physics.DRIVER_UPDATE,
+  Loop.TICK,
+  Udp.SEND,
+]
+
 const composeEnhancers = composeWithDevTools({
-  actionsBlacklist: [Loop.TICK, Physics.APPLY_SNAPSHOT],
+  actionsBlacklist,
 })
 
-export function configureStore(options) {
-  const { history } = options
+type ConfigureStoreOptions = {
+  history: any,
+  physicsDriver: PhysicsDriver,
+}
+
+export function configureStore(options: ConfigureStoreOptions) {
+  const { history, physicsDriver } = options
   const routerMiddleware = createRouterMiddleware(history)
 
   const epicMiddleware = createEpicMiddleware()
-  const middleware = [
-    epicMiddleware,
-    routerMiddleware,
-    // loggerMiddleware,
-  ]
+  const middleware = [epicMiddleware, routerMiddleware]
   const rootReducer = combineReducers(reducers)
-  const rootEpic = combineEpics(...coreEpics, ...epics)
+  const rootEpic = combineEpics(
+    ...Epics.make({ physicsDriver }),
+    ...epics,
+  )
 
   const store = createStore(
     connectRouter(history)(rootReducer),

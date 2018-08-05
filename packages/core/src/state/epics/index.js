@@ -1,18 +1,19 @@
 // @flow
 
-import createLoopEpics from "./loop"
-import createPhysicsEpics from "./physics"
-import createShipEpics from "./ship"
+import makeLoopEpics from "./loop"
+import makePhysicsEpics from "./physics"
+import makeUserEpics from "./user"
 
-import * as LocalDriver from "../../physics/p2/local"
-import * as WorkerDriver from "../../physics/p2/worker"
+import type { PhysicsDriver } from "../../physics"
 
-export default [
-  ...createLoopEpics(),
-  ...createPhysicsEpics(
-    typeof window === "object"
-      ? WorkerDriver.make("p2-world.worker.js")
-      : LocalDriver.make(),
-  ),
-  ...createShipEpics(),
-]
+type Options = {
+  physicsDriver: PhysicsDriver,
+}
+
+export const make = (options: Options) => {
+  return [
+    ...makeLoopEpics(),
+    ...makePhysicsEpics(options.physicsDriver),
+    ...makeUserEpics(),
+  ]
+}
